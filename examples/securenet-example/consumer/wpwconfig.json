@@ -1,0 +1,13 @@
+[{
+	"key": "wsLogEnable",
+	"value": "true"
+},
+{
+	"key": "wsLogPort",
+	"value": "8099"
+},
+{
+	"key": "wsLogLevel",
+	"value": "debug,warn,info,error,fatal"
+}
+]
