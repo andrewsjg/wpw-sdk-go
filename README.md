@@ -1,3 +1,42 @@
+# Worldpay Within - The Go SDK
+
+The Go implementation for the Worldpay Within IoT payment SDK. This SDK, or Software Development Kit, enables smart devices to discover each other, negogiate a price for services, make a payment (through the Worldpay payments gateway) for services, and then consume services via a 'trusted trigger'. For more information see our documentation website here: http://www.worldpaywithin.com
+
+![The Worldpay Within puzzle piece](http://wptechinnovation.github.io/worldpay-within-sdk/images/architecture/worldpayWithinFig1.png)
+
+## Get started
+1. Download this repo
+3. Run the examples...
+
+## Run the examples
+* build examles using 'go build'
+* Run the consumer project
+* Simultaneously run the producer or producer-callbacks project
+* The two smart devices should communicate with each other and make a payment
+
+## Compatibility and pre-requisites
+* Assumption here is you have go already installed and setup okay
+
+## See the payments:
+1. Sign up to https://online.worldpay.com if you haven't already done so
+2. Got to settings > API keys and get your test keys
+3. Replace the keys in the consumer and producer java example source files
+4. Re-run the examples and you should see the payments coming through on the WPOP (Worldpay Online) payments dashboard
+  
+## So what does it do:
+
+![The Worldpay Within Flows sequence diagram](http://wptechinnovation.github.io/worldpay-within-sdk/images/architecture/serviceOverview.png)
+
+You can see there are four phases; discover, negotiation, payment and then service delivery, for more information visit our website at http://www.worldpaywithin.com.
+
+[The flows and API can be found here](http://wptechinnovation.github.io/worldpay-within-sdk/the-flows.html)
+
+## Want to contribute:
+
+Want to contribute, then please clone the repo and create a branch, once you've made your changes create a pull request, we will review your code, and if accepted it will be merged into the code base. You can also raise issues here on github, or contact us direct at innovation@worldpay.com or alternatively join our slack channel at iotpay.slack.com.
+
+Go is slightly different, as it is what the innards of the 'IoT Core Componet' or 'rpc-agent' is written in, continue to learn more...
+
 # SDK Core package
 
 This is the source for the core of Worldpay Within and is separated into the following paths:
