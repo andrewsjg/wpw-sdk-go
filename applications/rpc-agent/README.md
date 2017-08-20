@@ -1,4 +1,10 @@
 # RPC-AGENT
+
+To get started:
+1. Get the repo
+2. In the applications/rpc-agent directory type 'go get github.com/wptechinnovation/wpw-sdk-go'
+3. Then you can run the ./build-all.sh to build all the rpc-agents!
+
 An application that hosts the WorldpayWithin SDK behind an Apache Thrift RPC listener. This agent and the SDK are written in Go but Thrift allows for other languages to interact with the SDK via it's RPC mechanism. 
 
 You can test multiple devices on the same dev machine, by running multiple instances of the RPC-agent. Please be aware that in order to do this, each RPC-agent must be attached to a different IP address, for each of the client / device applications.
