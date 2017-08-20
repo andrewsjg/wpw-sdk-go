@@ -1,2 +1,4 @@
 .DS_Store
 *.log
+uuid.txt
+sample-producer-callbacks
