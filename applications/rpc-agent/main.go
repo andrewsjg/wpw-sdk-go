@@ -8,8 +8,8 @@ import (
 
 	log "github.com/Sirupsen/logrus"
 	"github.com/rifflock/lfshook"
-	"github.com/wptechinnovation/worldpay-within-sdk/sdkcore/wpwithin"
-	"github.com/wptechinnovation/worldpay-within-sdk/sdkcore/wpwithin/rpc"
+	"github.com/wptechinnovation/wpw-sdk-go/wpwithin"
+	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/rpc"
 )
 
 var applicationVersion string
