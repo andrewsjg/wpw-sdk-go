@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 	"time"
-
+	
 	log "github.com/Sirupsen/logrus"
 	"github.com/wptechinnovation/worldpay-within-sdk/sdkcore/wpwithin"
 	"github.com/wptechinnovation/worldpay-within-sdk/sdkcore/wpwithin/psp"
@@ -13,6 +13,16 @@ import (
 )
 
 var wpw wpwithin.WPWithin
+
+func convertToMoneyString(amt int, currencyCode string) string {
+	currencyString := ""
+	currencyStringAfter := ""
+	if "GBP" == currencyCode { currencyString = "£ " }
+	if "USD" == currencyCode { currencyString = "$ " }
+	if "RON" == currencyCode { currencyStringAfter = " LEU" }
+
+	return fmt.Sprintf(currencyString + "%.2f" + currencyStringAfter, float64(amt/100))
+}
 
 func main() {
 
@@ -108,14 +118,14 @@ func main() {
 
 		fmt.Printf("[price] Id: %d Description: %s\n", price.ID, price.Description)
 		fmt.Printf("[unit] Id: %d Description: %s\n", price.UnitID, price.UnitDescription)
-		fmt.Printf("[pricePerUnit] Amount: %d CurrencyCode: %s\n", price.PricePerUnit.Amount, price.PricePerUnit.CurrencyCode)
+		fmt.Printf("[pricePerUnit] Amount: %s CurrencyCode: %s\n", convertToMoneyString(price.PricePerUnit.Amount, price.PricePerUnit.CurrencyCode), price.PricePerUnit.CurrencyCode)
 	}
 	fmt.Println()
 	fmt.Println()
 
 	price := prices[0]
 	numUnits := 10
-	fmt.Printf("Will select %d units of price %d - %s\n", numUnits, price.ID, price.Description)
+	fmt.Printf("Will select %d units of price %s - %s\n", numUnits, convertToMoneyString(price.PricePerUnit.Amount, price.PricePerUnit.CurrencyCode), price.Description)
 
 	tpr, err := wpw.SelectService(service.ServiceID, numUnits, price.ID)
 
@@ -128,7 +138,7 @@ func main() {
 	fmt.Printf("PaymentReferenceID: %s\n", tpr.PaymentReferenceID)
 	fmt.Printf("PriceID: %d\n", tpr.PriceID)
 	fmt.Printf("ServerID: %s\n", tpr.ServerID)
-	fmt.Printf("TotalPrice: %d\n", tpr.TotalPrice)
+	fmt.Printf("TotalPrice: %s\n", convertToMoneyString(tpr.TotalPrice, tpr.CurrencyCode))
 	fmt.Printf("UnitsToSupply: %d\n", tpr.UnitsToSupply)
 	fmt.Println()
 	fmt.Println()
@@ -144,7 +154,7 @@ func main() {
 	fmt.Println("Did payment response:")
 	fmt.Printf("ClientID: %s\n", paymentResponse.ClientID)
 	fmt.Printf("ServerID: %s\n", paymentResponse.ServerID)
-	fmt.Printf("TotalPaid: %d\n", paymentResponse.TotalPaid)
+	fmt.Printf("TotalPaid: %s\n", convertToMoneyString(paymentResponse.TotalPaid, tpr.CurrencyCode)) // Payment response doesn't have currency
 	fmt.Println("ServiceDeliveryToken:")
 	fmt.Printf("\tIssued: %s\n", paymentResponse.ServiceDeliveryToken.Issued)
 	fmt.Printf("\tExpiry: %s\n", paymentResponse.ServiceDeliveryToken.Expiry)

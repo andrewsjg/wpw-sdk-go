@@ -36,10 +36,10 @@ func main() {
 
 	pspConfig := make(map[string]string, 0)
 	pspConfig[psp.CfgPSPName] = onlineworldpay.PSPName
-	pspConfig[onlineworldpay.CfgMerchantClientKey] = "T_C_03eaa1d3-4642-4079-b030-b543ee04b5af"
-	pspConfig[onlineworldpay.CfgMerchantServiceKey] = "T_S_f50ecb46-ca82-44a7-9c40-421818af5996"
-	pspConfig[psp.CfgHTEPrivateKey] = "T_S_f50ecb46-ca82-44a7-9c40-421818af5996"
-	pspConfig[psp.CfgHTEPublicKey] = "T_C_03eaa1d3-4642-4079-b030-b543ee04b5af"
+	pspConfig[onlineworldpay.CfgMerchantClientKey] = "T_C_97e8cbaa-14e0-4b1c-b2af-469daf8f1356"
+	pspConfig[onlineworldpay.CfgMerchantServiceKey] = "T_S_3bdadc9c-54e0-4587-8d91-29813060fecd"
+	pspConfig[psp.CfgHTEPrivateKey] = pspConfig[onlineworldpay.CfgMerchantServiceKey]
+	pspConfig[psp.CfgHTEPublicKey] = pspConfig[onlineworldpay.CfgMerchantClientKey]
 	pspConfig[onlineworldpay.CfgAPIEndpoint] = "https://api.worldpay.com/v1"
 
 	err = wp.InitProducer(pspConfig)
