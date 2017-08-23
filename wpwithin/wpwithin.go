@@ -432,6 +432,7 @@ func (wp *wpWithinImpl) StartServiceBroadcast(timeoutMillis int) error {
 		URLPrefix:         wp.core.HTE.URLPrefix(),
 		PortNumber:        wp.core.HTE.Port(),
 		Scheme:            wp.core.HTE.Scheme(),
+		DeviceName:		   wp.core.Device.Name,
 	}
 	log.Debug("Did construct types.BroadcastMessage")
 
