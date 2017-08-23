@@ -8,5 +8,5 @@ type BroadcastMessage struct {
 	ServerID          string `json:"serverID"`
 	URLPrefix         string `json:"urlPrefix"`
 	Scheme            string `json:"scheme"`
-	DeviceName		  string `json:"deviceName"`
+	deviceName        string `json:"deviceName"`
 }
