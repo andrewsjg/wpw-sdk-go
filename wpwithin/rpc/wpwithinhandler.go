@@ -224,6 +224,7 @@ func (wp *WPWithinHandler) DeviceDiscovery(timeoutMillis int32) (r map[*wpthrift
 			ServerId:          gSvcMsg.ServerID,
 			UrlPrefix:         gSvcMsg.URLPrefix,
 			Scheme:            gSvcMsg.Scheme,
+			DeviceName:		   gSvcMsg.DeviceName,
 		}
 
 		result[tmp] = struct{}{}
