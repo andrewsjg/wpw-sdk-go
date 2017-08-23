@@ -13,8 +13,8 @@ import (
         "strconv"
         "strings"
         "git.apache.org/thrift.git/lib/go/thrift"
-	"github.com/wptechinnovation/worldpay-within-sdk/sdkcore/wpwithin/rpc/wpthrift/gen-go/wpthrift_types"
-        "github.com/wptechinnovation/worldpay-within-sdk/sdkcore/wpwithin/rpc/wpthrift/gen-go/wpthrift"
+	"wpthrift_types"
+        "wpthrift"
 )
 
 var _ = wpthrift_types.GoUnusedProtection__
