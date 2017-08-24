@@ -13,7 +13,7 @@ import (
         "strconv"
         "strings"
         "git.apache.org/thrift.git/lib/go/thrift"
-	      "wpthrift_types"
+	"wpthrift_types"
         "wpthrift"
 )
 
