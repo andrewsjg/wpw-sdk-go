@@ -8,9 +8,9 @@ import (
 	"github.com/wptechinnovation/worldpay-securenet-lib-go/sdk/service/cardnotpresent"
 	"github.com/wptechinnovation/worldpay-securenet-lib-go/sdk/service/tokenization"
 	sntypes "github.com/wptechinnovation/worldpay-securenet-lib-go/sdk/types"
-	"github.com/wptechinnovation/worldpay-within-sdk/sdkcore/wpwithin/psp"
-	"github.com/wptechinnovation/worldpay-within-sdk/sdkcore/wpwithin/types"
-	"github.com/wptechinnovation/worldpay-within-sdk/sdkcore/wpwithin/utils"
+	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/psp"
+	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/types"
+	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/utils"
 )
 
 // SecureNet supports processing of payments using the Secure Net service

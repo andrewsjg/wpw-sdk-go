@@ -1,7 +1,7 @@
 package psp
 
 import (
-	"github.com/wptechinnovation/worldpay-within-sdk/sdkcore/wpwithin/types"
+	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/types"
 )
 
 // Common configuration map keys

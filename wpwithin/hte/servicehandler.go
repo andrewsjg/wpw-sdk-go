@@ -12,10 +12,10 @@ import (
 
 	log "github.com/Sirupsen/logrus"
 	"github.com/gorilla/mux"
-	"github.com/wptechinnovation/worldpay-within-sdk/sdkcore/wpwithin/psp"
-	"github.com/wptechinnovation/worldpay-within-sdk/sdkcore/wpwithin/types"
-	"github.com/wptechinnovation/worldpay-within-sdk/sdkcore/wpwithin/types/event"
-	"github.com/wptechinnovation/worldpay-within-sdk/sdkcore/wpwithin/utils"
+	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/psp"
+	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/types"
+	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/types/event"
+	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/utils"
 )
 
 // ServiceHandler Coordinate requests between RPC interface and internal SDK interface

@@ -7,14 +7,14 @@ import (
 	"strings"
 	"time"
 
-	"github.com/wptechinnovation/worldpay-within-sdk/sdkcore/wpwithin/configuration"
-	"github.com/wptechinnovation/worldpay-within-sdk/sdkcore/wpwithin/core"
-	"github.com/wptechinnovation/worldpay-within-sdk/sdkcore/wpwithin/hte"
-	"github.com/wptechinnovation/worldpay-within-sdk/sdkcore/wpwithin/psp"
-	"github.com/wptechinnovation/worldpay-within-sdk/sdkcore/wpwithin/types"
-	"github.com/wptechinnovation/worldpay-within-sdk/sdkcore/wpwithin/types/event"
-	"github.com/wptechinnovation/worldpay-within-sdk/sdkcore/wpwithin/utils"
-	"github.com/wptechinnovation/worldpay-within-sdk/sdkcore/wpwithin/utils/wslog"
+	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/configuration"
+	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/core"
+	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/hte"
+	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/psp"
+	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/types"
+	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/types/event"
+	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/utils"
+	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/utils/wslog"
 
 	log "github.com/Sirupsen/logrus"
 )
@@ -433,7 +433,7 @@ func (wp *wpWithinImpl) StartServiceBroadcast(timeoutMillis int) error {
 		PortNumber:        wp.core.HTE.Port(),
 		Scheme:            wp.core.HTE.Scheme(),
 		DeviceName:		   wp.core.Device.Name,
-		
+
 	}
 	log.Debug("Did construct types.BroadcastMessage")
 

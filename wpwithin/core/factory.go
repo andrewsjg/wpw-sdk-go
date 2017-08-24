@@ -5,14 +5,14 @@ import (
 	"fmt"
 	"strconv"
 
-	"github.com/wptechinnovation/worldpay-within-sdk/sdkcore/wpwithin/hte"
-	"github.com/wptechinnovation/worldpay-within-sdk/sdkcore/wpwithin/psp"
-	"github.com/wptechinnovation/worldpay-within-sdk/sdkcore/wpwithin/psp/onlineworldpay"
-	"github.com/wptechinnovation/worldpay-within-sdk/sdkcore/wpwithin/psp/securenet"
-	"github.com/wptechinnovation/worldpay-within-sdk/sdkcore/wpwithin/servicediscovery"
-	"github.com/wptechinnovation/worldpay-within-sdk/sdkcore/wpwithin/types"
-	"github.com/wptechinnovation/worldpay-within-sdk/sdkcore/wpwithin/types/event"
-	"github.com/wptechinnovation/worldpay-within-sdk/sdkcore/wpwithin/utils"
+	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/hte"
+	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/psp"
+	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/psp/onlineworldpay"
+	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/psp/securenet"
+	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/servicediscovery"
+	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/types"
+	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/types/event"
+	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/utils"
 )
 
 const (
