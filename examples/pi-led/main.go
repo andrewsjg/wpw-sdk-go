@@ -5,10 +5,10 @@ import (
 	"os"
 	"time"
 
-	"github.com/wptechinnovation/worldpay-within-sdk/sdkcore/wpwithin"
-	"github.com/wptechinnovation/worldpay-within-sdk/sdkcore/wpwithin/psp"
-	"github.com/wptechinnovation/worldpay-within-sdk/sdkcore/wpwithin/psp/onlineworldpay"
-	"github.com/wptechinnovation/worldpay-within-sdk/sdkcore/wpwithin/types"
+	"github.com/wptechinnovation/wpw-sdk-go/wpwithin"
+	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/psp"
+	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/psp/onlineworldpay"
+	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/types"
 )
 
 var wpw wpwithin.WPWithin

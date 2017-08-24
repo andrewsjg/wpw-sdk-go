@@ -4,8 +4,8 @@ import (
 	"errors"
 	"fmt"
 
-	devclienttypes "github.com/wptechinnovation/worldpay-within-sdk/applications/dev-client/types"
-	"github.com/wptechinnovation/worldpay-within-sdk/sdkcore/wpwithin/types"
+	devclienttypes "github.com/wptechinnovation/wpw-sdk-go/applications/dev-client/types"
+	"github.com/wptechinnovation/wpw-sdk-go/sdkcore/wpwithin/types"
 )
 
 func mNewProducer() error {

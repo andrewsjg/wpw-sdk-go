@@ -7,8 +7,8 @@ import (
 	"strconv"
 	"strings"
 
-	devclienttypes "github.com/wptechinnovation/worldpay-within-sdk/applications/dev-client/types"
-	"github.com/wptechinnovation/worldpay-within-sdk/sdkcore/wpwithin"
+	devclienttypes "github.com/wptechinnovation/wpw-sdk-go/applications/dev-client/types"
+	"github.com/wptechinnovation/wpw-sdk-go/wpwithin"
 )
 
 var sdk wpwithin.WPWithin

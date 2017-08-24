@@ -5,10 +5,10 @@ import (
 	"fmt"
 
 	log "github.com/Sirupsen/logrus"
-	devclienttypes "github.com/wptechinnovation/worldpay-within-sdk/applications/dev-client/types"
-	"github.com/wptechinnovation/worldpay-within-sdk/sdkcore/wpwithin/psp"
-	"github.com/wptechinnovation/worldpay-within-sdk/sdkcore/wpwithin/psp/onlineworldpay"
-	"github.com/wptechinnovation/worldpay-within-sdk/sdkcore/wpwithin/types"
+	devclienttypes "github.com/wptechinnovation/wpw-sdk-go/applications/dev-client/types"
+	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/psp"
+	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/psp/onlineworldpay"
+	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/types"
 )
 
 func mPrepareNewConsumer() error {

@@ -7,7 +7,7 @@ import (
 
 	"git.apache.org/thrift.git/lib/go/thrift"
 	log "github.com/Sirupsen/logrus"
-	"github.com/wptechinnovation/worldpay-within-sdk/sdkcore/wpwithin"
+	"github.com/wptechinnovation/wpw-sdk-go/wpwithin"
 	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/rpc/wpthrift/gen-go/wpthrift"
 	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/types/event"
 )
