@@ -6,7 +6,7 @@ import (
 	"os"
 	"time"
 
-	log "github.com/Sirupsen/logrus"
+	log "github.com/sirupsen/logrus"
 	"github.com/wptechinnovation/wpw-sdk-go/applications/dev-client/types"
 	"github.com/wptechinnovation/wpw-sdk-go/wpwithin"
 	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/psp"

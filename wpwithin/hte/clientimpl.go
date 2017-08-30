@@ -8,7 +8,7 @@ import (
 
 	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/types"
 
-	log "github.com/Sirupsen/logrus"
+	log "github.com/sirupsen/logrus"
 )
 
 // Concrete implementation of HTEClient

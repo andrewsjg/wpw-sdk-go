@@ -16,7 +16,7 @@ import (
 	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/utils"
 	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/utils/wslog"
 
-	log "github.com/Sirupsen/logrus"
+	log "github.com/sirupsen/logrus"
 )
 
 // Factory to allow easy creation of
