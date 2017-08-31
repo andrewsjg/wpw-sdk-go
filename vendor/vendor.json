@@ -3,25 +3,6 @@
 	"ignore": "test",
 	"package": [
 		{
-			"checksumSHA1": "LmH0hEoeO2ICrl4FaOaP0HFmpzk=",
-			"path": "git.apache.org/thrift.git/lib/go/thrift",
-			"revision": "4aaa92ece8503a6da9bc6701604f69acf2b99d07",
-			"revisionTime": "2017-06-25T15:26:23Z"
-		},
-		{
-			"checksumSHA1": "7BJHSzxTw+BYxBgjr3RXmd95EjQ=",
-			"path": "github.com/apache/thrift/lib/go",
-			"revision": "b2a4d4ae21c789b689dd162deb819665567f481c",
-			"revisionTime": "2016-04-04T18:25:03Z",
-			"version": "=0.10.0",
-			"versionExact": "0.10.0"
-		},
-		{
-			"path": "github.com/apache/thrift/lib/go/",
-			"revision": "context=0.10.0",
-			"version": "context=0.10.0"
-		},
-		{
 			"checksumSHA1": "D1BVROe0MVJEDgm++mv1iVQ6+80=",
 			"path": "github.com/gorilla/mux",
 			"revision": "8c683ee571b6ee7ffc9f1cafd13103c422e71cbf",
