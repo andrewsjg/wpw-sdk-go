@@ -782,7 +782,7 @@ func (wp *wpWithinImpl) SetEventHandler(handler event.Handler) error {
 
 func (wp *wpWithinImpl) CloseRPCAgent() error {
 
-	log.Debug("wpwithin.wpwithinimpl calling closeRPCAgent()")
+	log.Debug("wpwithin.wpwithinimpl calling CloseRPCAgent()")
 
 	os.Exit(0)
 	return nil
