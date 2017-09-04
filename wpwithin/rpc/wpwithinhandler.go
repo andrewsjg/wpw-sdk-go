@@ -461,7 +461,7 @@ func (wp *WPWithinHandler) EndServiceDelivery(serviceID int32, serviceDeliveryTo
 func (wp *WPWithinHandler) CloseRPCAgent() error {
 
 	log.Debug("RPC.WPWithinHandler.CloseRPCAgent()")
-	wp.CloseRPCAgent()
+	wp.wpwithin.CloseRPCAgent()
 	return nil
 }
 
