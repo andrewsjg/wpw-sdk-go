@@ -3,6 +3,7 @@ package wpwithin
 import (
 	"errors"
 	"fmt"
+	"os"
 	"runtime/debug"
 	"strings"
 	"time"
@@ -39,6 +40,7 @@ type WPWithin interface {
 	BeginServiceDelivery(serviceID int, serviceDeliveryToken types.ServiceDeliveryToken, unitsToSupply int) (types.ServiceDeliveryToken, error)
 	EndServiceDelivery(serviceID int, serviceDeliveryToken types.ServiceDeliveryToken, unitsReceived int) (types.ServiceDeliveryToken, error)
 	SetEventHandler(handler event.Handler) error
+	CloseRPCAgent() error
 }
 
 // Initialise Initialise the SDK - Returns an implementation of WPWithin
@@ -432,8 +434,7 @@ func (wp *wpWithinImpl) StartServiceBroadcast(timeoutMillis int) error {
 		URLPrefix:         wp.core.HTE.URLPrefix(),
 		PortNumber:        wp.core.HTE.Port(),
 		Scheme:            wp.core.HTE.Scheme(),
-		DeviceName:		   wp.core.Device.Name,
-
+		DeviceName:        wp.core.Device.Name,
 	}
 	log.Debug("Did construct types.BroadcastMessage")
 
@@ -776,6 +777,14 @@ func (wp *wpWithinImpl) SetEventHandler(handler event.Handler) error {
 
 	wp.core.EventHandler = handler
 
+	return nil
+}
+
+func (wp *wpWithinImpl) CloseRPCAgent() error {
+
+	log.Debug("wpwithin.wpwithinimpl calling closeRPCAgent()")
+
+	os.Exit(0)
 	return nil
 }
 

@@ -106,7 +106,7 @@ func NewEventSender(cfg Configuration) (event.Handler, error) {
 
 		return nil, err
 	}
-	transport, _ = transportFactory.GetTransport(transport)
+	transport = transportFactory.GetTransport(transport)
 	log.Warn("TODO: Transport not going to close..")
 	// TODO - How to close this later?
 	//	defer transport.Close()
