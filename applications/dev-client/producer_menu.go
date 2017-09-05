@@ -5,7 +5,7 @@ import (
 	"fmt"
 
 	devclienttypes "github.com/wptechinnovation/wpw-sdk-go/applications/dev-client/types"
-	"github.com/wptechinnovation/wpw-sdk-go/sdkcore/wpwithin/types"
+	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/types"
 )
 
 func mNewProducer() error {

@@ -2,9 +2,10 @@ package main
 
 import (
 	"fmt"
-	log "github.com/Sirupsen/logrus"
-	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/types"
 	"os"
+
+	log "github.com/sirupsen/logrus"
+	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/types"
 )
 
 var hceCard types.HCECard

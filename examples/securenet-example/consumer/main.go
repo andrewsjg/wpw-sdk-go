@@ -5,7 +5,7 @@ import (
 	"os"
 	"time"
 
-	log "github.com/Sirupsen/logrus"
+	log "github.com/sirupsen/logrus"
 	"github.com/wptechinnovation/wpw-sdk-go/wpwithin"
 	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/psp"
 	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/psp/securenet"

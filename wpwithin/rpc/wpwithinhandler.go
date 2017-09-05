@@ -1,7 +1,7 @@
 package rpc
 
 import (
-	log "github.com/Sirupsen/logrus"
+	log "github.com/sirupsen/logrus"
 	"github.com/wptechinnovation/wpw-sdk-go/wpwithin"
 	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/rpc/wpthrift/gen-go/wpthrift_types"
 	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/types"
@@ -224,7 +224,7 @@ func (wp *WPWithinHandler) DeviceDiscovery(timeoutMillis int32) (r map[*wpthrift
 			ServerId:          gSvcMsg.ServerID,
 			UrlPrefix:         gSvcMsg.URLPrefix,
 			Scheme:            gSvcMsg.Scheme,
-			DeviceName:		   gSvcMsg.DeviceName,
+			DeviceName:        gSvcMsg.DeviceName,
 		}
 
 		result[tmp] = struct{}{}
@@ -455,6 +455,14 @@ func (wp *WPWithinHandler) EndServiceDelivery(serviceID int32, serviceDeliveryTo
 	}
 
 	return convertDeliveryTokenToThrift(_sdt)
+}
+
+// call closeRPCAgent to close RPC
+func (wp *WPWithinHandler) CloseRPCAgent() error {
+
+	log.Debug("RPC.WPWithinHandler.CloseRPCAgent()")
+	wp.wpwithin.CloseRPCAgent()
+	return nil
 }
 
 func convertThriftServiceToNative(tSvc *wpthrift_types.Service) *types.Service {

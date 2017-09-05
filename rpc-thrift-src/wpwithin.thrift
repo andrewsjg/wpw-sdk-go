@@ -33,6 +33,7 @@ service WPWithin {
    wptypes.PaymentResponse makePayment(1: wptypes.TotalPriceResponse request) throws (1: wptypes.Error err),
    wptypes.ServiceDeliveryToken beginServiceDelivery(1: i32 serviceID, 2: wptypes.ServiceDeliveryToken serviceDeliveryToken, 3: i32 unitsToSupply) throws (1: wptypes.Error err),
    wptypes.ServiceDeliveryToken endServiceDelivery(1: i32 serviceID, 2: wptypes.ServiceDeliveryToken serviceDeliveryToken, 3: i32 unitsReceived) throws (1: wptypes.Error err),
+   void CloseRPCAgent()
 }
 
 /**

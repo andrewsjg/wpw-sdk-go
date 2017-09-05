@@ -10,7 +10,7 @@ import (
 	"strconv"
 	"strings"
 
-	log "github.com/Sirupsen/logrus"
+	log "github.com/sirupsen/logrus"
 	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/psp"
 	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/psp/onlineworldpay/types"
 	wpwithin_types "github.com/wptechinnovation/wpw-sdk-go/wpwithin/types"
