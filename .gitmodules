@@ -1,0 +1,3 @@
+[submodule "wpw-sdk-thrift"]
+	path = wpw-sdk-thrift
+	url = https://github.com/WPTechInnovation/wpw-sdk-thrift.git
