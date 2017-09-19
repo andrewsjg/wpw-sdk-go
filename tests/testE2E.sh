@@ -57,7 +57,7 @@ function cleanup() {
 	echo -e "${RED}error occured, cleanup, see ${NC}"
 	if [[ -n "${consumer_pid}" ]]; then
 		# vfy whether consumer is running
-		if ps | grep " ${consumer_pid} " > /dev/null 2>&1
+		if ps -p ${consumer_pid} > /dev/null 2>&1
 		then
 			echo "killing consumer"
 			kill ${consumer_pid}
@@ -66,7 +66,7 @@ function cleanup() {
 	
 	if [[ -n "${producer_pid}" ]]; then
 		# vfy whether producer is running
-		if ps | grep " ${producer_pid} " > /dev/null 2>&1
+		if ps -p ${producer_pid} > /dev/null 2>&1
 		then
 			echo "killing producer"
 			kill ${consumer_pid}
@@ -76,13 +76,10 @@ function cleanup() {
 }
 
 function waitforpid() {
-#	for pid in "$@"; do
-        #while kill -0 "$pid"; do
-		while ps -p "$1" > /dev/null 2>&1; do
-			echo -n "."
-            sleep 2
-        done
-#    done
+	while ps -p "$1" > /dev/null 2>&1; do
+		echo -n "."
+		sleep 2
+	done
 }
 
 trap cleanup SIGINT
@@ -168,7 +165,7 @@ echo -n "*** Wait 5s. for producer to start: "
 sleep 5
 
 # vfy that producer is not gone
-if ! ps | grep " $producer_pid " | grep -v grep > /dev/null 2>&1
+if ! ps -p ${producer_pid} > /dev/null 2>&1
 then
 	echo -e "${RED}error, producer gone${NC}"
 	exit 1
@@ -196,7 +193,7 @@ fi
 
 # producer should be working still
 echo -n "*** Verify producer still working: "
-if ! ps | grep " $producer_pid " | grep -v grep > /dev/null 2>&1
+if ! ps -p ${producer_pid} > /dev/null 2>&1
 then
 	echo -e "${RED}error, producer gone${NC}"
 	cleanup
@@ -210,7 +207,7 @@ kill ${producer_pid}
 
 echo -n "*** Verify producer is stopped: "
 sleep 3
-if ps | grep " $producer_pid " | grep -v grep > /dev/null 2>&1
+if ps -p ${producer_pid} > /dev/null 2>&1
 then
 	echo -e "${RED}error, producer is still alive${NC}"
 	cleanup
