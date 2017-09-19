@@ -34,23 +34,24 @@ function usage() {
 
 function build() {
 	# build producer
+	echo -n "* Build producer: "
 	cd ${PRODUCER_PATH}
 	go build
 	if [[ $? != 0 ]]; then
 		echo -e "${RED}error, producer build failed${NC}"
 		exit 1
 	fi
+	echo -e "${GREEN}ok${NC}"
 
-	echo -n "."
 	# build consumer
+	echo -n "* Build consumer: "
 	cd ${CONSUMER_PATH}
 	go build
 	if [[ $? != 0 ]]; then
 		echo -e "${RED}error, consumer build failed${NC}"
 		exit 1
 	fi
-	echo -n "."
-	echo -e " ${GREEN}ok${NC}"
+	echo -e "${GREEN}ok${NC}"
 }
 
 function cleanup() {
@@ -63,7 +64,7 @@ function cleanup() {
 			kill ${consumer_pid}
 		fi
 	fi
-	
+
 	if [[ -n "${producer_pid}" ]]; then
 		# vfy whether producer is running
 		if ps -p ${producer_pid} > /dev/null 2>&1
@@ -118,7 +119,7 @@ if [[ -z ${GOPATH} ]]; then
 	echo -e "${RED}error, GOPATH is not set${NC}"
 	exit 1
 else
-	echo -e " ${GOPATH}: ${GREEN}ok${NC}"
+	echo -e "${GOPATH}: ${GREEN}ok${NC}"
 fi
 
 # vfy go-lang is installed, consumer, producer paths exists
@@ -150,19 +151,23 @@ else
 	echo -e "${GREEN}ok${NC}"
 fi
 
-# vfy that ports are not occupied
-echo -n "*** Build consumer and producer: "
+# build producer and consumer
 build
 
 # start producer in background
 cd ${PRODUCER_PATH}
-echo "* Start producer."
+echo -n "* Start producer: "
 (./sample-producer-callbacks > "${PRODUCER_OUT}" 2>&1) &
 producer_pid=$!
+if ps -p ${producer_pid} > /dev/null 2>&1; then
+	echo -e "${GREEN}ok${NC}"
+else
+	echo -e "${RED}error, failed to start producer${NC}"
+fi
 
-# wait 5 s.
-echo -n "*** Wait 5s. for producer to start: "
-sleep 5
+# wait 3 s.
+echo -n "*** Wait (3s) for producer to initialize: "
+sleep 3
 
 # vfy that producer is not gone
 if ! ps -p ${producer_pid} > /dev/null 2>&1
@@ -174,11 +179,15 @@ else
 fi
 
 # start concumer in background
-echo "* Start consumer."
+echo -n "* Start consumer: "
 cd ${CONSUMER_PATH}
 (./sample-consumer > "${CONSUMER_OUT}" 2>&1) &
 consumer_pid=$!
-
+if ps -p ${consumer_pid} > /dev/null 2>&1; then
+	echo -e "${GREEN}ok${NC}"
+else
+	echo -e "${RED}error, failed to start consumer${NC}"
+fi
 
 # wait for consumer
 echo -n "*** Wait for consumer to finish: "
@@ -193,7 +202,7 @@ else
 fi
 
 # producer should be working still
-echo -n "*** Verify producer still working: "
+echo -n "*** Verify if producer is still working: "
 if ! ps -p ${producer_pid} > /dev/null 2>&1
 then
 	echo -e "${RED}error, producer gone${NC}"
@@ -203,10 +212,10 @@ else
 fi
 
 # stop producer
-echo "* Stop producer gently."
+echo -n "* Stop producer: "
 kill ${producer_pid}
 
-echo -n "*** Verify producer is stopped: "
+#echo -n "*** Verify producer is stopped: "
 sleep 3
 if ps -p ${producer_pid} > /dev/null 2>&1
 then
