@@ -1,7 +1,5 @@
 #!/bin/bash
 
-
-
 # colors
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -92,19 +90,19 @@ trap cleanup SIGTERM
 
 # read startup parameters
 while getopts "o:h" o; do
-    case "${o}" in
-        o)
-            o=${OPTARG}
-            ;;
+	case "${o}" in
+		o)
+			o=${OPTARG}
+			;;
 		n)
 			RED=""
 			GREEN=""
 			NC=""
 			;;
-        *)
-            usage
-            ;;
-    esac
+		*)
+			usage
+			;;
+	esac
 done
 shift $((OPTIND-1))
 
@@ -138,7 +136,7 @@ fi
 
 # vfy any other consumer / produer is not working
 echo -n "*** Verify other producer is not running: "
-if ps -ef | grep "${PRODUCER_NAME}" > /dev/null 2>&1
+if ps aux | grep "${PRODUCER_NAME}" | grep -v grep > /dev/null 2>&1
 then
 	echo -e "${RED}error, other producer is running${NC}"
 	exit 1
@@ -147,7 +145,7 @@ else
 fi
 
 echo -n "*** Verify other customer is not running: "
-if ps -ef | grep "${CONSUMER_NAME}" > /dev/null 2>&1
+if ps aux | grep "${CONSUMER_NAME}" | grep -v grep > /dev/null 2>&1
 then
 	echo -e "${RED}error, other customer is running${NC}"
 	exit 1
@@ -170,7 +168,7 @@ echo -n "*** Wait 5s. for producer to start: "
 sleep 5
 
 # vfy that producer is not gone
-if ! ps | grep " $producer_pid " > /dev/null 2>&1
+if ! ps | grep " $producer_pid " | grep -v grep > /dev/null 2>&1
 then
 	echo -e "${RED}error, producer gone${NC}"
 	exit 1
@@ -198,7 +196,7 @@ fi
 
 # producer should be working still
 echo -n "*** Verify producer still working: "
-if ! ps | grep " $producer_pid " > /dev/null 2>&1
+if ! ps | grep " $producer_pid " | grep -v grep > /dev/null 2>&1
 then
 	echo -e "${RED}error, producer gone${NC}"
 	cleanup
@@ -212,7 +210,7 @@ kill ${producer_pid}
 
 echo -n "*** Verify producer is stopped: "
 sleep 3
-if ps | grep " $producer_pid " > /dev/null 2>&1
+if ps | grep " $producer_pid " | grep -v grep > /dev/null 2>&1
 then
 	echo -e "${RED}error, producer is still alive${NC}"
 	cleanup
