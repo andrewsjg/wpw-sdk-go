@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 	"time"
-	
+
 	log "github.com/sirupsen/logrus"
 	"github.com/wptechinnovation/wpw-sdk-go/wpwithin"
 	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/psp"
@@ -17,11 +17,17 @@ var wpw wpwithin.WPWithin
 func convertToMoneyString(amt int, currencyCode string) string {
 	currencyString := ""
 	currencyStringAfter := ""
-	if "GBP" == currencyCode { currencyString = "£ " }
-	if "USD" == currencyCode { currencyString = "$ " }
-	if "RON" == currencyCode { currencyStringAfter = " LEU" }
+	if "GBP" == currencyCode {
+		currencyString = "£ "
+	}
+	if "USD" == currencyCode {
+		currencyString = "$ "
+	}
+	if "RON" == currencyCode {
+		currencyStringAfter = " LEU"
+	}
 
-	return fmt.Sprintf(currencyString + "%.2f" + currencyStringAfter, float64(amt/100))
+	return fmt.Sprintf(currencyString+"%.2f"+currencyStringAfter, float64(amt/100))
 }
 
 func main() {
@@ -45,7 +51,7 @@ func main() {
 		if len(serviceMessages) == 0 {
 
 			fmt.Println("Quitting...")
-			os.Exit(0)
+			os.Exit(2)
 		}
 	}
 
@@ -82,7 +88,7 @@ func main() {
 		if len(services) == 0 {
 
 			fmt.Println("Quitting...")
-			os.Exit(0)
+			os.Exit(2)
 		}
 	}
 
@@ -108,7 +114,7 @@ func main() {
 		if len(prices) == 0 {
 
 			fmt.Println("Quitting...")
-			os.Exit(0)
+			os.Exit(2)
 		}
 	}
 	fmt.Println()
