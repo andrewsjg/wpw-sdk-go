@@ -189,6 +189,7 @@ if [[ ${consumer_status} == 0 ]]; then
 	echo -e " ${GREEN}ok${NC}"
 else
 	echo -e " ${RED}error, consumer exit with ${consumer_status}${NC}"
+	cleanup
 fi
 
 # producer should be working still
