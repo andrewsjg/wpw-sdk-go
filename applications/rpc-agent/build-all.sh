@@ -9,7 +9,7 @@ while getopts ":v:" opt; do
   esac
 done
 
-if [ $version == "" ]; then
+if [[ -z "${version}" ]] ; then
   echo "-v (build version) is required"
   exit
 fi
@@ -20,9 +20,9 @@ mkdir -p build
 
 echo
 echo
-echo Build rpc-agent for all supported platforms..
+echo "Build rpc-agent for all supported platforms.."
 echo
-echo Will set version = $version and date = `date -u +%d-%m-%Y@%H:%M:%S`
+echo "Will set version = $version and date = `date -u +%d-%m-%Y@%H:%M:%S`"
 echo
 echo "Target LINUX, 32bit"
 env GOOS=linux GOARCH=386 go build -ldflags "-X main.applicationVersion=$version -X main.applicationBuildDate=`date -u +%d-%m-%Y@%H:%M:%S` -X main.applicationPlatform=LINUX_386" -o build/rpc-agent-linux-386 main.go
