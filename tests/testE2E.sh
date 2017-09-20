@@ -123,7 +123,7 @@ else
 	# split the GOPATH if required and verify directory exists
 	IFS=":"
 	for splitted_path in ${GOPATH} ; do
-		if [ -d "${splitted_path}" ] ; then
+		if [[ -d "${splitted_path}/${CONSUMER_PATH}" ]] ; then
 			PROJECT_PATH="${splitted_path}"
 			break
 		fi
