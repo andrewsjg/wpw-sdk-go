@@ -3,19 +3,15 @@ package core
 import (
 	"testing"
 
+	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/hte"
 	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/psp"
-	//"github.com/wptechinnovation/wpw-sdk-go/wpwithin/psp/onlineworldpay"
 	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/servicediscovery"
 	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/types"
-
-	//"github.com/wptechinnovation/wpw-sdk-go/wpwithin/configuration"
-	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/hte"
-	//"github.com/wptechinnovation/wpw-sdk-go/wpwithin/types/event"
 )
 
 var device types.Device
 
-func init() {
+func initializeDevice() {
 
 	service1 := &types.Service{
 		ID:          1,
@@ -77,6 +73,7 @@ func TestNewCore(t *testing.T) {
 
 func TestSetDevice(t *testing.T) {
 
+	initializeDevice()
 	core, _ := NewCore()
 	core.SetDevice(&device)
 
