@@ -56,7 +56,6 @@ function build {
 }
 
 function cleanup {
-	echo -e "${RED}error occured, cleanup, see ${NC}"
 	if [[ -n "${consumer_pid}" ]]; then
 		# vfy whether consumer is running
 		if ps -p ${consumer_pid} > /dev/null 2>&1
@@ -211,6 +210,9 @@ echo -n "*** Wait for consumer to finish: "
 waitforpid ${consumer_pid}
 wait ${consumer_pid}
 consumer_status=$?
+# clear the PID value to avoid killing consumer again in cleanup
+consumer_pid=""
+
 if [[ ${consumer_status} == 0 ]]; then
 	echo -e " ${GREEN}ok${NC}"
 else

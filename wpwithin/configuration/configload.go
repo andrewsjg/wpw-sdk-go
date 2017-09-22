@@ -26,6 +26,7 @@ func Load(configPath string) (Configuration, error) {
 
 		return Configuration{}, err
 	}
+	defer file.Close()
 
 	decoder := json.NewDecoder(file)
 
