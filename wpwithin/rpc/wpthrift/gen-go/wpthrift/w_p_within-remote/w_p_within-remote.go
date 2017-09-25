@@ -4,494 +4,495 @@
 package main
 
 import (
-        "flag"
-        "fmt"
-        "math"
-        "net"
-        "net/url"
-        "os"
-        "strconv"
-        "strings"
-        "git.apache.org/thrift.git/lib/go/thrift"
-	"wpthrift_types"
-        "wpthrift"
+	"flag"
+	"fmt"
+	"math"
+	"net"
+	"net/url"
+	"os"
+	"strconv"
+	"strings"
+
+	"git.apache.org/thrift.git/lib/go/thrift"
+	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/rpc/wpthrift/gen-go/wpthrift"
+	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/rpc/wpthrift/gen-go/wpthrift_types"
 )
 
 var _ = wpthrift_types.GoUnusedProtection__
 
 func Usage() {
-  fmt.Fprintln(os.Stderr, "Usage of ", os.Args[0], " [-h host:port] [-u url] [-f[ramed]] function [arg1 [arg2...]]:")
-  flag.PrintDefaults()
-  fmt.Fprintln(os.Stderr, "\nFunctions:")
-  fmt.Fprintln(os.Stderr, "  void setup(string name, string description)")
-  fmt.Fprintln(os.Stderr, "  void addService(Service svc)")
-  fmt.Fprintln(os.Stderr, "  void removeService(Service svc)")
-  fmt.Fprintln(os.Stderr, "  void initConsumer(string scheme, string hostname, i32 port, string urlPrefix, string clientID, HCECard hceCard,  pspConfig)")
-  fmt.Fprintln(os.Stderr, "  void initProducer( pspConfig)")
-  fmt.Fprintln(os.Stderr, "  Device getDevice()")
-  fmt.Fprintln(os.Stderr, "  void startServiceBroadcast(i32 timeoutMillis)")
-  fmt.Fprintln(os.Stderr, "  void stopServiceBroadcast()")
-  fmt.Fprintln(os.Stderr, "   deviceDiscovery(i32 timeoutMillis)")
-  fmt.Fprintln(os.Stderr, "   requestServices()")
-  fmt.Fprintln(os.Stderr, "   getServicePrices(i32 serviceId)")
-  fmt.Fprintln(os.Stderr, "  TotalPriceResponse selectService(i32 serviceId, i32 numberOfUnits, i32 priceId)")
-  fmt.Fprintln(os.Stderr, "  PaymentResponse makePayment(TotalPriceResponse request)")
-  fmt.Fprintln(os.Stderr, "  ServiceDeliveryToken beginServiceDelivery(i32 serviceID, ServiceDeliveryToken serviceDeliveryToken, i32 unitsToSupply)")
-  fmt.Fprintln(os.Stderr, "  ServiceDeliveryToken endServiceDelivery(i32 serviceID, ServiceDeliveryToken serviceDeliveryToken, i32 unitsReceived)")
-  fmt.Fprintln(os.Stderr, "  void CloseRPCAgent()")
-  fmt.Fprintln(os.Stderr)
-  os.Exit(0)
+	fmt.Fprintln(os.Stderr, "Usage of ", os.Args[0], " [-h host:port] [-u url] [-f[ramed]] function [arg1 [arg2...]]:")
+	flag.PrintDefaults()
+	fmt.Fprintln(os.Stderr, "\nFunctions:")
+	fmt.Fprintln(os.Stderr, "  void setup(string name, string description)")
+	fmt.Fprintln(os.Stderr, "  void addService(Service svc)")
+	fmt.Fprintln(os.Stderr, "  void removeService(Service svc)")
+	fmt.Fprintln(os.Stderr, "  void initConsumer(string scheme, string hostname, i32 port, string urlPrefix, string clientID, HCECard hceCard,  pspConfig)")
+	fmt.Fprintln(os.Stderr, "  void initProducer( pspConfig)")
+	fmt.Fprintln(os.Stderr, "  Device getDevice()")
+	fmt.Fprintln(os.Stderr, "  void startServiceBroadcast(i32 timeoutMillis)")
+	fmt.Fprintln(os.Stderr, "  void stopServiceBroadcast()")
+	fmt.Fprintln(os.Stderr, "   deviceDiscovery(i32 timeoutMillis)")
+	fmt.Fprintln(os.Stderr, "   requestServices()")
+	fmt.Fprintln(os.Stderr, "   getServicePrices(i32 serviceId)")
+	fmt.Fprintln(os.Stderr, "  TotalPriceResponse selectService(i32 serviceId, i32 numberOfUnits, i32 priceId)")
+	fmt.Fprintln(os.Stderr, "  PaymentResponse makePayment(TotalPriceResponse request)")
+	fmt.Fprintln(os.Stderr, "  ServiceDeliveryToken beginServiceDelivery(i32 serviceID, ServiceDeliveryToken serviceDeliveryToken, i32 unitsToSupply)")
+	fmt.Fprintln(os.Stderr, "  ServiceDeliveryToken endServiceDelivery(i32 serviceID, ServiceDeliveryToken serviceDeliveryToken, i32 unitsReceived)")
+	fmt.Fprintln(os.Stderr, "  void CloseRPCAgent()")
+	fmt.Fprintln(os.Stderr)
+	os.Exit(0)
 }
 
 func main() {
-  flag.Usage = Usage
-  var host string
-  var port int
-  var protocol string
-  var urlString string
-  var framed bool
-  var useHttp bool
-  var parsedUrl url.URL
-  var trans thrift.TTransport
-  _ = strconv.Atoi
-  _ = math.Abs
-  flag.Usage = Usage
-  flag.StringVar(&host, "h", "localhost", "Specify host and port")
-  flag.IntVar(&port, "p", 9090, "Specify port")
-  flag.StringVar(&protocol, "P", "binary", "Specify the protocol (binary, compact, simplejson, json)")
-  flag.StringVar(&urlString, "u", "", "Specify the url")
-  flag.BoolVar(&framed, "framed", false, "Use framed transport")
-  flag.BoolVar(&useHttp, "http", false, "Use http")
-  flag.Parse()
-  
-  if len(urlString) > 0 {
-    parsedUrl, err := url.Parse(urlString)
-    if err != nil {
-      fmt.Fprintln(os.Stderr, "Error parsing URL: ", err)
-      flag.Usage()
-    }
-    host = parsedUrl.Host
-    useHttp = len(parsedUrl.Scheme) <= 0 || parsedUrl.Scheme == "http"
-  } else if useHttp {
-    _, err := url.Parse(fmt.Sprint("http://", host, ":", port))
-    if err != nil {
-      fmt.Fprintln(os.Stderr, "Error parsing URL: ", err)
-      flag.Usage()
-    }
-  }
-  
-  cmd := flag.Arg(0)
-  var err error
-  if useHttp {
-    trans, err = thrift.NewTHttpClient(parsedUrl.String())
-  } else {
-    portStr := fmt.Sprint(port)
-    if strings.Contains(host, ":") {
-           host, portStr, err = net.SplitHostPort(host)
-           if err != nil {
-                   fmt.Fprintln(os.Stderr, "error with host:", err)
-                   os.Exit(1)
-           }
-    }
-    trans, err = thrift.NewTSocket(net.JoinHostPort(host, portStr))
-    if err != nil {
-      fmt.Fprintln(os.Stderr, "error resolving address:", err)
-      os.Exit(1)
-    }
-    if framed {
-      trans = thrift.NewTFramedTransport(trans)
-    }
-  }
-  if err != nil {
-    fmt.Fprintln(os.Stderr, "Error creating transport", err)
-    os.Exit(1)
-  }
-  defer trans.Close()
-  var protocolFactory thrift.TProtocolFactory
-  switch protocol {
-  case "compact":
-    protocolFactory = thrift.NewTCompactProtocolFactory()
-    break
-  case "simplejson":
-    protocolFactory = thrift.NewTSimpleJSONProtocolFactory()
-    break
-  case "json":
-    protocolFactory = thrift.NewTJSONProtocolFactory()
-    break
-  case "binary", "":
-    protocolFactory = thrift.NewTBinaryProtocolFactoryDefault()
-    break
-  default:
-    fmt.Fprintln(os.Stderr, "Invalid protocol specified: ", protocol)
-    Usage()
-    os.Exit(1)
-  }
-  client := wpthrift.NewWPWithinClientFactory(trans, protocolFactory)
-  if err := trans.Open(); err != nil {
-    fmt.Fprintln(os.Stderr, "Error opening socket to ", host, ":", port, " ", err)
-    os.Exit(1)
-  }
-  
-  switch cmd {
-  case "setup":
-    if flag.NArg() - 1 != 2 {
-      fmt.Fprintln(os.Stderr, "Setup requires 2 args")
-      flag.Usage()
-    }
-    argvalue0 := flag.Arg(1)
-    value0 := argvalue0
-    argvalue1 := flag.Arg(2)
-    value1 := argvalue1
-    fmt.Print(client.Setup(value0, value1))
-    fmt.Print("\n")
-    break
-  case "addService":
-    if flag.NArg() - 1 != 1 {
-      fmt.Fprintln(os.Stderr, "AddService requires 1 args")
-      flag.Usage()
-    }
-    arg43 := flag.Arg(1)
-    mbTrans44 := thrift.NewTMemoryBufferLen(len(arg43))
-    defer mbTrans44.Close()
-    _, err45 := mbTrans44.WriteString(arg43)
-    if err45 != nil {
-      Usage()
-      return
-    }
-    factory46 := thrift.NewTSimpleJSONProtocolFactory()
-    jsProt47 := factory46.GetProtocol(mbTrans44)
-    argvalue0 := wpthrift_types.NewService()
-    err48 := argvalue0.Read(jsProt47)
-    if err48 != nil {
-      Usage()
-      return
-    }
-    value0 := argvalue0
-    fmt.Print(client.AddService(value0))
-    fmt.Print("\n")
-    break
-  case "removeService":
-    if flag.NArg() - 1 != 1 {
-      fmt.Fprintln(os.Stderr, "RemoveService requires 1 args")
-      flag.Usage()
-    }
-    arg49 := flag.Arg(1)
-    mbTrans50 := thrift.NewTMemoryBufferLen(len(arg49))
-    defer mbTrans50.Close()
-    _, err51 := mbTrans50.WriteString(arg49)
-    if err51 != nil {
-      Usage()
-      return
-    }
-    factory52 := thrift.NewTSimpleJSONProtocolFactory()
-    jsProt53 := factory52.GetProtocol(mbTrans50)
-    argvalue0 := wpthrift_types.NewService()
-    err54 := argvalue0.Read(jsProt53)
-    if err54 != nil {
-      Usage()
-      return
-    }
-    value0 := argvalue0
-    fmt.Print(client.RemoveService(value0))
-    fmt.Print("\n")
-    break
-  case "initConsumer":
-    if flag.NArg() - 1 != 7 {
-      fmt.Fprintln(os.Stderr, "InitConsumer requires 7 args")
-      flag.Usage()
-    }
-    argvalue0 := flag.Arg(1)
-    value0 := argvalue0
-    argvalue1 := flag.Arg(2)
-    value1 := argvalue1
-    tmp2, err57 := (strconv.Atoi(flag.Arg(3)))
-    if err57 != nil {
-      Usage()
-      return
-    }
-    argvalue2 := int32(tmp2)
-    value2 := argvalue2
-    argvalue3 := flag.Arg(4)
-    value3 := argvalue3
-    argvalue4 := flag.Arg(5)
-    value4 := argvalue4
-    arg60 := flag.Arg(6)
-    mbTrans61 := thrift.NewTMemoryBufferLen(len(arg60))
-    defer mbTrans61.Close()
-    _, err62 := mbTrans61.WriteString(arg60)
-    if err62 != nil {
-      Usage()
-      return
-    }
-    factory63 := thrift.NewTSimpleJSONProtocolFactory()
-    jsProt64 := factory63.GetProtocol(mbTrans61)
-    argvalue5 := wpthrift_types.NewHCECard()
-    err65 := argvalue5.Read(jsProt64)
-    if err65 != nil {
-      Usage()
-      return
-    }
-    value5 := argvalue5
-    arg66 := flag.Arg(7)
-    mbTrans67 := thrift.NewTMemoryBufferLen(len(arg66))
-    defer mbTrans67.Close()
-    _, err68 := mbTrans67.WriteString(arg66)
-    if err68 != nil { 
-      Usage()
-      return
-    }
-    factory69 := thrift.NewTSimpleJSONProtocolFactory()
-    jsProt70 := factory69.GetProtocol(mbTrans67)
-    containerStruct6 := wpthrift.NewWPWithinInitConsumerArgs()
-    err71 := containerStruct6.ReadField7(jsProt70)
-    if err71 != nil {
-      Usage()
-      return
-    }
-    argvalue6 := containerStruct6.PspConfig
-    value6 := argvalue6
-    fmt.Print(client.InitConsumer(value0, value1, value2, value3, value4, value5, value6))
-    fmt.Print("\n")
-    break
-  case "initProducer":
-    if flag.NArg() - 1 != 1 {
-      fmt.Fprintln(os.Stderr, "InitProducer requires 1 args")
-      flag.Usage()
-    }
-    arg72 := flag.Arg(1)
-    mbTrans73 := thrift.NewTMemoryBufferLen(len(arg72))
-    defer mbTrans73.Close()
-    _, err74 := mbTrans73.WriteString(arg72)
-    if err74 != nil { 
-      Usage()
-      return
-    }
-    factory75 := thrift.NewTSimpleJSONProtocolFactory()
-    jsProt76 := factory75.GetProtocol(mbTrans73)
-    containerStruct0 := wpthrift.NewWPWithinInitProducerArgs()
-    err77 := containerStruct0.ReadField1(jsProt76)
-    if err77 != nil {
-      Usage()
-      return
-    }
-    argvalue0 := containerStruct0.PspConfig
-    value0 := argvalue0
-    fmt.Print(client.InitProducer(value0))
-    fmt.Print("\n")
-    break
-  case "getDevice":
-    if flag.NArg() - 1 != 0 {
-      fmt.Fprintln(os.Stderr, "GetDevice requires 0 args")
-      flag.Usage()
-    }
-    fmt.Print(client.GetDevice())
-    fmt.Print("\n")
-    break
-  case "startServiceBroadcast":
-    if flag.NArg() - 1 != 1 {
-      fmt.Fprintln(os.Stderr, "StartServiceBroadcast requires 1 args")
-      flag.Usage()
-    }
-    tmp0, err78 := (strconv.Atoi(flag.Arg(1)))
-    if err78 != nil {
-      Usage()
-      return
-    }
-    argvalue0 := int32(tmp0)
-    value0 := argvalue0
-    fmt.Print(client.StartServiceBroadcast(value0))
-    fmt.Print("\n")
-    break
-  case "stopServiceBroadcast":
-    if flag.NArg() - 1 != 0 {
-      fmt.Fprintln(os.Stderr, "StopServiceBroadcast requires 0 args")
-      flag.Usage()
-    }
-    fmt.Print(client.StopServiceBroadcast())
-    fmt.Print("\n")
-    break
-  case "deviceDiscovery":
-    if flag.NArg() - 1 != 1 {
-      fmt.Fprintln(os.Stderr, "DeviceDiscovery requires 1 args")
-      flag.Usage()
-    }
-    tmp0, err79 := (strconv.Atoi(flag.Arg(1)))
-    if err79 != nil {
-      Usage()
-      return
-    }
-    argvalue0 := int32(tmp0)
-    value0 := argvalue0
-    fmt.Print(client.DeviceDiscovery(value0))
-    fmt.Print("\n")
-    break
-  case "requestServices":
-    if flag.NArg() - 1 != 0 {
-      fmt.Fprintln(os.Stderr, "RequestServices requires 0 args")
-      flag.Usage()
-    }
-    fmt.Print(client.RequestServices())
-    fmt.Print("\n")
-    break
-  case "getServicePrices":
-    if flag.NArg() - 1 != 1 {
-      fmt.Fprintln(os.Stderr, "GetServicePrices requires 1 args")
-      flag.Usage()
-    }
-    tmp0, err80 := (strconv.Atoi(flag.Arg(1)))
-    if err80 != nil {
-      Usage()
-      return
-    }
-    argvalue0 := int32(tmp0)
-    value0 := argvalue0
-    fmt.Print(client.GetServicePrices(value0))
-    fmt.Print("\n")
-    break
-  case "selectService":
-    if flag.NArg() - 1 != 3 {
-      fmt.Fprintln(os.Stderr, "SelectService requires 3 args")
-      flag.Usage()
-    }
-    tmp0, err81 := (strconv.Atoi(flag.Arg(1)))
-    if err81 != nil {
-      Usage()
-      return
-    }
-    argvalue0 := int32(tmp0)
-    value0 := argvalue0
-    tmp1, err82 := (strconv.Atoi(flag.Arg(2)))
-    if err82 != nil {
-      Usage()
-      return
-    }
-    argvalue1 := int32(tmp1)
-    value1 := argvalue1
-    tmp2, err83 := (strconv.Atoi(flag.Arg(3)))
-    if err83 != nil {
-      Usage()
-      return
-    }
-    argvalue2 := int32(tmp2)
-    value2 := argvalue2
-    fmt.Print(client.SelectService(value0, value1, value2))
-    fmt.Print("\n")
-    break
-  case "makePayment":
-    if flag.NArg() - 1 != 1 {
-      fmt.Fprintln(os.Stderr, "MakePayment requires 1 args")
-      flag.Usage()
-    }
-    arg84 := flag.Arg(1)
-    mbTrans85 := thrift.NewTMemoryBufferLen(len(arg84))
-    defer mbTrans85.Close()
-    _, err86 := mbTrans85.WriteString(arg84)
-    if err86 != nil {
-      Usage()
-      return
-    }
-    factory87 := thrift.NewTSimpleJSONProtocolFactory()
-    jsProt88 := factory87.GetProtocol(mbTrans85)
-    argvalue0 := wpthrift_types.NewTotalPriceResponse()
-    err89 := argvalue0.Read(jsProt88)
-    if err89 != nil {
-      Usage()
-      return
-    }
-    value0 := argvalue0
-    fmt.Print(client.MakePayment(value0))
-    fmt.Print("\n")
-    break
-  case "beginServiceDelivery":
-    if flag.NArg() - 1 != 3 {
-      fmt.Fprintln(os.Stderr, "BeginServiceDelivery requires 3 args")
-      flag.Usage()
-    }
-    tmp0, err90 := (strconv.Atoi(flag.Arg(1)))
-    if err90 != nil {
-      Usage()
-      return
-    }
-    argvalue0 := int32(tmp0)
-    value0 := argvalue0
-    arg91 := flag.Arg(2)
-    mbTrans92 := thrift.NewTMemoryBufferLen(len(arg91))
-    defer mbTrans92.Close()
-    _, err93 := mbTrans92.WriteString(arg91)
-    if err93 != nil {
-      Usage()
-      return
-    }
-    factory94 := thrift.NewTSimpleJSONProtocolFactory()
-    jsProt95 := factory94.GetProtocol(mbTrans92)
-    argvalue1 := wpthrift_types.NewServiceDeliveryToken()
-    err96 := argvalue1.Read(jsProt95)
-    if err96 != nil {
-      Usage()
-      return
-    }
-    value1 := argvalue1
-    tmp2, err97 := (strconv.Atoi(flag.Arg(3)))
-    if err97 != nil {
-      Usage()
-      return
-    }
-    argvalue2 := int32(tmp2)
-    value2 := argvalue2
-    fmt.Print(client.BeginServiceDelivery(value0, value1, value2))
-    fmt.Print("\n")
-    break
-  case "endServiceDelivery":
-    if flag.NArg() - 1 != 3 {
-      fmt.Fprintln(os.Stderr, "EndServiceDelivery requires 3 args")
-      flag.Usage()
-    }
-    tmp0, err98 := (strconv.Atoi(flag.Arg(1)))
-    if err98 != nil {
-      Usage()
-      return
-    }
-    argvalue0 := int32(tmp0)
-    value0 := argvalue0
-    arg99 := flag.Arg(2)
-    mbTrans100 := thrift.NewTMemoryBufferLen(len(arg99))
-    defer mbTrans100.Close()
-    _, err101 := mbTrans100.WriteString(arg99)
-    if err101 != nil {
-      Usage()
-      return
-    }
-    factory102 := thrift.NewTSimpleJSONProtocolFactory()
-    jsProt103 := factory102.GetProtocol(mbTrans100)
-    argvalue1 := wpthrift_types.NewServiceDeliveryToken()
-    err104 := argvalue1.Read(jsProt103)
-    if err104 != nil {
-      Usage()
-      return
-    }
-    value1 := argvalue1
-    tmp2, err105 := (strconv.Atoi(flag.Arg(3)))
-    if err105 != nil {
-      Usage()
-      return
-    }
-    argvalue2 := int32(tmp2)
-    value2 := argvalue2
-    fmt.Print(client.EndServiceDelivery(value0, value1, value2))
-    fmt.Print("\n")
-    break
-  case "CloseRPCAgent":
-    if flag.NArg() - 1 != 0 {
-      fmt.Fprintln(os.Stderr, "CloseRPCAgent requires 0 args")
-      flag.Usage()
-    }
-    fmt.Print(client.CloseRPCAgent())
-    fmt.Print("\n")
-    break
-  case "":
-    Usage()
-    break
-  default:
-    fmt.Fprintln(os.Stderr, "Invalid function ", cmd)
-  }
+	flag.Usage = Usage
+	var host string
+	var port int
+	var protocol string
+	var urlString string
+	var framed bool
+	var useHttp bool
+	var parsedUrl url.URL
+	var trans thrift.TTransport
+	_ = strconv.Atoi
+	_ = math.Abs
+	flag.Usage = Usage
+	flag.StringVar(&host, "h", "localhost", "Specify host and port")
+	flag.IntVar(&port, "p", 9090, "Specify port")
+	flag.StringVar(&protocol, "P", "binary", "Specify the protocol (binary, compact, simplejson, json)")
+	flag.StringVar(&urlString, "u", "", "Specify the url")
+	flag.BoolVar(&framed, "framed", false, "Use framed transport")
+	flag.BoolVar(&useHttp, "http", false, "Use http")
+	flag.Parse()
+
+	if len(urlString) > 0 {
+		parsedUrl, err := url.Parse(urlString)
+		if err != nil {
+			fmt.Fprintln(os.Stderr, "Error parsing URL: ", err)
+			flag.Usage()
+		}
+		host = parsedUrl.Host
+		useHttp = len(parsedUrl.Scheme) <= 0 || parsedUrl.Scheme == "http"
+	} else if useHttp {
+		_, err := url.Parse(fmt.Sprint("http://", host, ":", port))
+		if err != nil {
+			fmt.Fprintln(os.Stderr, "Error parsing URL: ", err)
+			flag.Usage()
+		}
+	}
+
+	cmd := flag.Arg(0)
+	var err error
+	if useHttp {
+		trans, err = thrift.NewTHttpClient(parsedUrl.String())
+	} else {
+		portStr := fmt.Sprint(port)
+		if strings.Contains(host, ":") {
+			host, portStr, err = net.SplitHostPort(host)
+			if err != nil {
+				fmt.Fprintln(os.Stderr, "error with host:", err)
+				os.Exit(1)
+			}
+		}
+		trans, err = thrift.NewTSocket(net.JoinHostPort(host, portStr))
+		if err != nil {
+			fmt.Fprintln(os.Stderr, "error resolving address:", err)
+			os.Exit(1)
+		}
+		if framed {
+			trans = thrift.NewTFramedTransport(trans)
+		}
+	}
+	if err != nil {
+		fmt.Fprintln(os.Stderr, "Error creating transport", err)
+		os.Exit(1)
+	}
+	defer trans.Close()
+	var protocolFactory thrift.TProtocolFactory
+	switch protocol {
+	case "compact":
+		protocolFactory = thrift.NewTCompactProtocolFactory()
+		break
+	case "simplejson":
+		protocolFactory = thrift.NewTSimpleJSONProtocolFactory()
+		break
+	case "json":
+		protocolFactory = thrift.NewTJSONProtocolFactory()
+		break
+	case "binary", "":
+		protocolFactory = thrift.NewTBinaryProtocolFactoryDefault()
+		break
+	default:
+		fmt.Fprintln(os.Stderr, "Invalid protocol specified: ", protocol)
+		Usage()
+		os.Exit(1)
+	}
+	client := wpthrift.NewWPWithinClientFactory(trans, protocolFactory)
+	if err := trans.Open(); err != nil {
+		fmt.Fprintln(os.Stderr, "Error opening socket to ", host, ":", port, " ", err)
+		os.Exit(1)
+	}
+
+	switch cmd {
+	case "setup":
+		if flag.NArg()-1 != 2 {
+			fmt.Fprintln(os.Stderr, "Setup requires 2 args")
+			flag.Usage()
+		}
+		argvalue0 := flag.Arg(1)
+		value0 := argvalue0
+		argvalue1 := flag.Arg(2)
+		value1 := argvalue1
+		fmt.Print(client.Setup(value0, value1))
+		fmt.Print("\n")
+		break
+	case "addService":
+		if flag.NArg()-1 != 1 {
+			fmt.Fprintln(os.Stderr, "AddService requires 1 args")
+			flag.Usage()
+		}
+		arg43 := flag.Arg(1)
+		mbTrans44 := thrift.NewTMemoryBufferLen(len(arg43))
+		defer mbTrans44.Close()
+		_, err45 := mbTrans44.WriteString(arg43)
+		if err45 != nil {
+			Usage()
+			return
+		}
+		factory46 := thrift.NewTSimpleJSONProtocolFactory()
+		jsProt47 := factory46.GetProtocol(mbTrans44)
+		argvalue0 := wpthrift_types.NewService()
+		err48 := argvalue0.Read(jsProt47)
+		if err48 != nil {
+			Usage()
+			return
+		}
+		value0 := argvalue0
+		fmt.Print(client.AddService(value0))
+		fmt.Print("\n")
+		break
+	case "removeService":
+		if flag.NArg()-1 != 1 {
+			fmt.Fprintln(os.Stderr, "RemoveService requires 1 args")
+			flag.Usage()
+		}
+		arg49 := flag.Arg(1)
+		mbTrans50 := thrift.NewTMemoryBufferLen(len(arg49))
+		defer mbTrans50.Close()
+		_, err51 := mbTrans50.WriteString(arg49)
+		if err51 != nil {
+			Usage()
+			return
+		}
+		factory52 := thrift.NewTSimpleJSONProtocolFactory()
+		jsProt53 := factory52.GetProtocol(mbTrans50)
+		argvalue0 := wpthrift_types.NewService()
+		err54 := argvalue0.Read(jsProt53)
+		if err54 != nil {
+			Usage()
+			return
+		}
+		value0 := argvalue0
+		fmt.Print(client.RemoveService(value0))
+		fmt.Print("\n")
+		break
+	case "initConsumer":
+		if flag.NArg()-1 != 7 {
+			fmt.Fprintln(os.Stderr, "InitConsumer requires 7 args")
+			flag.Usage()
+		}
+		argvalue0 := flag.Arg(1)
+		value0 := argvalue0
+		argvalue1 := flag.Arg(2)
+		value1 := argvalue1
+		tmp2, err57 := (strconv.Atoi(flag.Arg(3)))
+		if err57 != nil {
+			Usage()
+			return
+		}
+		argvalue2 := int32(tmp2)
+		value2 := argvalue2
+		argvalue3 := flag.Arg(4)
+		value3 := argvalue3
+		argvalue4 := flag.Arg(5)
+		value4 := argvalue4
+		arg60 := flag.Arg(6)
+		mbTrans61 := thrift.NewTMemoryBufferLen(len(arg60))
+		defer mbTrans61.Close()
+		_, err62 := mbTrans61.WriteString(arg60)
+		if err62 != nil {
+			Usage()
+			return
+		}
+		factory63 := thrift.NewTSimpleJSONProtocolFactory()
+		jsProt64 := factory63.GetProtocol(mbTrans61)
+		argvalue5 := wpthrift_types.NewHCECard()
+		err65 := argvalue5.Read(jsProt64)
+		if err65 != nil {
+			Usage()
+			return
+		}
+		value5 := argvalue5
+		arg66 := flag.Arg(7)
+		mbTrans67 := thrift.NewTMemoryBufferLen(len(arg66))
+		defer mbTrans67.Close()
+		_, err68 := mbTrans67.WriteString(arg66)
+		if err68 != nil {
+			Usage()
+			return
+		}
+		factory69 := thrift.NewTSimpleJSONProtocolFactory()
+		jsProt70 := factory69.GetProtocol(mbTrans67)
+		containerStruct6 := wpthrift.NewWPWithinInitConsumerArgs()
+		err71 := containerStruct6.ReadField7(jsProt70)
+		if err71 != nil {
+			Usage()
+			return
+		}
+		argvalue6 := containerStruct6.PspConfig
+		value6 := argvalue6
+		fmt.Print(client.InitConsumer(value0, value1, value2, value3, value4, value5, value6))
+		fmt.Print("\n")
+		break
+	case "initProducer":
+		if flag.NArg()-1 != 1 {
+			fmt.Fprintln(os.Stderr, "InitProducer requires 1 args")
+			flag.Usage()
+		}
+		arg72 := flag.Arg(1)
+		mbTrans73 := thrift.NewTMemoryBufferLen(len(arg72))
+		defer mbTrans73.Close()
+		_, err74 := mbTrans73.WriteString(arg72)
+		if err74 != nil {
+			Usage()
+			return
+		}
+		factory75 := thrift.NewTSimpleJSONProtocolFactory()
+		jsProt76 := factory75.GetProtocol(mbTrans73)
+		containerStruct0 := wpthrift.NewWPWithinInitProducerArgs()
+		err77 := containerStruct0.ReadField1(jsProt76)
+		if err77 != nil {
+			Usage()
+			return
+		}
+		argvalue0 := containerStruct0.PspConfig
+		value0 := argvalue0
+		fmt.Print(client.InitProducer(value0))
+		fmt.Print("\n")
+		break
+	case "getDevice":
+		if flag.NArg()-1 != 0 {
+			fmt.Fprintln(os.Stderr, "GetDevice requires 0 args")
+			flag.Usage()
+		}
+		fmt.Print(client.GetDevice())
+		fmt.Print("\n")
+		break
+	case "startServiceBroadcast":
+		if flag.NArg()-1 != 1 {
+			fmt.Fprintln(os.Stderr, "StartServiceBroadcast requires 1 args")
+			flag.Usage()
+		}
+		tmp0, err78 := (strconv.Atoi(flag.Arg(1)))
+		if err78 != nil {
+			Usage()
+			return
+		}
+		argvalue0 := int32(tmp0)
+		value0 := argvalue0
+		fmt.Print(client.StartServiceBroadcast(value0))
+		fmt.Print("\n")
+		break
+	case "stopServiceBroadcast":
+		if flag.NArg()-1 != 0 {
+			fmt.Fprintln(os.Stderr, "StopServiceBroadcast requires 0 args")
+			flag.Usage()
+		}
+		fmt.Print(client.StopServiceBroadcast())
+		fmt.Print("\n")
+		break
+	case "deviceDiscovery":
+		if flag.NArg()-1 != 1 {
+			fmt.Fprintln(os.Stderr, "DeviceDiscovery requires 1 args")
+			flag.Usage()
+		}
+		tmp0, err79 := (strconv.Atoi(flag.Arg(1)))
+		if err79 != nil {
+			Usage()
+			return
+		}
+		argvalue0 := int32(tmp0)
+		value0 := argvalue0
+		fmt.Print(client.DeviceDiscovery(value0))
+		fmt.Print("\n")
+		break
+	case "requestServices":
+		if flag.NArg()-1 != 0 {
+			fmt.Fprintln(os.Stderr, "RequestServices requires 0 args")
+			flag.Usage()
+		}
+		fmt.Print(client.RequestServices())
+		fmt.Print("\n")
+		break
+	case "getServicePrices":
+		if flag.NArg()-1 != 1 {
+			fmt.Fprintln(os.Stderr, "GetServicePrices requires 1 args")
+			flag.Usage()
+		}
+		tmp0, err80 := (strconv.Atoi(flag.Arg(1)))
+		if err80 != nil {
+			Usage()
+			return
+		}
+		argvalue0 := int32(tmp0)
+		value0 := argvalue0
+		fmt.Print(client.GetServicePrices(value0))
+		fmt.Print("\n")
+		break
+	case "selectService":
+		if flag.NArg()-1 != 3 {
+			fmt.Fprintln(os.Stderr, "SelectService requires 3 args")
+			flag.Usage()
+		}
+		tmp0, err81 := (strconv.Atoi(flag.Arg(1)))
+		if err81 != nil {
+			Usage()
+			return
+		}
+		argvalue0 := int32(tmp0)
+		value0 := argvalue0
+		tmp1, err82 := (strconv.Atoi(flag.Arg(2)))
+		if err82 != nil {
+			Usage()
+			return
+		}
+		argvalue1 := int32(tmp1)
+		value1 := argvalue1
+		tmp2, err83 := (strconv.Atoi(flag.Arg(3)))
+		if err83 != nil {
+			Usage()
+			return
+		}
+		argvalue2 := int32(tmp2)
+		value2 := argvalue2
+		fmt.Print(client.SelectService(value0, value1, value2))
+		fmt.Print("\n")
+		break
+	case "makePayment":
+		if flag.NArg()-1 != 1 {
+			fmt.Fprintln(os.Stderr, "MakePayment requires 1 args")
+			flag.Usage()
+		}
+		arg84 := flag.Arg(1)
+		mbTrans85 := thrift.NewTMemoryBufferLen(len(arg84))
+		defer mbTrans85.Close()
+		_, err86 := mbTrans85.WriteString(arg84)
+		if err86 != nil {
+			Usage()
+			return
+		}
+		factory87 := thrift.NewTSimpleJSONProtocolFactory()
+		jsProt88 := factory87.GetProtocol(mbTrans85)
+		argvalue0 := wpthrift_types.NewTotalPriceResponse()
+		err89 := argvalue0.Read(jsProt88)
+		if err89 != nil {
+			Usage()
+			return
+		}
+		value0 := argvalue0
+		fmt.Print(client.MakePayment(value0))
+		fmt.Print("\n")
+		break
+	case "beginServiceDelivery":
+		if flag.NArg()-1 != 3 {
+			fmt.Fprintln(os.Stderr, "BeginServiceDelivery requires 3 args")
+			flag.Usage()
+		}
+		tmp0, err90 := (strconv.Atoi(flag.Arg(1)))
+		if err90 != nil {
+			Usage()
+			return
+		}
+		argvalue0 := int32(tmp0)
+		value0 := argvalue0
+		arg91 := flag.Arg(2)
+		mbTrans92 := thrift.NewTMemoryBufferLen(len(arg91))
+		defer mbTrans92.Close()
+		_, err93 := mbTrans92.WriteString(arg91)
+		if err93 != nil {
+			Usage()
+			return
+		}
+		factory94 := thrift.NewTSimpleJSONProtocolFactory()
+		jsProt95 := factory94.GetProtocol(mbTrans92)
+		argvalue1 := wpthrift_types.NewServiceDeliveryToken()
+		err96 := argvalue1.Read(jsProt95)
+		if err96 != nil {
+			Usage()
+			return
+		}
+		value1 := argvalue1
+		tmp2, err97 := (strconv.Atoi(flag.Arg(3)))
+		if err97 != nil {
+			Usage()
+			return
+		}
+		argvalue2 := int32(tmp2)
+		value2 := argvalue2
+		fmt.Print(client.BeginServiceDelivery(value0, value1, value2))
+		fmt.Print("\n")
+		break
+	case "endServiceDelivery":
+		if flag.NArg()-1 != 3 {
+			fmt.Fprintln(os.Stderr, "EndServiceDelivery requires 3 args")
+			flag.Usage()
+		}
+		tmp0, err98 := (strconv.Atoi(flag.Arg(1)))
+		if err98 != nil {
+			Usage()
+			return
+		}
+		argvalue0 := int32(tmp0)
+		value0 := argvalue0
+		arg99 := flag.Arg(2)
+		mbTrans100 := thrift.NewTMemoryBufferLen(len(arg99))
+		defer mbTrans100.Close()
+		_, err101 := mbTrans100.WriteString(arg99)
+		if err101 != nil {
+			Usage()
+			return
+		}
+		factory102 := thrift.NewTSimpleJSONProtocolFactory()
+		jsProt103 := factory102.GetProtocol(mbTrans100)
+		argvalue1 := wpthrift_types.NewServiceDeliveryToken()
+		err104 := argvalue1.Read(jsProt103)
+		if err104 != nil {
+			Usage()
+			return
+		}
+		value1 := argvalue1
+		tmp2, err105 := (strconv.Atoi(flag.Arg(3)))
+		if err105 != nil {
+			Usage()
+			return
+		}
+		argvalue2 := int32(tmp2)
+		value2 := argvalue2
+		fmt.Print(client.EndServiceDelivery(value0, value1, value2))
+		fmt.Print("\n")
+		break
+	case "CloseRPCAgent":
+		if flag.NArg()-1 != 0 {
+			fmt.Fprintln(os.Stderr, "CloseRPCAgent requires 0 args")
+			flag.Usage()
+		}
+		fmt.Print(client.CloseRPCAgent())
+		fmt.Print("\n")
+		break
+	case "":
+		Usage()
+		break
+	default:
+		fmt.Fprintln(os.Stderr, "Invalid function ", cmd)
+	}
 }
