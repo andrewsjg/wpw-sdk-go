@@ -70,7 +70,7 @@ function cleanup {
 		if ps -p ${producer_pid} > /dev/null 2>&1
 		then
 			echo "killing producer"
-			kill ${consumer_pid}
+			kill ${producer_pid}
 		fi
 	fi
 	exit 1
@@ -158,10 +158,10 @@ else
 	echo -e "${GREEN}ok${NC}"
 fi
 
-echo -n "*** Verify other customer is not running: "
+echo -n "*** Verify other consumer is not running: "
 if (ps aux | grep "${CONSUMER_NAME}" | grep -v grep) > /dev/null 2>&1
 then
-	echo -e "${RED}error, other customer is running${NC}"
+	echo -e "${RED}error, other consumer is running${NC}"
 	exit 1
 else
 	echo -e "${GREEN}ok${NC}"
