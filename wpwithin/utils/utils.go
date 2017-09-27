@@ -70,19 +70,13 @@ func WriteString(path, input string, truncate bool) error {
 	flags := os.O_RDWR | os.O_CREATE
 
 	if truncate {
-
 		flags |= os.O_TRUNC
 	}
 
-	os.OpenFile(path, flags, 0666)
-
-	file, err := os.Create(path)
-
+	file, err := os.OpenFile(path, flags, 0666)
 	if err != nil {
-
 		return err
 	}
-
 	defer file.Close()
 
 	_, err = file.Write([]byte(input))
