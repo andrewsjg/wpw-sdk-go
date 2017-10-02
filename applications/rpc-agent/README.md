@@ -26,8 +26,6 @@ Start the application and specify a port using the `-port` flag. e.g. `rpc-agent
 * Change to the bin directory `cd $GOPATH/bin`
 * Type the following command to run the RPC agent and see the command line flags that you can pass; `./rpc-agent -help`
 * You can manually set the parameters, to get everything running quickly you just need to set the prot e.g. `./rpc-agent -port 9090`
-* Alternatively you can use the configuration file provided to configure the RPC agent, to do this type; `./rpc-agent -configfile <path and filename of config file>`
-* We have provided a config file in the source directory so; `./rpc-agent -configfile $GOPATH/src/worldpay-within-sdk/applications/rpc-agent/conf.json`
 
 ### Logging output of the RPC agent
 * In the config file, specify the log name
@@ -48,8 +46,6 @@ Usage of ./rpc-agent:
     	Buffer size. (default 8192)
   -buffered
     	Buffered transmission - bool.
-  -configfile string
-    	Config file name - string.
   -framed
     	Framed transmission - bool.
   -host string
@@ -66,24 +62,3 @@ Usage of ./rpc-agent:
     	Secured transport - bool.
 ```
 
-### The config file
-
-The config file is provided here as an example and is written in JSON. Note the command line flags will overwrite or take precedence over the values provided in the config file.
-
-`config.json`
-
-```
-{
-    "WorldpayWithinConfig": {
-		"BufferSize" : 100,
-    		"Buffered": false,
-    		"Framed": false,
-    		"Host": "127.0.0.1",
-    		"Logfile": "worldpayWithin.log",
-    		"Loglevel": "warn",
-    		"Port": 9091,
-    		"Protocol": "binary",
-    		"Secure": false
-    	}
-}
-```
