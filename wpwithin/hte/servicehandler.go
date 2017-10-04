@@ -10,8 +10,8 @@ import (
 	"strings"
 	"time"
 
-	log "github.com/sirupsen/logrus"
 	"github.com/gorilla/mux"
+	log "github.com/sirupsen/logrus"
 	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/psp"
 	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/types"
 	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/types/event"
@@ -52,6 +52,12 @@ func (srv *ServiceHandler) ServiceDiscovery(w http.ResponseWriter, r *http.Reque
 			returnMessage(w, http.StatusInternalServerError, err)
 		}
 	}()
+
+	// fire an event if handled
+	if srv.eventHandler != nil {
+		log.Debug("Core event handler is set, calling event in core EventHandler")
+		go srv.eventHandler.ServiceDiscoveryEvent(r.RemoteAddr)
+	}
 
 	var responseServices []types.ServiceDetails
 
@@ -96,6 +102,12 @@ func (srv *ServiceHandler) ServicePrices(w http.ResponseWriter, r *http.Request)
 
 		returnMessage(w, http.StatusBadRequest, errorResponse)
 		return
+	}
+
+	// fire an event if handled
+	if srv.eventHandler != nil {
+		log.Debug("Core event handler is set, calling event in core EventHandler")
+		go srv.eventHandler.ServicePricesEvent(r.RemoteAddr, svcID)
 	}
 
 	if svc, ok := srv.device.Services[svcID]; ok {
@@ -204,6 +216,12 @@ func (srv *ServiceHandler) ServiceTotalPrice(w http.ResponseWriter, r *http.Requ
 				returnMessage(w, http.StatusInternalServerError, errorResponse)
 			}
 			response.PaymentReferenceID = orderUUID
+
+			// fire an event if handled
+			if srv.eventHandler != nil {
+				log.Debug("Core event handler is set, calling event in core EventHandler")
+				go srv.eventHandler.ServiceTotalPriceEvent(r.RemoteAddr, svcID, &response)
+			}
 
 			order := types.Order{
 				UUID:                  orderUUID,
@@ -323,6 +341,13 @@ func (srv *ServiceHandler) Payment(w http.ResponseWriter, r *http.Request) {
 			strUnitPrice := utils.DoUnitConvertFormat(orderPPU.Amount, 2, fmt.Sprintf("%s <amount>", orderPPU.CurrencyCode))
 
 			orderDescription := fmt.Sprintf("%s - %d units @ %s per unit.", _order.Service.Name, _order.SelectedNumberOfUnits, strUnitPrice)
+
+			// fire an event if handled
+			if srv.eventHandler != nil {
+				log.Debug("Core event handler is set, calling event in core EventHandler")
+				go srv.eventHandler.MakePaymentEvent(totalPrice, orderCurrency, paymentRequest.ClientToken, orderDescription, _order.UUID)
+			}
+
 			pspReference, err := srv.psp.MakePayment(totalPrice, orderCurrency, paymentRequest.ClientToken, orderDescription, _order.UUID)
 
 			if err != nil {

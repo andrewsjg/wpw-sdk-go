@@ -26,3 +26,29 @@ func (eh *EventHandlerImpl) GenericEvent(name string, message string, data inter
 
 	return nil
 }
+
+func (eh *EventHandlerImpl) MakePaymentEvent(totalPrice int, orderCurrency string, clientToken string, orderDescription string, uuid string) {
+
+	fmt.Printf("go event from core - payment: totalPrice=%d, orderCurrency=%s, clientToken=%s, orderDescription=%s, uui=%s\n",
+		totalPrice, orderCurrency, clientToken, orderDescription, uuid)
+}
+
+func (eh *EventHandlerImpl) ServiceDiscoveryEvent(remoteAddr string) {
+
+	fmt.Printf("go event from core - service dicovery: remoteAddr: %s\n", remoteAddr)
+}
+
+func (eh *EventHandlerImpl) ServicePricesEvent(remoteAddr string, serviceId int) {
+
+	fmt.Printf("go event from core - service prices: remoteAddr: %s, serviceId: %d\n", remoteAddr, serviceId)
+}
+
+func (eh *EventHandlerImpl) ServiceTotalPriceEvent(remoteAddr string, serviceId int, totalPrice *types.TotalPriceResponse) {
+
+	fmt.Printf("go event from core - service prices: remoteAddr: %s, serviceId: %d\n", remoteAddr, serviceId)
+}
+
+func (eh *EventHandlerImpl) ErrorEvent(msg string) {
+
+	fmt.Printf("go event from core - error: %s\n", msg)
+}
