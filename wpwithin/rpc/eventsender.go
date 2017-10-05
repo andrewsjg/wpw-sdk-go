@@ -24,9 +24,9 @@ type EventSenderImpl struct {
 }
 
 // BeginServiceDelivery event
-func (cb *EventSenderImpl) BeginServiceDelivery(serviceID int, serviceDeliveryToken types.ServiceDeliveryToken, unitsToSupply int) {
+func (cb *EventSenderImpl) BeginServiceDelivery(serviceID int, servicePriceID int, serviceDeliveryToken types.ServiceDeliveryToken, unitsToSupply int) {
 
-	log.WithFields(log.Fields{"serviceID": serviceID, "serviceDeliveryToken": fmt.Sprintf("%+v", serviceDeliveryToken), "unitsToSupply": unitsToSupply}).Debug("begin EventSenderImpl.BeginServiceDelivery()")
+	log.WithFields(log.Fields{"serviceID": serviceID, "servicePriceID": servicePriceID, "serviceDeliveryToken": fmt.Sprintf("%+v", serviceDeliveryToken), "unitsToSupply": unitsToSupply}).Debug("begin EventSenderImpl.BeginServiceDelivery()")
 
 	defer log.Debug("end EventSenderImpl.BeginServiceDelivery()")
 
