@@ -23,7 +23,7 @@ func Usage() {
   fmt.Fprintln(os.Stderr, "Usage of ", os.Args[0], " [-h host:port] [-u url] [-f[ramed]] function [arg1 [arg2...]]:")
   flag.PrintDefaults()
   fmt.Fprintln(os.Stderr, "\nFunctions:")
-  fmt.Fprintln(os.Stderr, "  void beginServiceDelivery(i32 serviceID, ServiceDeliveryToken serviceDeliveryToken, i32 unitsToSupply)")
+  fmt.Fprintln(os.Stderr, "  void beginServiceDelivery(i32 serviceID, i32 servicePriceID, ServiceDeliveryToken serviceDeliveryToken, i32 unitsToSupply)")
   fmt.Fprintln(os.Stderr, "  void endServiceDelivery(i32 serviceID, ServiceDeliveryToken serviceDeliveryToken, i32 unitsReceived)")
   fmt.Fprintln(os.Stderr, "  void makePaymentEvent(i32 totalPrice, string orderCurrency, string clientToken, string orderDescription, string uuid)")
   fmt.Fprintln(os.Stderr, "  void serviceDiscoveryEvent(string remoteAddr)")
@@ -125,8 +125,8 @@ func main() {
   
   switch cmd {
   case "beginServiceDelivery":
-    if flag.NArg() - 1 != 3 {
-      fmt.Fprintln(os.Stderr, "BeginServiceDelivery requires 3 args")
+    if flag.NArg() - 1 != 4 {
+      fmt.Fprintln(os.Stderr, "BeginServiceDelivery requires 4 args")
       flag.Usage()
     }
     tmp0, err122 := (strconv.Atoi(flag.Arg(1)))
@@ -136,31 +136,38 @@ func main() {
     }
     argvalue0 := int32(tmp0)
     value0 := argvalue0
-    arg123 := flag.Arg(2)
-    mbTrans124 := thrift.NewTMemoryBufferLen(len(arg123))
-    defer mbTrans124.Close()
-    _, err125 := mbTrans124.WriteString(arg123)
-    if err125 != nil {
+    tmp1, err123 := (strconv.Atoi(flag.Arg(2)))
+    if err123 != nil {
       Usage()
       return
     }
-    factory126 := thrift.NewTSimpleJSONProtocolFactory()
-    jsProt127 := factory126.GetProtocol(mbTrans124)
-    argvalue1 := wpthrift_types.NewServiceDeliveryToken()
-    err128 := argvalue1.Read(jsProt127)
-    if err128 != nil {
-      Usage()
-      return
-    }
+    argvalue1 := int32(tmp1)
     value1 := argvalue1
-    tmp2, err129 := (strconv.Atoi(flag.Arg(3)))
+    arg124 := flag.Arg(3)
+    mbTrans125 := thrift.NewTMemoryBufferLen(len(arg124))
+    defer mbTrans125.Close()
+    _, err126 := mbTrans125.WriteString(arg124)
+    if err126 != nil {
+      Usage()
+      return
+    }
+    factory127 := thrift.NewTSimpleJSONProtocolFactory()
+    jsProt128 := factory127.GetProtocol(mbTrans125)
+    argvalue2 := wpthrift_types.NewServiceDeliveryToken()
+    err129 := argvalue2.Read(jsProt128)
     if err129 != nil {
       Usage()
       return
     }
-    argvalue2 := int32(tmp2)
     value2 := argvalue2
-    fmt.Print(client.BeginServiceDelivery(value0, value1, value2))
+    tmp3, err130 := (strconv.Atoi(flag.Arg(4)))
+    if err130 != nil {
+      Usage()
+      return
+    }
+    argvalue3 := int32(tmp3)
+    value3 := argvalue3
+    fmt.Print(client.BeginServiceDelivery(value0, value1, value2, value3))
     fmt.Print("\n")
     break
   case "endServiceDelivery":
@@ -168,32 +175,32 @@ func main() {
       fmt.Fprintln(os.Stderr, "EndServiceDelivery requires 3 args")
       flag.Usage()
     }
-    tmp0, err130 := (strconv.Atoi(flag.Arg(1)))
-    if err130 != nil {
+    tmp0, err131 := (strconv.Atoi(flag.Arg(1)))
+    if err131 != nil {
       Usage()
       return
     }
     argvalue0 := int32(tmp0)
     value0 := argvalue0
-    arg131 := flag.Arg(2)
-    mbTrans132 := thrift.NewTMemoryBufferLen(len(arg131))
-    defer mbTrans132.Close()
-    _, err133 := mbTrans132.WriteString(arg131)
-    if err133 != nil {
+    arg132 := flag.Arg(2)
+    mbTrans133 := thrift.NewTMemoryBufferLen(len(arg132))
+    defer mbTrans133.Close()
+    _, err134 := mbTrans133.WriteString(arg132)
+    if err134 != nil {
       Usage()
       return
     }
-    factory134 := thrift.NewTSimpleJSONProtocolFactory()
-    jsProt135 := factory134.GetProtocol(mbTrans132)
+    factory135 := thrift.NewTSimpleJSONProtocolFactory()
+    jsProt136 := factory135.GetProtocol(mbTrans133)
     argvalue1 := wpthrift_types.NewServiceDeliveryToken()
-    err136 := argvalue1.Read(jsProt135)
-    if err136 != nil {
+    err137 := argvalue1.Read(jsProt136)
+    if err137 != nil {
       Usage()
       return
     }
     value1 := argvalue1
-    tmp2, err137 := (strconv.Atoi(flag.Arg(3)))
-    if err137 != nil {
+    tmp2, err138 := (strconv.Atoi(flag.Arg(3)))
+    if err138 != nil {
       Usage()
       return
     }
@@ -207,8 +214,8 @@ func main() {
       fmt.Fprintln(os.Stderr, "MakePaymentEvent requires 5 args")
       flag.Usage()
     }
-    tmp0, err138 := (strconv.Atoi(flag.Arg(1)))
-    if err138 != nil {
+    tmp0, err139 := (strconv.Atoi(flag.Arg(1)))
+    if err139 != nil {
       Usage()
       return
     }
@@ -242,8 +249,8 @@ func main() {
     }
     argvalue0 := flag.Arg(1)
     value0 := argvalue0
-    tmp1, err145 := (strconv.Atoi(flag.Arg(2)))
-    if err145 != nil {
+    tmp1, err146 := (strconv.Atoi(flag.Arg(2)))
+    if err146 != nil {
       Usage()
       return
     }
@@ -259,26 +266,26 @@ func main() {
     }
     argvalue0 := flag.Arg(1)
     value0 := argvalue0
-    tmp1, err147 := (strconv.Atoi(flag.Arg(2)))
-    if err147 != nil {
+    tmp1, err148 := (strconv.Atoi(flag.Arg(2)))
+    if err148 != nil {
       Usage()
       return
     }
     argvalue1 := int32(tmp1)
     value1 := argvalue1
-    arg148 := flag.Arg(3)
-    mbTrans149 := thrift.NewTMemoryBufferLen(len(arg148))
-    defer mbTrans149.Close()
-    _, err150 := mbTrans149.WriteString(arg148)
-    if err150 != nil {
+    arg149 := flag.Arg(3)
+    mbTrans150 := thrift.NewTMemoryBufferLen(len(arg149))
+    defer mbTrans150.Close()
+    _, err151 := mbTrans150.WriteString(arg149)
+    if err151 != nil {
       Usage()
       return
     }
-    factory151 := thrift.NewTSimpleJSONProtocolFactory()
-    jsProt152 := factory151.GetProtocol(mbTrans149)
+    factory152 := thrift.NewTSimpleJSONProtocolFactory()
+    jsProt153 := factory152.GetProtocol(mbTrans150)
     argvalue2 := wpthrift_types.NewTotalPriceResponse()
-    err153 := argvalue2.Read(jsProt152)
-    if err153 != nil {
+    err154 := argvalue2.Read(jsProt153)
+    if err154 != nil {
       Usage()
       return
     }
