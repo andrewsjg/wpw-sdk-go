@@ -525,7 +525,7 @@ func (srv *ServiceHandler) ServiceDeliveryBegin(w http.ResponseWriter, r *http.R
 
 			log.Debug("Core event handler is set, calling event in core EventHandler")
 
-			go srv.eventHandler.BeginServiceDelivery(svcID, deliveryRequest.ServiceDeliveryToken, deliveryRequest.UnitsToSupply)
+			go srv.eventHandler.BeginServiceDelivery(svcID, _order.SelectedPriceID, deliveryRequest.ServiceDeliveryToken, deliveryRequest.UnitsToSupply)
 		}
 
 		returnMessage(w, http.StatusOK, response)

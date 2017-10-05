@@ -10,9 +10,10 @@ import (
 type EventHandlerImpl struct{}
 
 // BeginServiceDelivery Called when the SDK accepts a call to begin service delivery to a client
-func (eh *EventHandlerImpl) BeginServiceDelivery(serviceID int, serviceDeliveryToken types.ServiceDeliveryToken, unitsToSupply int) {
+func (eh *EventHandlerImpl) BeginServiceDelivery(serviceID int, servicePriceID int, serviceDeliveryToken types.ServiceDeliveryToken, unitsToSupply int) {
 
 	fmt.Println("go event from core - begin service delivery")
+	fmt.Println("selected price id: ", servicePriceID)
 }
 
 // EndServiceDelivery Called when the SDK accepts a call to end service delivery to a client
