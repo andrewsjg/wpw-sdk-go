@@ -5761,9 +5761,10 @@ type WPWithinCallback interface {  //WorldpayWithin Callback Service - RPC clien
 
   // Parameters:
   //  - ServiceID
+  //  - ServicePriceID
   //  - ServiceDeliveryToken
   //  - UnitsToSupply
-  BeginServiceDelivery(serviceID int32, serviceDeliveryToken *wpthrift_types.ServiceDeliveryToken, unitsToSupply int32) (err error)
+  BeginServiceDelivery(serviceID int32, servicePriceID int32, serviceDeliveryToken *wpthrift_types.ServiceDeliveryToken, unitsToSupply int32) (err error)
   // Parameters:
   //  - ServiceID
   //  - ServiceDeliveryToken
@@ -5822,14 +5823,15 @@ func NewWPWithinCallbackClientProtocol(t thrift.TTransport, iprot thrift.TProtoc
 
 // Parameters:
 //  - ServiceID
+//  - ServicePriceID
 //  - ServiceDeliveryToken
 //  - UnitsToSupply
-func (p *WPWithinCallbackClient) BeginServiceDelivery(serviceID int32, serviceDeliveryToken *wpthrift_types.ServiceDeliveryToken, unitsToSupply int32) (err error) {
-  if err = p.sendBeginServiceDelivery(serviceID, serviceDeliveryToken, unitsToSupply); err != nil { return }
+func (p *WPWithinCallbackClient) BeginServiceDelivery(serviceID int32, servicePriceID int32, serviceDeliveryToken *wpthrift_types.ServiceDeliveryToken, unitsToSupply int32) (err error) {
+  if err = p.sendBeginServiceDelivery(serviceID, servicePriceID, serviceDeliveryToken, unitsToSupply); err != nil { return }
   return p.recvBeginServiceDelivery()
 }
 
-func (p *WPWithinCallbackClient) sendBeginServiceDelivery(serviceID int32, serviceDeliveryToken *wpthrift_types.ServiceDeliveryToken, unitsToSupply int32)(err error) {
+func (p *WPWithinCallbackClient) sendBeginServiceDelivery(serviceID int32, servicePriceID int32, serviceDeliveryToken *wpthrift_types.ServiceDeliveryToken, unitsToSupply int32)(err error) {
   oprot := p.OutputProtocol
   if oprot == nil {
     oprot = p.ProtocolFactory.GetProtocol(p.Transport)
@@ -5841,6 +5843,7 @@ func (p *WPWithinCallbackClient) sendBeginServiceDelivery(serviceID int32, servi
   }
   args := WPWithinCallbackBeginServiceDeliveryArgs{
   ServiceID : serviceID,
+  ServicePriceID : servicePriceID,
   ServiceDeliveryToken : serviceDeliveryToken,
   UnitsToSupply : unitsToSupply,
   }
@@ -6443,7 +6446,7 @@ func (p *wPWithinCallbackProcessorBeginServiceDelivery) Process(seqId int32, ipr
   iprot.ReadMessageEnd()
   result := WPWithinCallbackBeginServiceDeliveryResult{}
   var err2 error
-  if err2 = p.handler.BeginServiceDelivery(args.ServiceID, args.ServiceDeliveryToken, args.UnitsToSupply); err2 != nil {
+  if err2 = p.handler.BeginServiceDelivery(args.ServiceID, args.ServicePriceID, args.ServiceDeliveryToken, args.UnitsToSupply); err2 != nil {
   switch v := err2.(type) {
     case *wpthrift_types.Error:
   result.Err = v
@@ -6754,12 +6757,14 @@ func (p *wPWithinCallbackProcessorErrorEvent) Process(seqId int32, iprot, oprot 
 
 // Attributes:
 //  - ServiceID
+//  - ServicePriceID
 //  - ServiceDeliveryToken
 //  - UnitsToSupply
 type WPWithinCallbackBeginServiceDeliveryArgs struct {
   ServiceID int32 `thrift:"serviceID,1" db:"serviceID" json:"serviceID"`
-  ServiceDeliveryToken *wpthrift_types.ServiceDeliveryToken `thrift:"serviceDeliveryToken,2" db:"serviceDeliveryToken" json:"serviceDeliveryToken"`
-  UnitsToSupply int32 `thrift:"unitsToSupply,3" db:"unitsToSupply" json:"unitsToSupply"`
+  ServicePriceID int32 `thrift:"servicePriceID,2" db:"servicePriceID" json:"servicePriceID"`
+  ServiceDeliveryToken *wpthrift_types.ServiceDeliveryToken `thrift:"serviceDeliveryToken,3" db:"serviceDeliveryToken" json:"serviceDeliveryToken"`
+  UnitsToSupply int32 `thrift:"unitsToSupply,4" db:"unitsToSupply" json:"unitsToSupply"`
 }
 
 func NewWPWithinCallbackBeginServiceDeliveryArgs() *WPWithinCallbackBeginServiceDeliveryArgs {
@@ -6769,6 +6774,10 @@ func NewWPWithinCallbackBeginServiceDeliveryArgs() *WPWithinCallbackBeginService
 
 func (p *WPWithinCallbackBeginServiceDeliveryArgs) GetServiceID() int32 {
   return p.ServiceID
+}
+
+func (p *WPWithinCallbackBeginServiceDeliveryArgs) GetServicePriceID() int32 {
+  return p.ServicePriceID
 }
 var WPWithinCallbackBeginServiceDeliveryArgs_ServiceDeliveryToken_DEFAULT *wpthrift_types.ServiceDeliveryToken
 func (p *WPWithinCallbackBeginServiceDeliveryArgs) GetServiceDeliveryToken() *wpthrift_types.ServiceDeliveryToken {
@@ -6810,6 +6819,10 @@ func (p *WPWithinCallbackBeginServiceDeliveryArgs) Read(iprot thrift.TProtocol) 
       if err := p.ReadField3(iprot); err != nil {
         return err
       }
+    case 4:
+      if err := p.ReadField4(iprot); err != nil {
+        return err
+      }
     default:
       if err := iprot.Skip(fieldTypeId); err != nil {
         return err
@@ -6835,6 +6848,15 @@ func (p *WPWithinCallbackBeginServiceDeliveryArgs)  ReadField1(iprot thrift.TPro
 }
 
 func (p *WPWithinCallbackBeginServiceDeliveryArgs)  ReadField2(iprot thrift.TProtocol) error {
+  if v, err := iprot.ReadI32(); err != nil {
+  return thrift.PrependError("error reading field 2: ", err)
+} else {
+  p.ServicePriceID = v
+}
+  return nil
+}
+
+func (p *WPWithinCallbackBeginServiceDeliveryArgs)  ReadField3(iprot thrift.TProtocol) error {
   p.ServiceDeliveryToken = &wpthrift_types.ServiceDeliveryToken{}
   if err := p.ServiceDeliveryToken.Read(iprot); err != nil {
     return thrift.PrependError(fmt.Sprintf("%T error reading struct: ", p.ServiceDeliveryToken), err)
@@ -6842,9 +6864,9 @@ func (p *WPWithinCallbackBeginServiceDeliveryArgs)  ReadField2(iprot thrift.TPro
   return nil
 }
 
-func (p *WPWithinCallbackBeginServiceDeliveryArgs)  ReadField3(iprot thrift.TProtocol) error {
+func (p *WPWithinCallbackBeginServiceDeliveryArgs)  ReadField4(iprot thrift.TProtocol) error {
   if v, err := iprot.ReadI32(); err != nil {
-  return thrift.PrependError("error reading field 3: ", err)
+  return thrift.PrependError("error reading field 4: ", err)
 } else {
   p.UnitsToSupply = v
 }
@@ -6858,6 +6880,7 @@ func (p *WPWithinCallbackBeginServiceDeliveryArgs) Write(oprot thrift.TProtocol)
     if err := p.writeField1(oprot); err != nil { return err }
     if err := p.writeField2(oprot); err != nil { return err }
     if err := p.writeField3(oprot); err != nil { return err }
+    if err := p.writeField4(oprot); err != nil { return err }
   }
   if err := oprot.WriteFieldStop(); err != nil {
     return thrift.PrependError("write field stop error: ", err) }
@@ -6877,23 +6900,33 @@ func (p *WPWithinCallbackBeginServiceDeliveryArgs) writeField1(oprot thrift.TPro
 }
 
 func (p *WPWithinCallbackBeginServiceDeliveryArgs) writeField2(oprot thrift.TProtocol) (err error) {
-  if err := oprot.WriteFieldBegin("serviceDeliveryToken", thrift.STRUCT, 2); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T write field begin error 2:serviceDeliveryToken: ", p), err) }
-  if err := p.ServiceDeliveryToken.Write(oprot); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T error writing struct: ", p.ServiceDeliveryToken), err)
-  }
+  if err := oprot.WriteFieldBegin("servicePriceID", thrift.I32, 2); err != nil {
+    return thrift.PrependError(fmt.Sprintf("%T write field begin error 2:servicePriceID: ", p), err) }
+  if err := oprot.WriteI32(int32(p.ServicePriceID)); err != nil {
+  return thrift.PrependError(fmt.Sprintf("%T.servicePriceID (2) field write error: ", p), err) }
   if err := oprot.WriteFieldEnd(); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T write field end error 2:serviceDeliveryToken: ", p), err) }
+    return thrift.PrependError(fmt.Sprintf("%T write field end error 2:servicePriceID: ", p), err) }
   return err
 }
 
 func (p *WPWithinCallbackBeginServiceDeliveryArgs) writeField3(oprot thrift.TProtocol) (err error) {
-  if err := oprot.WriteFieldBegin("unitsToSupply", thrift.I32, 3); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T write field begin error 3:unitsToSupply: ", p), err) }
-  if err := oprot.WriteI32(int32(p.UnitsToSupply)); err != nil {
-  return thrift.PrependError(fmt.Sprintf("%T.unitsToSupply (3) field write error: ", p), err) }
+  if err := oprot.WriteFieldBegin("serviceDeliveryToken", thrift.STRUCT, 3); err != nil {
+    return thrift.PrependError(fmt.Sprintf("%T write field begin error 3:serviceDeliveryToken: ", p), err) }
+  if err := p.ServiceDeliveryToken.Write(oprot); err != nil {
+    return thrift.PrependError(fmt.Sprintf("%T error writing struct: ", p.ServiceDeliveryToken), err)
+  }
   if err := oprot.WriteFieldEnd(); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T write field end error 3:unitsToSupply: ", p), err) }
+    return thrift.PrependError(fmt.Sprintf("%T write field end error 3:serviceDeliveryToken: ", p), err) }
+  return err
+}
+
+func (p *WPWithinCallbackBeginServiceDeliveryArgs) writeField4(oprot thrift.TProtocol) (err error) {
+  if err := oprot.WriteFieldBegin("unitsToSupply", thrift.I32, 4); err != nil {
+    return thrift.PrependError(fmt.Sprintf("%T write field begin error 4:unitsToSupply: ", p), err) }
+  if err := oprot.WriteI32(int32(p.UnitsToSupply)); err != nil {
+  return thrift.PrependError(fmt.Sprintf("%T.unitsToSupply (4) field write error: ", p), err) }
+  if err := oprot.WriteFieldEnd(); err != nil {
+    return thrift.PrependError(fmt.Sprintf("%T write field end error 4:unitsToSupply: ", p), err) }
   return err
 }
 
