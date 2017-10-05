@@ -41,7 +41,7 @@ func (cb *EventSenderImpl) BeginServiceDelivery(serviceID int, servicePriceID in
 		Signature:      serviceDeliveryToken.Signature,
 	}
 
-	err := cb.client.BeginServiceDelivery(int32(serviceID), &sdt, int32(unitsToSupply))
+	err := cb.client.BeginServiceDelivery(int32(serviceID), int32(servicePriceID), &sdt, int32(unitsToSupply))
 
 	if err != nil {
 
