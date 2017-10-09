@@ -4,17 +4,18 @@
 package main
 
 import (
-        "flag"
-        "fmt"
-        "math"
-        "net"
-        "net/url"
-        "os"
-        "strconv"
-        "strings"
-        "git.apache.org/thrift.git/lib/go/thrift"
+	"flag"
+	"fmt"
+	"math"
+	"net"
+	"net/url"
+	"os"
+	"strconv"
+	"strings"
+
+	"git.apache.org/thrift.git/lib/go/thrift"
+	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/rpc/wpthrift/gen-go/wpthrift"
 	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/rpc/wpthrift/gen-go/wpthrift_types"
-        "github.com/WPTechInnovation/wpw-sdk-go/wpwithin/rpc/wpthrift/gen-go/wpthrift"
 )
 
 var _ = wpthrift_types.GoUnusedProtection__
