@@ -12,10 +12,10 @@ import (
 
 	log "github.com/sirupsen/logrus"
 	"github.com/gorilla/mux"
-	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/psp"
-	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/types"
-	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/types/event"
-	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/utils"
+	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/psp"
+	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/types"
+	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/types/event"
+	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/utils"
 )
 
 // ServiceHandler Coordinate requests between RPC interface and internal SDK interface

@@ -8,7 +8,7 @@ import (
 	"fmt"
 
 	"git.apache.org/thrift.git/lib/go/thrift"
-	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/rpc/wpthrift/gen-go/wpthrift_types"
+	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/rpc/wpthrift/gen-go/wpthrift_types"
 )
 
 // (needed to ensure safety because of naive import list construction.)

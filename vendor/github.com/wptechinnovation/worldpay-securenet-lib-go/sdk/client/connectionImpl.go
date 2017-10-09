@@ -12,10 +12,10 @@ import (
 
 	log "github.com/sirupsen/logrus"
 
-	"github.com/wptechinnovation/worldpay-securenet-lib-go/sdk"
-	"github.com/wptechinnovation/worldpay-securenet-lib-go/sdk/utils"
+	"github.com/WPTechInnovation/worldpay-securenet-lib-go/sdk"
+	"github.com/WPTechInnovation/worldpay-securenet-lib-go/sdk/utils"
 
-	"github.com/wptechinnovation/worldpay-securenet-lib-go/sdk/service"
+	"github.com/WPTechInnovation/worldpay-securenet-lib-go/sdk/service"
 )
 
 // ConnectionImpl Required details to make a connection to the API server

@@ -8,7 +8,7 @@ import (
 	"encoding/json"
 
 	log "github.com/sirupsen/logrus"
-	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/types"
+	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/types"
 )
 
 type scannerImpl struct {

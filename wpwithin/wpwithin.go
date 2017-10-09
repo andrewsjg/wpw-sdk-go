@@ -8,14 +8,14 @@ import (
 	"strings"
 	"time"
 
-	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/configuration"
-	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/core"
-	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/hte"
-	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/psp"
-	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/types"
-	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/types/event"
-	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/utils"
-	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/utils/wslog"
+	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/configuration"
+	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/core"
+	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/hte"
+	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/psp"
+	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/types"
+	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/types/event"
+	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/utils"
+	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/utils/wslog"
 
 	log "github.com/sirupsen/logrus"
 )

@@ -4,7 +4,7 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/types"
+	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/types"
 )
 
 // OrderManagerImpl Concrete implementation of order manager.. uses an in memory persistence for orders

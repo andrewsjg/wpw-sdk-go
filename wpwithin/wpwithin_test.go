@@ -3,11 +3,11 @@ import (
 	"fmt"
 	"testing"
 	//"runtime"
-	wpw "github.com/wptechinnovation/wpw-sdk-go/wpwithin"
-	types "github.com/wptechinnovation/wpw-sdk-go/wpwithin/types"
-	psp "github.com/wptechinnovation/wpw-sdk-go/wpwithin/psp"
-	securenet "github.com/wptechinnovation/wpw-sdk-go/wpwithin/psp/securenet"
-	onlineworldpay "github.com/wptechinnovation/wpw-sdk-go/wpwithin/psp/onlineworldpay"
+	wpw "github.com/WPTechInnovation/wpw-sdk-go/wpwithin"
+	types "github.com/WPTechInnovation/wpw-sdk-go/wpwithin/types"
+	psp "github.com/WPTechInnovation/wpw-sdk-go/wpwithin/psp"
+	securenet "github.com/WPTechInnovation/wpw-sdk-go/wpwithin/psp/securenet"
+	onlineworldpay "github.com/WPTechInnovation/wpw-sdk-go/wpwithin/psp/onlineworldpay"
 )
 
 // TODO

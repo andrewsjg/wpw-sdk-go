@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 
-	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/types"
+	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/types"
 )
 
 // EventHandlerImpl Handle events from the SDK Core

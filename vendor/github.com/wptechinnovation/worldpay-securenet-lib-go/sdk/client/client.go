@@ -2,8 +2,8 @@ package client
 
 import (
 	log "github.com/sirupsen/logrus"
-	"github.com/wptechinnovation/worldpay-securenet-lib-go/sdk/service/cardnotpresent"
-	"github.com/wptechinnovation/worldpay-securenet-lib-go/sdk/service/tokenization"
+	"github.com/WPTechInnovation/worldpay-securenet-lib-go/sdk/service/cardnotpresent"
+	"github.com/WPTechInnovation/worldpay-securenet-lib-go/sdk/service/tokenization"
 )
 
 // Client enables interaction with the Worldpay API
