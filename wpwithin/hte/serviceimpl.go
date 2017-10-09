@@ -5,8 +5,8 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
-	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/psp"
-	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/types"
+	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/psp"
+	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/types"
 )
 
 // ServiceImpl Concrete Implementation of HTE service

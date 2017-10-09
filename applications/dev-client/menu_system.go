@@ -7,8 +7,8 @@ import (
 	"strconv"
 	"strings"
 
-	devclienttypes "github.com/wptechinnovation/wpw-sdk-go/applications/dev-client/types"
-	"github.com/wptechinnovation/wpw-sdk-go/wpwithin"
+	devclienttypes "github.com/WPTechInnovation/wpw-sdk-go/applications/dev-client/types"
+	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin"
 )
 
 var sdk wpwithin.WPWithin

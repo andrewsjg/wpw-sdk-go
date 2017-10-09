@@ -3,10 +3,10 @@ package core
 import (
 	"testing"
 
-	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/hte"
-	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/psp"
-	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/servicediscovery"
-	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/types"
+	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/hte"
+	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/psp"
+	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/servicediscovery"
+	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/types"
 )
 
 var device types.Device

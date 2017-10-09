@@ -5,7 +5,7 @@ import (
 	"os"
 
 	log "github.com/sirupsen/logrus"
-	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/types"
+	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/types"
 )
 
 var hceCard types.HCECard

@@ -1,6 +1,6 @@
 package event
 
-import "github.com/wptechinnovation/wpw-sdk-go/wpwithin/types"
+import "github.com/WPTechInnovation/wpw-sdk-go/wpwithin/types"
 
 // Handler defines events fired by this SDK
 type Handler interface {

@@ -1,7 +1,7 @@
 package hte
 
 import (
-	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/types"
+	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/types"
 )
 
 // PortRangeMin Minimum allowed port
