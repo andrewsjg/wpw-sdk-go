@@ -4,8 +4,10 @@ language: go
 before_install:
     - echo ${TRAVIS_BUILD_DIR}
     - ls ${TRAVIS_BUILD_DIR}
+    - go get git.apache.org/thrift.git/lib/go/thrift/...
+    - cd src/git.apache.org/thrift.git/lib/go/thrift && git checkout 0.10.0
 
 script:
     - cd ${TRAVIS_BUILD_DIR}/wpwithin/core && go test
-    # - cd ${TRAVIS_BUILD_DIR}/wpwithin && go test
+    - cd ${TRAVIS_BUILD_DIR}/wpwithin && go test
     - cd ${TRAVIS_BUILD_DIR}/wpwithin/configuration && go test
