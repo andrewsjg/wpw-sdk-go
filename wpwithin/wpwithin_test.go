@@ -232,7 +232,7 @@ func TestGetDevice(t *testing.T){
 }
 
 type EventHandler struct{}
-func (handler *EventHandler) BeginServiceDelivery(serviceID int, serviceDeliveryToken types.ServiceDeliveryToken, unitsToSupply int) {
+func (handler *EventHandler) BeginServiceDelivery(serviceID int, servicePriceID int, serviceDeliveryToken types.ServiceDeliveryToken, unitsToSupply int) {
 	return
 }
 func (handler *EventHandler) EndServiceDelivery(serviceID int, serviceDeliveryToken types.ServiceDeliveryToken, unitsReceived int) {
@@ -241,6 +241,23 @@ func (handler *EventHandler) EndServiceDelivery(serviceID int, serviceDeliveryTo
 func (handler *EventHandler) GenericEvent(name string, message string, data interface{}) error {
 	return nil
 }
+
+func (handler *EventHandler) MakePaymentEvent(totalPrice int, orderCurrency string, clientToken string, orderDescription string, uuid string) {
+	return
+}
+func (handler *EventHandler) ServiceDiscoveryEvent(remoteAddr string) {
+	return
+}
+func (handler *EventHandler) ServicePricesEvent(remoteAddr string, serviceId int) {
+	return
+}
+func (handler *EventHandler) ServiceTotalPriceEvent(remoteAddr string, serviceId int, totalPrice *types.TotalPriceResponse) {
+	return
+}
+func (handler *EventHandler) ErrorEvent(msg string) {
+	return
+}
+
 func TestStartStopServiceBroadcast(t *testing.T){
 	fmt.Println("==============")
 	w,_ := wpw.Initialise("Dummy", "Dummy")
