@@ -3,8 +3,8 @@ package main
 import (
 	"fmt"
 
-	"github.com/stianeikeland/go-rpio"
 	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/types"
+	"github.com/stianeikeland/go-rpio"
 )
 
 // Handler handles the events coming from Worldpay Within
@@ -42,9 +42,10 @@ func (handler *Handler) setup() error {
 }
 
 // BeginServiceDelivery is called by Worldpay Within when a consumer wish to begin delivery of a service
-func (handler *Handler) BeginServiceDelivery(serviceID int, serviceDeliveryToken types.ServiceDeliveryToken, unitsToSupply int) {
+func (handler *Handler) BeginServiceDelivery(serviceID int, servicePriceID int, serviceDeliveryToken types.ServiceDeliveryToken, unitsToSupply int) {
 
 	fmt.Printf("BeginServiceDelivery. ServiceID = %d\n", serviceID)
+	fmt.Printf("BeginServiceDelivery. ServicePriceID = %d\n", servicePriceID)
 	fmt.Printf("BeginServiceDelivery. UnitsToSupply = %d\n", unitsToSupply)
 	fmt.Printf("BeginServiceDelivery. DeliveryToken = %+v\n", serviceDeliveryToken)
 
@@ -85,4 +86,24 @@ func (handler *Handler) EndServiceDelivery(serviceID int, serviceDeliveryToken t
 func (handler *Handler) GenericEvent(name string, message string, data interface{}) error {
 
 	return nil
+}
+
+func (handler *Handler) MakePaymentEvent(totalPrice int, orderCurrency string, clientToken string, orderDescription string, uuid string) {
+	return
+}
+
+func (handler *Handler) ServiceDiscoveryEvent(remoteAddr string) {
+	return
+}
+
+func (handler *Handler) ServicePricesEvent(remoteAddr string, serviceId int) {
+	return
+}
+
+func (handler *Handler) ServiceTotalPriceEvent(remoteAddr string, serviceId int, totalPrice *types.TotalPriceResponse) {
+	return
+}
+
+func (handler *Handler) ErrorEvent(msg string) {
+	return
 }
