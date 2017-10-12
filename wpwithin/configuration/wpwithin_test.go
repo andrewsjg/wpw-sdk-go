@@ -4,7 +4,7 @@ import (
 	"testing"
 )
 
-func TestParseConfig(t *testing.T) {
+func TestParseConfig_sunny(t *testing.T) {
 
 	conf := Configuration{}
 	conf.items = map[string]Item{
@@ -29,7 +29,22 @@ func TestParseConfig(t *testing.T) {
 		t.FailNow()
 	}
 
+	conf.items["wsLogHost"] = Item{Key: "wsLogHost", Value: "ALL"}
+	conf.items["wpwBroadcastHost"] = Item{Key: "wpwBroadcastHost", Value: "127.0.0.1"}
+	wpw.ParseConfig(conf)
+	if wpw.WSLogHost != "ALL" {
+		t.Error("WSLogHost should be ALL, but is: " + wpw.WSLogHost)
+		t.FailNow()
+	}
+	if wpw.WPWBroadcastHost != "127.0.0.1" {
+		t.Error("WPWBroadcastHost should be 127.0.0.1, but is: " + wpw.WPWBroadcastHost)
+		t.FailNow()
+	}
+}
+
+func TestParseConfig_rainy(t *testing.T) {
 	// rainy day scenarios
+	conf := Configuration{}
 	conf.items = map[string]Item{
 		"wsLogEnable": Item{Key: "wsLogEnable", Value: "bad value"},
 		"wsLogPort":   Item{Key: "wsLogPort", Value: "bad value"},
@@ -47,6 +62,7 @@ func TestParseConfig(t *testing.T) {
 		t.FailNow()
 	}
 	if wpw2.WSLogLevel != "info" {
-		t.Error("WSLogLevel should be info, but is: " + wpw.WSLogLevel)
+		t.Error("WSLogLevel should be info, but is: " + wpw2.WSLogLevel)
 	}
 }
+

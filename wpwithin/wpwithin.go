@@ -119,7 +119,7 @@ func Initialise(name, description string) (WPWithin, error) {
 	log.Debug("After call doWebSocketLogSetup()")
 
 	log.WithFields(log.Fields{"name": name, "description": description}).Debug("Will call Factory.GetDevice()")
-	dev, err2 := Factory.GetDevice(name, description)
+	dev, err2 := Factory.GetDevice(name, description, &core.Configuration)
 
 	if err2 != nil {
 
@@ -143,7 +143,7 @@ func Initialise(name, description string) (WPWithin, error) {
 
 	result.core.OrderManager = om
 
-	log.Debug("Will call Factory.GetSvcBroadcaster()")
+	log.Debugf("Will call Factory.GetSvcBroadcaster() for broadcast %s", result.core.Device.IPv4Address)
 	bc, err := Factory.GetSvcBroadcaster(result.core.Device.IPv4Address)
 
 	if err != nil {
@@ -824,22 +824,28 @@ func doWebSocketLogSetup(cfg configuration.WPWithin) {
 			}
 		}
 
-		log.Debug("Attempt to get external IPv4 address")
-		ip, err := utils.ExternalIPv4()
-		strIP := ""
-
-		if err == nil {
-
-			log.WithField("IPv4", ip.String()).Debug("Did get external IPv4")
-			strIP = ip.String()
-		} else {
-
-			log.WithField("Error", err).Error("Failed to get external IPv4 address")
-			fmt.Printf("Error getting ExternalIPv4: %s\n", err.Error())
-		}
+		var strIP string
+		switch cfg.WSLogHost {
+		case "ALL":
+			strIP = ""
+		case "":
+			log.Debug("Attempt to get external IPv4 address")
+			ip, err := utils.FirstExternalIPv4()
+			strIP = ""
+	
+			if err == nil {
+				log.WithField("IPv4", ip.String()).Debug("Did get external IPv4")
+				strIP = ip.String()
+			} else {
+				log.WithField("Error", err).Error("Failed to get external IPv4 address")
+				fmt.Printf("Error getting FirstExternalIPv4: %s\n", err.Error())
+			}
+		default:
+			strIP = cfg.WSLogHost
+ 		}
 
 		log.WithFields(log.Fields{"ip_add": strIP, "ws_port": cfg.WSLogPort, "log levels": levels}).Debug("will call wslog.Initialise()")
-		err = wslog.Initialise(strIP, cfg.WSLogPort, levels)
+		err := wslog.Initialise(strIP, cfg.WSLogPort, levels)
 
 		if err != nil {
 

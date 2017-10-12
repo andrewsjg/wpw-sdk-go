@@ -4,9 +4,11 @@ import "fmt"
 
 // WPWithin WorldpayWithin specific configuration
 type WPWithin struct {
-	WSLogEnable bool
-	WSLogPort   int
-	WSLogLevel  string
+	WSLogEnable      bool
+	WSLogPort        int
+	WSLogLevel       string
+	WSLogHost        string
+	WPWBroadcastHost string
 }
 
 // ParseConfig load in a Configuration and read it into WorldpayWithin specific config
@@ -28,4 +30,7 @@ func (wpw *WPWithin) ParseConfig(cfg Configuration) {
 
 	wpw.WSLogLevel = cfg.GetValue("wsLogLevel").Value
 
+	wpw.WSLogHost = cfg.GetValue("wsLogHost").Value
+
+	wpw.WPWBroadcastHost = cfg.GetValue("wpwBroadcastHost").Value
 }

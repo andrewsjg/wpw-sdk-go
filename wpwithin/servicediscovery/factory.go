@@ -1,6 +1,6 @@
 package servicediscovery
 
-import "net"
+import "fmt"
 
 // NewScanner creates a new instance Scanner
 func NewScanner(port, stepSleep int) (Scanner, error) {
@@ -23,15 +23,16 @@ func NewScanner(port, stepSleep int) (Scanner, error) {
 }
 
 // NewBroadcaster create a new instance of Broadcaster
-func NewBroadcaster(host string, port int, stepSleep int) (Broadcaster, error) {
+func NewBroadcaster(bcastaddr string, port int, stepSleep int) (Broadcaster, error) {
 
 	result := &broadcasterImpl{
 
 		stepSleep: stepSleep,
 		run:       false,
-		host:      net.IPv4bcast.To4().String(),
+		host:      bcastaddr, //net.IPv4bcast.To4().String(),
 		port:      port,
 	}
+	fmt.Printf("Broadcast on %s\n",bcastaddr)
 
 	comm, err := NewUDPComm(port, "udp4")
 
