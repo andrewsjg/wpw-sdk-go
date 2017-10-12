@@ -4,6 +4,7 @@ import (
 	"os"
 	"testing"
 
+	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/configuration"
 	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/hte"
 	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/psp"
 	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/psp/onlineworldpay"
@@ -62,7 +63,7 @@ func testGetDeviceWithoutExistingUUIDFile(t *testing.T) {
 		t.FailNow()
 	}
 
-	device, err := sdkFactory.GetDevice("test", "test")
+	device, err := sdkFactory.GetDevice("test", "test", &configuration.WPWithin{})
 	defer removeUUIDFile(t)
 
 	// will not error, it will create new uuid file
@@ -88,7 +89,7 @@ func testGetDeviceWithExistingUUIDFile(t *testing.T) {
 	createUUIDFile(t, "405aae3a-9ed1-11e7-abc4-cec278b6b50a")
 	defer removeUUIDFile(t)
 
-	device, err := sdkFactory.GetDevice("test", "test")
+	device, err := sdkFactory.GetDevice("test", "test", &configuration.WPWithin{})
 	if err != nil {
 		t.Error("Error on geting device.")
 		t.FailNow()
