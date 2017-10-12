@@ -6,12 +6,13 @@ import (
 	"os"
 	"time"
 
-	log "github.com/sirupsen/logrus"
 	"github.com/WPTechInnovation/wpw-sdk-go/applications/dev-client/types"
+	"github.com/WPTechInnovation/wpw-sdk-go/examples/exutils"
 	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin"
 	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/psp"
 	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/psp/onlineworldpay"
 	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/types"
+	log "github.com/sirupsen/logrus"
 )
 
 var wpw wpwithin.WPWithin
@@ -19,6 +20,13 @@ var wpw wpwithin.WPWithin
 func main() {
 
 	initLog()
+
+	cfgFileName := "sample-producer-callbacks.json"
+	cfg, err := exutils.LoadConfiguration(cfgFileName)
+	if err != nil {
+		fmt.Println("error, failed to read config file", cfgFileName, ":", err)
+		os.Exit(1)
+	}
 
 	wp, err := wpwithin.Initialise("Robo Car Service", "Car service provided by robot...")
 	wpw = wp
@@ -35,12 +43,13 @@ func main() {
 	wp.SetEventHandler(&eh)
 
 	pspConfig := make(map[string]string, 0)
-	pspConfig[psp.CfgPSPName] = onlineworldpay.PSPName
-	pspConfig[onlineworldpay.CfgMerchantClientKey] = "T_C_97e8cbaa-14e0-4b1c-b2af-469daf8f1356"
-	pspConfig[onlineworldpay.CfgMerchantServiceKey] = "T_S_3bdadc9c-54e0-4587-8d91-29813060fecd"
-	pspConfig[psp.CfgHTEPrivateKey] = pspConfig[onlineworldpay.CfgMerchantServiceKey]
-	pspConfig[psp.CfgHTEPublicKey] = pspConfig[onlineworldpay.CfgMerchantClientKey]
-	pspConfig[onlineworldpay.CfgAPIEndpoint] = "https://api.worldpay.com/v1"
+
+	pspConfig[psp.CfgPSPName] = cfg.PspConfig.PspName
+	pspConfig[onlineworldpay.CfgMerchantClientKey] = cfg.PspConfig.MerchantClientKey
+	pspConfig[onlineworldpay.CfgMerchantServiceKey] = cfg.PspConfig.MerchantServiceKey
+	pspConfig[psp.CfgHTEPrivateKey] = cfg.PspConfig.HtePrivateKey
+	pspConfig[psp.CfgHTEPublicKey] = cfg.PspConfig.HtePublicKey
+	pspConfig[onlineworldpay.CfgAPIEndpoint] = cfg.PspConfig.ApiEndpoint
 
 	err = wp.InitProducer(pspConfig)
 

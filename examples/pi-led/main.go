@@ -5,6 +5,7 @@ import (
 	"os"
 	"time"
 
+	"github.com/WPTechInnovation/wpw-sdk-go/examples/exutils"
 	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin"
 	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/psp"
 	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/psp/onlineworldpay"
@@ -24,6 +25,13 @@ const (
 
 func main() {
 
+	cfgFileName := "pi-led.json"
+	cfg, err := exutils.LoadConfiguration(cfgFileName)
+	if err != nil {
+		fmt.Println("error, failed to read config file", cfgFileName, ":", err)
+		os.Exit(1)
+	}
+
 	_wpw, err := wpwithin.Initialise("wpw-pi-led-box", "Worldpay Within LED Demo")
 	wpw = _wpw
 
@@ -36,12 +44,13 @@ func main() {
 	wpw.SetEventHandler(&wpwHandler)
 
 	pspConfig := make(map[string]string, 0)
-	pspConfig[psp.CfgPSPName] = onlineworldpay.PSPName
-	pspConfig[onlineworldpay.CfgMerchantClientKey] = "T_C_03eaa1d3-4642-4079-b030-b543ee04b5af"
-	pspConfig[onlineworldpay.CfgMerchantServiceKey] = "T_S_f50ecb46-ca82-44a7-9c40-421818af5996"
-	pspConfig[psp.CfgHTEPrivateKey] = "T_S_f50ecb46-ca82-44a7-9c40-421818af5996"
-	pspConfig[psp.CfgHTEPublicKey] = "T_C_03eaa1d3-4642-4079-b030-b543ee04b5af"
-	pspConfig[onlineworldpay.CfgAPIEndpoint] = "https://api.worldpay.com/v1"
+
+	pspConfig[psp.CfgPSPName] = cfg.PspConfig.PspName
+	pspConfig[onlineworldpay.CfgMerchantClientKey] = cfg.PspConfig.MerchantClientKey
+	pspConfig[onlineworldpay.CfgMerchantServiceKey] = cfg.PspConfig.MerchantServiceKey
+	pspConfig[psp.CfgHTEPrivateKey] = cfg.PspConfig.HtePrivateKey
+	pspConfig[psp.CfgHTEPublicKey] = cfg.PspConfig.HtePublicKey
+	pspConfig[onlineworldpay.CfgAPIEndpoint] = cfg.PspConfig.ApiEndpoint
 
 	err = wpw.InitProducer(pspConfig)
 

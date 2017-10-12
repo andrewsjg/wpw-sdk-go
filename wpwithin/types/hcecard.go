@@ -7,13 +7,13 @@ import (
 
 // HCECard represents details of a payment card
 type HCECard struct {
-	FirstName  string
-	LastName   string
-	ExpMonth   int32
-	ExpYear    int32
-	CardNumber string
-	Type       string
-	Cvc        string
+	FirstName  string `json:"firstName"`
+	LastName   string `json:"lastName"`
+	ExpMonth   int32  `json:"expMonth"`
+	ExpYear    int32  `json:"expYear"`
+	CardNumber string `json:"cardNumber"`
+	Type       string `json:"type"`
+	Cvc        string `json:"cvc"`
 }
 
 // ObfuscateCardNumber obfuscates the card number with the exception of last four digits
