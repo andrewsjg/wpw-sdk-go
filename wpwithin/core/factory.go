@@ -92,7 +92,7 @@ func (factory *SDKFactoryImpl) GetDevice(name, description string, cfg *configur
 	}
 
 	var deviceAddress net.IP
-	switch cfg.WPWBroadcastHost {
+	switch cfg.WPWBroadcastIP {
 	case "":
 		//var err error
 		//deviceAddress, err = utils.FirstExternalIPv4()
@@ -104,9 +104,9 @@ func (factory *SDKFactoryImpl) GetDevice(name, description string, cfg *configur
 	case "ALL":
 		return nil, fmt.Errorf("Broadcasting to all network interfaces id not allowed")
 	default:
-		deviceAddress = net.ParseIP(cfg.WPWBroadcastHost)
+		deviceAddress = net.ParseIP(cfg.WPWBroadcastIP)
 		if deviceAddress == nil {
-			return nil, fmt.Errorf("Unable to parse IP address %s", cfg.WPWBroadcastHost)
+			return nil, fmt.Errorf("Unable to parse IP address %s", cfg.WPWBroadcastIP)
 		}
 	}
 

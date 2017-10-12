@@ -30,14 +30,14 @@ func TestParseConfig_sunny(t *testing.T) {
 	}
 
 	conf.items["wsLogHost"] = Item{Key: "wsLogHost", Value: "ALL"}
-	conf.items["wpwBroadcastHost"] = Item{Key: "wpwBroadcastHost", Value: "127.0.0.1"}
+	conf.items["wpwBroadcastIP"] = Item{Key: "wpwBroadcastIP", Value: "10.255.255.255"}
 	wpw.ParseConfig(conf)
 	if wpw.WSLogHost != "ALL" {
 		t.Error("WSLogHost should be ALL, but is: " + wpw.WSLogHost)
 		t.FailNow()
 	}
-	if wpw.WPWBroadcastHost != "127.0.0.1" {
-		t.Error("WPWBroadcastHost should be 127.0.0.1, but is: " + wpw.WPWBroadcastHost)
+	if wpw.WPWBroadcastIP != "10.255.255.255" {
+		t.Error("WPWBroadcastIP should be 10.255.255.255, but is: " + wpw.WPWBroadcastIP)
 		t.FailNow()
 	}
 }
@@ -65,4 +65,3 @@ func TestParseConfig_rainy(t *testing.T) {
 		t.Error("WSLogLevel should be info, but is: " + wpw2.WSLogLevel)
 	}
 }
-

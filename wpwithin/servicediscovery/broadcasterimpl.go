@@ -20,8 +20,6 @@ type broadcasterImpl struct {
 func (bcast *broadcasterImpl) StartBroadcast(msg types.BroadcastMessage, timeoutMillis int) error {
 
 	log.Debug("Start svc broadcast")
-	log.Debugf("msg=+%v",msg)
-	log.Debugf("bcast=%+v",bcast)
 
 	var conn Connection
 
