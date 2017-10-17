@@ -54,7 +54,8 @@ func (scanner *scannerImpl) ScanForServices(timeout int) (map[string]types.Broad
 		defer srvConn.Close()
 
 		// Wait for incoming message
-		srvConn.SetProperty("ReadDeadLine", time.Now().Add(time.Duration(scanner.stepSleep)*time.Millisecond))
+		//srvConn.SetProperty("ReadDeadLine", time.Now().Add(time.Duration(scanner.stepSleep)*time.Millisecond))
+		srvConn.SetProperty("ReadDeadLine", time.Now().Add(time.Duration(timeout)*time.Millisecond))
 
 		nRecv, addrRecv, err := srvConn.Read(buf)
 
