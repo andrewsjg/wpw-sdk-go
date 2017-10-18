@@ -4,18 +4,17 @@
 package main
 
 import (
-	"flag"
-	"fmt"
-	"math"
-	"net"
-	"net/url"
-	"os"
-	"strconv"
-	"strings"
-
-	"git.apache.org/thrift.git/lib/go/thrift"
-	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/rpc/wpthrift/gen-go/wpthrift"
+        "flag"
+        "fmt"
+        "math"
+        "net"
+        "net/url"
+        "os"
+        "strconv"
+        "strings"
+        "git.apache.org/thrift.git/lib/go/thrift"
 	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/rpc/wpthrift/gen-go/wpthrift_types"
+        "github.com/WPTechInnovation/wpw-sdk-go/wpwithin/rpc/wpthrift/gen-go/wpthrift"
 )
 
 var _ = wpthrift_types.GoUnusedProtection__
@@ -130,39 +129,39 @@ func main() {
       fmt.Fprintln(os.Stderr, "BeginServiceDelivery requires 4 args")
       flag.Usage()
     }
-    tmp0, err122 := (strconv.Atoi(flag.Arg(1)))
-    if err122 != nil {
+    tmp0, err126 := (strconv.Atoi(flag.Arg(1)))
+    if err126 != nil {
       Usage()
       return
     }
     argvalue0 := int32(tmp0)
     value0 := argvalue0
-    tmp1, err123 := (strconv.Atoi(flag.Arg(2)))
-    if err123 != nil {
+    tmp1, err127 := (strconv.Atoi(flag.Arg(2)))
+    if err127 != nil {
       Usage()
       return
     }
     argvalue1 := int32(tmp1)
     value1 := argvalue1
-    arg124 := flag.Arg(3)
-    mbTrans125 := thrift.NewTMemoryBufferLen(len(arg124))
-    defer mbTrans125.Close()
-    _, err126 := mbTrans125.WriteString(arg124)
-    if err126 != nil {
+    arg128 := flag.Arg(3)
+    mbTrans129 := thrift.NewTMemoryBufferLen(len(arg128))
+    defer mbTrans129.Close()
+    _, err130 := mbTrans129.WriteString(arg128)
+    if err130 != nil {
       Usage()
       return
     }
-    factory127 := thrift.NewTSimpleJSONProtocolFactory()
-    jsProt128 := factory127.GetProtocol(mbTrans125)
+    factory131 := thrift.NewTSimpleJSONProtocolFactory()
+    jsProt132 := factory131.GetProtocol(mbTrans129)
     argvalue2 := wpthrift_types.NewServiceDeliveryToken()
-    err129 := argvalue2.Read(jsProt128)
-    if err129 != nil {
+    err133 := argvalue2.Read(jsProt132)
+    if err133 != nil {
       Usage()
       return
     }
     value2 := argvalue2
-    tmp3, err130 := (strconv.Atoi(flag.Arg(4)))
-    if err130 != nil {
+    tmp3, err134 := (strconv.Atoi(flag.Arg(4)))
+    if err134 != nil {
       Usage()
       return
     }
@@ -176,32 +175,32 @@ func main() {
       fmt.Fprintln(os.Stderr, "EndServiceDelivery requires 3 args")
       flag.Usage()
     }
-    tmp0, err131 := (strconv.Atoi(flag.Arg(1)))
-    if err131 != nil {
+    tmp0, err135 := (strconv.Atoi(flag.Arg(1)))
+    if err135 != nil {
       Usage()
       return
     }
     argvalue0 := int32(tmp0)
     value0 := argvalue0
-    arg132 := flag.Arg(2)
-    mbTrans133 := thrift.NewTMemoryBufferLen(len(arg132))
-    defer mbTrans133.Close()
-    _, err134 := mbTrans133.WriteString(arg132)
-    if err134 != nil {
+    arg136 := flag.Arg(2)
+    mbTrans137 := thrift.NewTMemoryBufferLen(len(arg136))
+    defer mbTrans137.Close()
+    _, err138 := mbTrans137.WriteString(arg136)
+    if err138 != nil {
       Usage()
       return
     }
-    factory135 := thrift.NewTSimpleJSONProtocolFactory()
-    jsProt136 := factory135.GetProtocol(mbTrans133)
+    factory139 := thrift.NewTSimpleJSONProtocolFactory()
+    jsProt140 := factory139.GetProtocol(mbTrans137)
     argvalue1 := wpthrift_types.NewServiceDeliveryToken()
-    err137 := argvalue1.Read(jsProt136)
-    if err137 != nil {
+    err141 := argvalue1.Read(jsProt140)
+    if err141 != nil {
       Usage()
       return
     }
     value1 := argvalue1
-    tmp2, err138 := (strconv.Atoi(flag.Arg(3)))
-    if err138 != nil {
+    tmp2, err142 := (strconv.Atoi(flag.Arg(3)))
+    if err142 != nil {
       Usage()
       return
     }
@@ -215,8 +214,8 @@ func main() {
       fmt.Fprintln(os.Stderr, "MakePaymentEvent requires 5 args")
       flag.Usage()
     }
-    tmp0, err139 := (strconv.Atoi(flag.Arg(1)))
-    if err139 != nil {
+    tmp0, err143 := (strconv.Atoi(flag.Arg(1)))
+    if err143 != nil {
       Usage()
       return
     }
@@ -250,8 +249,8 @@ func main() {
     }
     argvalue0 := flag.Arg(1)
     value0 := argvalue0
-    tmp1, err146 := (strconv.Atoi(flag.Arg(2)))
-    if err146 != nil {
+    tmp1, err150 := (strconv.Atoi(flag.Arg(2)))
+    if err150 != nil {
       Usage()
       return
     }
@@ -267,26 +266,26 @@ func main() {
     }
     argvalue0 := flag.Arg(1)
     value0 := argvalue0
-    tmp1, err148 := (strconv.Atoi(flag.Arg(2)))
-    if err148 != nil {
+    tmp1, err152 := (strconv.Atoi(flag.Arg(2)))
+    if err152 != nil {
       Usage()
       return
     }
     argvalue1 := int32(tmp1)
     value1 := argvalue1
-    arg149 := flag.Arg(3)
-    mbTrans150 := thrift.NewTMemoryBufferLen(len(arg149))
-    defer mbTrans150.Close()
-    _, err151 := mbTrans150.WriteString(arg149)
-    if err151 != nil {
+    arg153 := flag.Arg(3)
+    mbTrans154 := thrift.NewTMemoryBufferLen(len(arg153))
+    defer mbTrans154.Close()
+    _, err155 := mbTrans154.WriteString(arg153)
+    if err155 != nil {
       Usage()
       return
     }
-    factory152 := thrift.NewTSimpleJSONProtocolFactory()
-    jsProt153 := factory152.GetProtocol(mbTrans150)
+    factory156 := thrift.NewTSimpleJSONProtocolFactory()
+    jsProt157 := factory156.GetProtocol(mbTrans154)
     argvalue2 := wpthrift_types.NewTotalPriceResponse()
-    err154 := argvalue2.Read(jsProt153)
-    if err154 != nil {
+    err158 := argvalue2.Read(jsProt157)
+    if err158 != nil {
       Usage()
       return
     }

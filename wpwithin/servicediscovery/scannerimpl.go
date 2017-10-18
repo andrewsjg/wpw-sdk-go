@@ -7,8 +7,8 @@ import (
 
 	"encoding/json"
 
-	log "github.com/sirupsen/logrus"
 	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/types"
+	log "github.com/sirupsen/logrus"
 )
 
 type scannerImpl struct {
@@ -96,6 +96,20 @@ func (scanner *scannerImpl) ScanForServices(timeout int) (map[string]types.Broad
 	log.WithFields(log.Fields{"Timed out": timedOut, "Run": scanner.run, "Found": len(result)}).Debug("Finish ScanForServices()")
 
 	return result, nil
+}
+
+func (scanner *scannerImpl) ScanForService(timeout int, serviceName string) (*types.BroadcastMessage, error) {
+	result, err := scanner.ScanForServices(timeout)
+	if err != nil {
+		return nil, err
+	} else {
+		for _, r := range result {
+			if r.DeviceName == serviceName {
+				return &r, nil
+			}
+		}
+	}
+	return nil, nil
 }
 
 func (scanner *scannerImpl) StopScanner() {

@@ -33,6 +33,7 @@ type WPWithin interface {
 	StartServiceBroadcast(timeoutMillis int) error
 	StopServiceBroadcast()
 	DeviceDiscovery(timeoutMillis int) ([]types.BroadcastMessage, error)
+	SearchForDevice(timeoutMillis int, deviceName string) (types.BroadcastMessage, error)
 	RequestServices() ([]types.ServiceDetails, error)
 	GetServicePrices(serviceID int) ([]types.Price, error)
 	SelectService(serviceID, numberOfUnits, priceID int) (types.TotalPriceResponse, error)
@@ -535,6 +536,39 @@ func (wp *wpWithinImpl) DeviceDiscovery(timeoutMillis int) ([]types.BroadcastMes
 	return svcResults, nil
 }
 
+func (wp *wpWithinImpl) SearchForDevice(timeoutMillis int, deviceName string) (types.BroadcastMessage, error) {
+
+	log.WithField("timeoutMillis", timeoutMillis).Debug("Begin wpwithin.SearchForDevice()")
+
+	defer func() {
+		if r := recover(); r != nil {
+
+			fmt.Printf("%s", debug.Stack())
+
+			log.WithFields(log.Fields{"panic_message": r, "timeoutMillis": timeoutMillis, "stack": fmt.Sprintf("%s", debug.Stack())}).
+				Errorf("Recover: WPWithin.SearchForDevice()")
+		}
+	}()
+
+	log.Debug("Will call wp.core.SvcScanner.ScanForServices()")
+	scanResult, err := wp.core.SvcScanner.ScanForService(timeoutMillis, deviceName)
+	if err != nil {
+
+		log.WithField("Error", err).Error("Error calling wp.core.SvcScanner.ScanForService()")
+
+		return types.BroadcastMessage{}, err
+	} else if scanResult == nil {
+		log.WithField("Warning", err).Warn("Did not found any devices")
+		return types.BroadcastMessage{}, nil
+	} else {
+		log.Debug("After call wp.core.SvcScanner.ScanForService()")
+
+		log.WithField("Search result", scanResult).Debug("End wpwithin.SearchForDevice()")
+
+		return *scanResult, nil
+	}
+}
+
 func (wp *wpWithinImpl) GetServicePrices(serviceID int) ([]types.Price, error) {
 
 	log.WithField("ServiceID", serviceID).Debug("Begin wpwithin.GetServicePrices()")
@@ -832,7 +866,7 @@ func doWebSocketLogSetup(cfg configuration.WPWithin) {
 			log.Debug("Attempt to get external IPv4 address")
 			ip, err := utils.FirstExternalIPv4()
 			strIP = ""
-	
+
 			if err == nil {
 				log.WithField("IPv4", ip.String()).Debug("Did get external IPv4")
 				strIP = ip.String()
@@ -842,7 +876,7 @@ func doWebSocketLogSetup(cfg configuration.WPWithin) {
 			}
 		default:
 			strIP = cfg.WSLogHost
- 		}
+		}
 
 		log.WithFields(log.Fields{"ip_add": strIP, "ws_port": cfg.WSLogPort, "log levels": levels}).Debug("will call wslog.Initialise()")
 		err := wslog.Initialise(strIP, cfg.WSLogPort, levels)
