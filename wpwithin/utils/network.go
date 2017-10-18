@@ -23,7 +23,7 @@ func FirstExternalIPv4() (net.IP, error) {
 		if iface.Flags&net.FlagLoopback != 0 {
 			continue // loopback interface
 		}
-		if iface.Flags&net.FlagBroadcast != 1 {
+		if iface.Flags&net.FlagBroadcast == 0 {
 			fmt.Printf("Interface %s does not support broadcast - skipping\n", iface.Name)
 			continue
 		}
