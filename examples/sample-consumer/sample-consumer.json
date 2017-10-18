@@ -12,5 +12,6 @@
   "pspConfig": {
     "psp_name": "worldpayonlinepayments",
     "api_endpoint": "https://api.worldpay.com/v1"
-  }
+  },
+  "deviceName": "sample-consumer.go"
 }

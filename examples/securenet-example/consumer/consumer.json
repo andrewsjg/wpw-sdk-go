@@ -13,5 +13,6 @@
     "api_endpoint": "https://gwapi.demo.securenet.com/api",
     "app_version": "0.1",
     "developer_id": "12345678"
-  }
+  },
+  "deviceName": "securenet-example/consumer.go"
 }

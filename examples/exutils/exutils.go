@@ -10,6 +10,7 @@ import (
 
 type Config struct {
 	LogFileName string          `json:"logFileName,omitempty"`
+	DeviceName  string          `json:"deviceName,omitempty"`
 	HceCard     types.HCECard   `json:"hceCard,omitempty"`
 	PspConfig   types.PspConfig `json:"pspConfig"`
 }

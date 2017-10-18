@@ -28,7 +28,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	wp, err := wpwithin.Initialise("Robo Car Service", "Car service provided by robot...")
+	wp, err := wpwithin.Initialise(cfg.DeviceName, "Car service provided by robot...")
 	wpw = wp
 
 	if err != nil {
