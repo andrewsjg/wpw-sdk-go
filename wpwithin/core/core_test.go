@@ -163,6 +163,12 @@ func (d *dummyScanner) ScanForServices(timeout int) (map[string]types.BroadcastM
 	d.dummyScannerRunning = true
 	return make(map[string]types.BroadcastMessage), nil
 }
+
+func (d *dummyScanner) ScanForService(timeout int, deviceName string) (*types.BroadcastMessage, error) {
+	dummyBrMsg := types.BroadcastMessage{}
+	return &dummyBrMsg, nil
+}
+
 func (d *dummyScanner) StopScanner() {
 	d.dummyScannerRunning = false
 	return
