@@ -92,22 +92,10 @@ func (factory *SDKFactoryImpl) GetDevice(name, description string, cfg *configur
 	}
 
 	var deviceAddress net.IP
-	switch cfg.WPWBroadcastIP {
-	case "":
-		//var err error
-		//deviceAddress, err = utils.FirstExternalIPv4()
-		//if err != nil {
-		//	return nil, fmt.Errorf("Unable to get IP address: %q", err.Error())
-		//}
-		deviceAddress = net.IPv4bcast // which equals to "255.255.255.255" on first valid network card
-		// golang net library has limited support for network broadcasting and multiple interfaces
-	case "ALL":
-		return nil, fmt.Errorf("Broadcasting to all network interfaces id not allowed")
-	default:
-		deviceAddress = net.ParseIP(cfg.WPWBroadcastIP)
-		if deviceAddress == nil {
-			return nil, fmt.Errorf("Unable to parse IP address %s", cfg.WPWBroadcastIP)
-		}
+	var err error
+	deviceAddress, err = utils.FirstExternalIPv4()
+	if err != nil {
+		return nil, fmt.Errorf("Unable to get IP address: %q", err.Error())
 	}
 
 	d, e := types.NewDevice(name, description, deviceGUID, deviceAddress.String(), "GBP")

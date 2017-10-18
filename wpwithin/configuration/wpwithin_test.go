@@ -30,20 +30,15 @@ func TestParseConfig_sunny(t *testing.T) {
 	}
 
 	conf.items["wsLogHost"] = Item{Key: "wsLogHost", Value: "ALL"}
-	conf.items["wpwBroadcastIP"] = Item{Key: "wpwBroadcastIP", Value: "10.255.255.255"}
 	wpw.ParseConfig(conf)
 	if wpw.WSLogHost != "ALL" {
 		t.Error("WSLogHost should be ALL, but is: " + wpw.WSLogHost)
 		t.FailNow()
 	}
-	if wpw.WPWBroadcastIP != "10.255.255.255" {
-		t.Error("WPWBroadcastIP should be 10.255.255.255, but is: " + wpw.WPWBroadcastIP)
-		t.FailNow()
-	}
 }
 
-func TestParseConfig_rainy(t *testing.T) {
-	// rainy day scenarios
+func TestParseConfig_rainy1(t *testing.T) {
+	// rainy day scenarios 1
 	conf := Configuration{}
 	conf.items = map[string]Item{
 		"wsLogEnable": Item{Key: "wsLogEnable", Value: "bad value"},
@@ -57,6 +52,18 @@ func TestParseConfig_rainy(t *testing.T) {
 		t.Error("WSLogEnable should be false")
 		t.FailNow()
 	}
+}
+func TestParseConfig_rainy2(t *testing.T) {
+	// rainy day scenarios 1
+	conf := Configuration{}
+	conf.items = map[string]Item{
+		"wsLogEnable": Item{Key: "wsLogEnable", Value: "bad value"},
+		"wsLogPort":   Item{Key: "wsLogPort", Value: "bad value"},
+		"wsLogLevel":  Item{Key: "wsLogLevel", Value: "info"},
+	}
+	var wpw2 WPWithin
+	wpw2.ParseConfig(conf)
+
 	if wpw2.WSLogPort != 0 {
 		t.Error("WSLogPort should be 5678")
 		t.FailNow()

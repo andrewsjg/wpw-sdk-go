@@ -13,9 +13,5 @@
 {
 	"key": "wsLogHost",
 	"value": "ALL"
-},
-{
-	"key": "wpwBroadcastIP",
-	"value": "255.255.255.255"
 }
 ]
