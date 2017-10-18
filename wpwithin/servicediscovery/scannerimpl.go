@@ -24,6 +24,8 @@ func (scanner *scannerImpl) ScanForServices(timeout int) (map[string]types.Broad
 		informing when scanning is finished.
 		Inside the result is an error object and also a list of scanned services
 		Error is != nil if there was a problem
+		stepSleep is duration for which a single broadcasts scan will run
+		timeout must be longer than stepSleep
 	*/
 
 	log.Debugf("Begin ScanForServices(timeout = %d)", timeout)
@@ -54,8 +56,7 @@ func (scanner *scannerImpl) ScanForServices(timeout int) (map[string]types.Broad
 		defer srvConn.Close()
 
 		// Wait for incoming message
-		//srvConn.SetProperty("ReadDeadLine", time.Now().Add(time.Duration(scanner.stepSleep)*time.Millisecond))
-		srvConn.SetProperty("ReadDeadLine", time.Now().Add(time.Duration(timeout)*time.Millisecond))
+		srvConn.SetProperty("ReadDeadLine", time.Now().Add(time.Duration(scanner.stepSleep)*time.Millisecond))
 
 		nRecv, addrRecv, err := srvConn.Read(buf)
 
