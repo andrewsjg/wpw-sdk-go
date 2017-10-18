@@ -1,0 +1,20 @@
+[{
+	"key": "wsLogEnable",
+	"value": "false"
+},
+{
+	"key": "wsLogPort",
+	"value": "8081"
+},
+{
+	"key": "wsLogLevel",
+	"value": "debug,warn,info,error,fatal"
+},
+{
+	"key": "wsLogHost",
+	"value": "ALL"
+},
+{
+	"key": "wpwBroadcastIP",
+	"value": "255.255.255.255"
+}]
