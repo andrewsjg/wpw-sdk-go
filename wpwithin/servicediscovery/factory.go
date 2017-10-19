@@ -1,5 +1,7 @@
 package servicediscovery
 
+import "net"
+
 // NewScanner creates a new instance Scanner
 func NewScanner(port, stepSleep int) (Scanner, error) {
 
@@ -27,7 +29,7 @@ func NewBroadcaster(bcastaddr string, port int, stepSleep int) (Broadcaster, err
 
 		stepSleep: stepSleep,
 		run:       false,
-		host:      bcastaddr, //net.IPv4bcast.To4().String(),
+		host:      net.IPv4bcast.To4().String(),
 		port:      port,
 	}
 
