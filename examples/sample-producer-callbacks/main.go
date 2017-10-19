@@ -82,6 +82,7 @@ func addService() {
 	roboWash.Name = "RoboWash"
 	roboWash.Description = "Car washed by robot"
 	roboWash.ID = 1
+	roboWash.ServiceType = "wash"
 
 	washPriceCar := types.Price{
 

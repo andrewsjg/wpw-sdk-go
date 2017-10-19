@@ -21,6 +21,7 @@ const (
 	yellowDescr string = "Turn on the yellow LED"
 	oneSecond   string = "One second"
 	oneMinute   string = "One minute"
+	serviceType string = "pi-led"
 )
 
 func main() {
@@ -75,6 +76,7 @@ func doSetupServices() {
 	svcGreenLed.ID = 1
 	svcGreenLed.Name = "Big LED"
 	svcGreenLed.Description = greenDescr
+	svcGreenLed.ServiceType = serviceType
 
 	priceGreenLedSecond, err := types.NewPrice()
 	errCheck(err, "Create new price")
@@ -117,6 +119,7 @@ func doSetupServices() {
 	svcRedLed.ID = 2
 	svcRedLed.Name = "Red LED"
 	svcRedLed.Description = redDescr
+	svcRedLed.ServiceType = serviceType
 
 	priceRedLedSecond, err := types.NewPrice()
 	errCheck(err, "Create new price")
@@ -159,6 +162,7 @@ func doSetupServices() {
 	svcYellowLed.ID = 3
 	svcYellowLed.Name = "Yellow LED"
 	svcYellowLed.Description = yellowDescr
+	svcYellowLed.ServiceType = serviceType
 
 	priceYellowLedSecond, err := types.NewPrice()
 	errCheck(err, "Create new price")
