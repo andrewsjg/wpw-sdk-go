@@ -427,6 +427,19 @@ func (wp *wpWithinImpl) StartServiceBroadcast(timeoutMillis int) error {
 
 	log.Debug("Will construct types.BroadcastMessage now")
 	// Setup message that is broadcast over network
+	serviceTypesMap := make(map[string]bool)
+	serviceTypesList := make([]string, 0)
+	for _, service := range wp.core.Device.Services {
+		if service == nil {
+			log.Warnf("Service %d \"%s\" has no type defined\n", service.ID, service.Name)
+		} else {
+			if _, exists := serviceTypesMap[service.ServiceType]; exists {
+			} else {
+				serviceTypesMap[service.ServiceType] = true
+				serviceTypesList = append(serviceTypesList, service.ServiceType)
+			}
+		}
+	}
 	msg := types.BroadcastMessage{
 
 		DeviceDescription: wp.core.Device.Description,
@@ -436,6 +449,7 @@ func (wp *wpWithinImpl) StartServiceBroadcast(timeoutMillis int) error {
 		PortNumber:        wp.core.HTE.Port(),
 		Scheme:            wp.core.HTE.Scheme(),
 		DeviceName:        wp.core.Device.Name,
+		ServiceTypes:      serviceTypesList,
 	}
 	log.Debug("Did construct types.BroadcastMessage")
 
