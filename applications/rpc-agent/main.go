@@ -185,9 +185,10 @@ func startRPC() {
 }
 
 func scanParent() {
-	log.Debug("My PID:", os.Getpid(), ", Parent PID:", os.Getppid())
+	ppid := os.Getppid()
+	log.Debug("My PID:", os.Getpid(), ", Parent PID:", ppid)
 	for {
-		alive, err := apputils.IsProcAlive(os.Getppid())
+		alive, err := apputils.IsProcAlive(ppid)
 		if alive {
 			time.Sleep(time.Second * 3)
 			continue
