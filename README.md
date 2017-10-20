@@ -5,13 +5,14 @@ The Go implementation for the Worldpay Within IoT payment SDK. This SDK, or Soft
 ![The Worldpay Within puzzle piece](http://wptechinnovation.github.io/worldpay-within-sdk/images/architecture/worldpayWithinFig1.png)
 
 ## Get started
-1. Download this repo
-3. Run the examples...
+1. Download this repo (into GOPATH)
+* `go get github.com/WPTechInnovation/wpw-sdk-go`
+2. Run the examples...
 
 ## Run the examples
-* build examles using 'go build'
-* Run the consumer project
-* Simultaneously run the producer or producer-callbacks project
+* You can build examles using `go build *.go` or run without building using `go run *.go`
+* Run the producer or producer-callbacks project: `cd wpw-sdk-go/examples/sample-producer-callbacks/` and `go run eventhandler.go main.go`
+* Simultaneously run the consumer project: `cd wpw-sdk-go/examples/sample-consumer/` and `go run main.go`
 * The two smart devices should communicate with each other and make a payment
 
 ## Compatibility and pre-requisites
@@ -29,7 +30,7 @@ The Go implementation for the Worldpay Within IoT payment SDK. This SDK, or Soft
 
 You can see there are four phases; discover, negotiation, payment and then service delivery, for more information visit our website at http://www.worldpaywithin.com.
 
-[The flows and API can be found here](http://wptechinnovation.github.io/worldpay-within-sdk/the-flows.html)
+[The flows and API can be found here](http://http://wptechinnovation.github.io/worldpay-within-sdk/how-it-works/)
 
 ## Want to contribute:
 
@@ -42,12 +43,14 @@ Go is slightly different, as it is what the innards of the 'IoT Core Componet' o
 This is the source for the core of Worldpay Within and is separated into the following paths:
 
 * `wpwithin` - Worldpay Within SDK core implementation
-* `wpwithin_test` - contains tests to various parts of the SDK (under development)
 * `examples` - Some sample code showing how to develop a producer and consumer
+* `applications` - source for binaries used in the project
+* `gen-go` - sources generated from .thrift definition files
+* `wpw-sdk-thrift` - submodule with .thrift definition files
 
 ## wpwithin
 
-Implementation of the [Worldpay Within architecture](http://wptechinnovation.github.io/worldpay-within-sdk/architecture.html).
+Implementation of the [Worldpay Within architecture](http://wptechinnovation.github.io/worldpay-within-sdk/architecture/).
 
 ### configuration
 
