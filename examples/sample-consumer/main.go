@@ -66,6 +66,14 @@ func main() {
 		fmt.Printf("--------------%s--------------\n", sm.DeviceDescription)
 		fmt.Printf("Description: %s\n", sm.ServerID)
 		fmt.Printf("Service HTTP string: %s%s:%d%s\n", sm.Scheme, sm.Hostname, sm.PortNumber, sm.URLPrefix)
+
+		if len(sm.ServiceTypes) > 0 {
+			fmt.Printf("Supported service type(s): ")
+			for _, st := range sm.ServiceTypes {
+				fmt.Printf("%s ", st)
+			}
+			fmt.Println()
+		}
 		fmt.Println("-----------------------------------------------")
 	}
 	fmt.Println()
