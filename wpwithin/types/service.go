@@ -7,6 +7,7 @@ type Service struct {
 	ID          int           `json:"serviceID"`
 	Name        string        `json:"name"`
 	Description string        `json:"description"`
+	ServiceType string        `json:"serviceType"`
 	Prices      map[int]Price `json:"prices"`
 }
 

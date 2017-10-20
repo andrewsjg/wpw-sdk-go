@@ -3,16 +3,18 @@ package core
 import (
 	"errors"
 	"fmt"
+	"net"
 	"strconv"
 
-	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/hte"
-	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/psp"
-	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/psp/onlineworldpay"
-	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/psp/securenet"
-	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/servicediscovery"
-	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/types"
-	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/types/event"
-	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/utils"
+	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/configuration"
+	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/hte"
+	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/psp"
+	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/psp/onlineworldpay"
+	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/psp/securenet"
+	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/servicediscovery"
+	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/types"
+	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/types/event"
+	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/utils"
 )
 
 const (
@@ -35,7 +37,7 @@ const (
 
 // SDKFactory for creating WPWithin instances. // TODO Needs to be reworked so can be partially implemented.
 type SDKFactory interface {
-	GetDevice(name, description string) (*types.Device, error)
+	GetDevice(name, description string, cfg *configuration.WPWithin) (*types.Device, error)
 	GetPSPMerchant(pspConfig map[string]string) (psp.PSP, error)
 	GetPSPClient(pspConfig map[string]string) (psp.PSP, error)
 	GetSvcBroadcaster(ipv4Address string) (servicediscovery.Broadcaster, error)
@@ -57,7 +59,7 @@ func NewSDKFactory() (SDKFactory, error) {
 }
 
 // GetDevice create a device with Name and Description
-func (factory *SDKFactoryImpl) GetDevice(name, description string) (*types.Device, error) {
+func (factory *SDKFactoryImpl) GetDevice(name, description string, cfg *configuration.WPWithin) (*types.Device, error) {
 
 	var deviceGUID string
 
@@ -89,10 +91,10 @@ func (factory *SDKFactoryImpl) GetDevice(name, description string) (*types.Devic
 		}
 	}
 
-	deviceAddress, err := utils.ExternalIPv4()
-
+	var deviceAddress net.IP
+	var err error
+	deviceAddress, err = utils.FirstExternalIPv4()
 	if err != nil {
-
 		return nil, fmt.Errorf("Unable to get IP address: %q", err.Error())
 	}
 

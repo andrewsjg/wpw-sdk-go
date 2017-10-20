@@ -11,9 +11,9 @@ import (
 	"strings"
 
 	log "github.com/sirupsen/logrus"
-	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/psp"
-	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/psp/onlineworldpay/types"
-	wpwithin_types "github.com/wptechinnovation/wpw-sdk-go/wpwithin/types"
+	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/psp"
+	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/psp/onlineworldpay/types"
+	wpwithin_types "github.com/WPTechInnovation/wpw-sdk-go/wpwithin/types"
 )
 
 // OnlineWorldpay implementation of PSP

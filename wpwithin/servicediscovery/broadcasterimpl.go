@@ -6,7 +6,7 @@ import (
 
 	log "github.com/sirupsen/logrus"
 
-	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/types"
+	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/types"
 )
 
 type broadcasterImpl struct {
@@ -32,7 +32,7 @@ func (bcast *broadcasterImpl) StartBroadcast(msg types.BroadcastMessage, timeout
 
 	for bcast.run && !timedOut {
 
-		log.Debug("Broadcasting..")
+		log.Debugf("Broadcasting on %s:%d", bcast.host, bcast.port)
 
 		_conn, err := bcast.comm.Connect(bcast.host, int(bcast.port))
 		conn = _conn
@@ -76,6 +76,7 @@ func (bcast *broadcasterImpl) StartBroadcast(msg types.BroadcastMessage, timeout
 	// Clean up connection if still active
 	if conn != nil {
 
+		log.Debug("UDP connection still active - closing...")
 		err := conn.Close()
 
 		if err != nil {

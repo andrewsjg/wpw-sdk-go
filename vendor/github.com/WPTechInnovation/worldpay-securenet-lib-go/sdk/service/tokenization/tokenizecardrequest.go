@@ -1,6 +1,6 @@
 package tokenization
 
-import "github.com/wptechinnovation/worldpay-securenet-lib-go/sdk/types"
+import "github.com/WPTechInnovation/worldpay-securenet-lib-go/sdk/types"
 
 // TokenizeCardRequest represents a request to convert a payment card to a SecureNet token
 type TokenizeCardRequest struct {

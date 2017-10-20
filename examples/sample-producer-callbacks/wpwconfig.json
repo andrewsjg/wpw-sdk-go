@@ -9,5 +9,9 @@
 {
 	"key": "wsLogLevel",
 	"value": "debug,warn,info,error,fatal"
+},
+{
+	"key": "wsLogHost",
+	"value": "ALL"
 }
 ]

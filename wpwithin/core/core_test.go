@@ -3,10 +3,10 @@ package core
 import (
 	"testing"
 
-	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/hte"
-	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/psp"
-	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/servicediscovery"
-	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/types"
+	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/hte"
+	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/psp"
+	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/servicediscovery"
+	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/types"
 )
 
 var device types.Device
@@ -163,6 +163,12 @@ func (d *dummyScanner) ScanForServices(timeout int) (map[string]types.BroadcastM
 	d.dummyScannerRunning = true
 	return make(map[string]types.BroadcastMessage), nil
 }
+
+func (d *dummyScanner) ScanForService(timeout int, deviceName string) (*types.BroadcastMessage, error) {
+	dummyBrMsg := types.BroadcastMessage{}
+	return &dummyBrMsg, nil
+}
+
 func (d *dummyScanner) StopScanner() {
 	d.dummyScannerRunning = false
 	return

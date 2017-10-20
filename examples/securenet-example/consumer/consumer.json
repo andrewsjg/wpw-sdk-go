@@ -1,0 +1,18 @@
+{
+  "hceCard": {
+    "firstName": "Joe",
+    "lastName": "Bloggs",
+    "expMonth": 12,
+    "expYear": 2020,
+    "cardNumber": "34343434343434",
+    "type": "Card",
+    "cvc": "123"
+  },
+  "pspConfig": {
+    "psp_name": "securenet",
+    "api_endpoint": "https://gwapi.demo.securenet.com/api",
+    "app_version": "0.1",
+    "developer_id": "12345678"
+  },
+  "deviceName": "securenet-example/consumer.go"
+}

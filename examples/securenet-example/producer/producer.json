@@ -1,0 +1,14 @@
+{
+  "pspConfig": {
+    "psp_name": "securenet",
+    "hte_public_key": "8c0ce953-455d-4c12-8d14-ff20d565e485",
+    "hte_private_key": "KZ9kWv2EPy7M",
+    "api_endpoint": "https://gwapi.demo.securenet.com/api",
+    "app_version":"0.1",
+    "developer_id":"12345678",
+    "public_key":"8c0ce953-455d-4c12-8d14-ff20d565e485",
+    "secure_key":"KZ9kWv2EPy7M",
+    "secure_net_id":"8008609"
+  },
+  "deviceName": "securenet-example/producer.go"
+}

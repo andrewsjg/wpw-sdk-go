@@ -6,12 +6,13 @@ import (
 	"os"
 	"time"
 
+	"github.com/WPTechInnovation/wpw-sdk-go/applications/dev-client/types"
+	"github.com/WPTechInnovation/wpw-sdk-go/examples/exutils"
+	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin"
+	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/psp"
+	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/psp/securenet"
+	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/types"
 	log "github.com/sirupsen/logrus"
-	"github.com/wptechinnovation/wpw-sdk-go/applications/dev-client/types"
-	"github.com/wptechinnovation/wpw-sdk-go/wpwithin"
-	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/psp"
-	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/psp/securenet"
-	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/types"
 )
 
 var wpw wpwithin.WPWithin
@@ -20,7 +21,14 @@ func main() {
 
 	initLog()
 
-	wp, err := wpwithin.Initialise("Robo Car Service", "Car service provided by robot...")
+	cfgFileName := "producer.json"
+	cfg, err := exutils.LoadConfiguration(cfgFileName)
+	if err != nil {
+		fmt.Println("error, failed to read config file", cfgFileName, ":", err)
+		os.Exit(1)
+	}
+
+	wp, err := wpwithin.Initialise(cfg.DeviceName, "Car service provided by robot...")
 	wpw = wp
 
 	if err != nil {
@@ -35,15 +43,15 @@ func main() {
 	wp.SetEventHandler(&eh)
 
 	pspConfig := make(map[string]string, 0)
-	pspConfig[psp.CfgPSPName] = securenet.PSPName
-	pspConfig[psp.CfgHTEPrivateKey] = "KZ9kWv2EPy7M"
-	pspConfig[psp.CfgHTEPublicKey] = "8c0ce953-455d-4c12-8d14-ff20d565e485"
-	pspConfig[securenet.CfgAppVersion] = "0.1"
-	pspConfig[securenet.CfgDeveloperID] = "12345678"
-	pspConfig[securenet.CfgPublicKey] = "8c0ce953-455d-4c12-8d14-ff20d565e485"
-	pspConfig[securenet.CfgSecureKey] = "KZ9kWv2EPy7M"
-	pspConfig[securenet.CfgSecureNetID] = "8008609"
-	pspConfig[securenet.CfgAPIEndpoint] = "https://gwapi.demo.securenet.com/api"
+	pspConfig[psp.CfgPSPName] = cfg.PspConfig.PspName
+	pspConfig[psp.CfgHTEPrivateKey] = cfg.PspConfig.HtePrivateKey
+	pspConfig[psp.CfgHTEPublicKey] = cfg.PspConfig.HtePublicKey
+	pspConfig[securenet.CfgAppVersion] = cfg.PspConfig.AppVersion
+	pspConfig[securenet.CfgDeveloperID] = cfg.PspConfig.DeveloperId
+	pspConfig[securenet.CfgPublicKey] = cfg.PspConfig.PublicKey
+	pspConfig[securenet.CfgSecureKey] = cfg.PspConfig.SecureKey
+	pspConfig[securenet.CfgSecureNetID] = cfg.PspConfig.SecureNetId
+	pspConfig[securenet.CfgAPIEndpoint] = cfg.PspConfig.ApiEndpoint
 
 	err = wp.InitProducer(pspConfig)
 

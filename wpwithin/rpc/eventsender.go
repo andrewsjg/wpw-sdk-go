@@ -7,12 +7,12 @@ import (
 
 	"git.apache.org/thrift.git/lib/go/thrift"
 	log "github.com/sirupsen/logrus"
-	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/rpc/wpthrift/gen-go/wpthrift"
-	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/rpc/wpthrift/gen-go/wpthrift_types"
+	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/rpc/wpthrift/gen-go/wpthrift"
+	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/rpc/wpthrift/gen-go/wpthrift_types"
 
-	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/types"
-	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/types/event"
-	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/utils"
+	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/types"
+	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/types/event"
+	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/utils"
 )
 
 // EventSenderImpl implementation of event.Handler. Used to send events over Thrift RPC
@@ -24,9 +24,9 @@ type EventSenderImpl struct {
 }
 
 // BeginServiceDelivery event
-func (cb *EventSenderImpl) BeginServiceDelivery(serviceID int, serviceDeliveryToken types.ServiceDeliveryToken, unitsToSupply int) {
+func (cb *EventSenderImpl) BeginServiceDelivery(serviceID int, servicePriceID int, serviceDeliveryToken types.ServiceDeliveryToken, unitsToSupply int) {
 
-	log.WithFields(log.Fields{"serviceID": serviceID, "serviceDeliveryToken": fmt.Sprintf("%+v", serviceDeliveryToken), "unitsToSupply": unitsToSupply}).Debug("begin EventSenderImpl.BeginServiceDelivery()")
+	log.WithFields(log.Fields{"serviceID": serviceID, "servicePriceID": servicePriceID, "serviceDeliveryToken": fmt.Sprintf("%+v", serviceDeliveryToken), "unitsToSupply": unitsToSupply}).Debug("begin EventSenderImpl.BeginServiceDelivery()")
 
 	defer log.Debug("end EventSenderImpl.BeginServiceDelivery()")
 
@@ -41,7 +41,7 @@ func (cb *EventSenderImpl) BeginServiceDelivery(serviceID int, serviceDeliveryTo
 		Signature:      serviceDeliveryToken.Signature,
 	}
 
-	err := cb.client.BeginServiceDelivery(int32(serviceID), &sdt, int32(unitsToSupply))
+	err := cb.client.BeginServiceDelivery(int32(serviceID), int32(servicePriceID), &sdt, int32(unitsToSupply))
 
 	if err != nil {
 
@@ -157,4 +157,95 @@ func (cb *EventSenderImpl) connectCallbackIfNotConnected() error {
 func (cb *EventSenderImpl) GenericEvent(name string, message string, data interface{}) error {
 
 	return errors.New("eventsender.GenericEvent() is Not implemented")
+}
+
+// MakePaymentEvent
+func (cb *EventSenderImpl) MakePaymentEvent(totalPrice int, orderCurrency string, clientToken string, orderDescription string, uuid string) {
+
+	log.WithFields(log.Fields{"totalPrice": totalPrice, "orderCurrency": orderCurrency, "clientToken": clientToken, "orderDescription": orderDescription, "uuid": uuid}).Debug("begin EventSenderImpl.MakePaymentEvent()")
+
+	defer log.Debug("end EventSenderImpl.MakePaymentEvent()")
+
+	cb.connectCallbackIfNotConnected()
+
+	err := cb.client.MakePaymentEvent(int32(totalPrice), orderCurrency, clientToken, orderDescription, uuid)
+
+	if err != nil {
+		fmt.Println(err.Error())
+		log.WithField("error", err.Error()).Error("error calling MakePaymentEvent using thrift callback.")
+	}
+}
+
+// ServiceDeliveryEvent
+func (cb *EventSenderImpl) ServiceDiscoveryEvent(remoteAddr string) {
+
+	log.WithFields(log.Fields{"remoteAddr": remoteAddr}).Debug("begin EventSenderImpl.ServiceDiscoveryEvent()")
+
+	defer log.Debug("end EventSenderImpl.ServiceDiscoveryEvent()")
+
+	cb.connectCallbackIfNotConnected()
+
+	err := cb.client.ServiceDiscoveryEvent(remoteAddr)
+
+	if err != nil {
+		fmt.Println(err.Error())
+		log.WithField("error", err.Error()).Error("error calling ServiceDiscoveryEvent using thrift callback.")
+	}
+}
+
+func (cb *EventSenderImpl) ServicePricesEvent(remoteAddr string, serviceId int) {
+
+	log.WithFields(log.Fields{"remoteAddr": remoteAddr}).Debug("begin EventSenderImpl.ServiceDeliveryEvent()")
+
+	defer log.Debug("end EventSenderImpl.ServicePricesEvent()")
+
+	cb.connectCallbackIfNotConnected()
+
+	err := cb.client.ServicePricesEvent(remoteAddr, int32(serviceId))
+
+	if err != nil {
+		fmt.Println(err.Error())
+		log.WithField("error", err.Error()).Error("error calling ServicePricesEvent using thrift callback.")
+	}
+}
+
+func (cb *EventSenderImpl) ServiceTotalPriceEvent(remoteAddr string, serviceId int, totalPriceResp *types.TotalPriceResponse) {
+
+	log.WithFields(log.Fields{"remoteAddr": remoteAddr}).Debug("begin EventSenderImpl.ServiceTotalPriceEvent()")
+
+	defer log.Debug("end EventSenderImpl.ServiceTotalPriceEvent()")
+
+	cb.connectCallbackIfNotConnected()
+
+	tpr := wpthrift_types.TotalPriceResponse{
+		ServerId:           totalPriceResp.ServerID,
+		ClientId:           totalPriceResp.ClientID,
+		PriceId:            int32(totalPriceResp.PriceID),
+		UnitsToSupply:      int32(totalPriceResp.UnitsToSupply),
+		TotalPrice:         int32(totalPriceResp.TotalPrice),
+		PaymentReferenceId: totalPriceResp.PaymentReferenceID,
+		MerchantClientKey:  totalPriceResp.MerchantClientKey,
+		CurrencyCode:       totalPriceResp.CurrencyCode,
+	}
+	err := cb.client.ServiceTotalPriceEvent(remoteAddr, int32(serviceId), &tpr)
+
+	if err != nil {
+		fmt.Println(err.Error())
+		log.WithField("error", err.Error()).Error("error calling ServiceTotalPriceEvent using thrift callback.")
+	}
+}
+
+func (cb *EventSenderImpl) ErrorEvent(msg string) {
+	log.WithFields(log.Fields{"msg": msg}).Debug("begin EventSenderImpl.ErrorEvent()")
+
+	defer log.Debug("end EventSenderImpl.ErrorEvent()")
+
+	cb.connectCallbackIfNotConnected()
+
+	err := cb.client.ErrorEvent(msg)
+
+	if err != nil {
+		fmt.Println(err.Error())
+		log.WithField("error", err.Error()).Error("error calling ErrorEvent using thrift callback.")
+	}
 }

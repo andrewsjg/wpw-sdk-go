@@ -7,8 +7,8 @@ import (
 
 	"encoding/json"
 
+	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/types"
 	log "github.com/sirupsen/logrus"
-	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/types"
 )
 
 type scannerImpl struct {
@@ -24,6 +24,8 @@ func (scanner *scannerImpl) ScanForServices(timeout int) (map[string]types.Broad
 		informing when scanning is finished.
 		Inside the result is an error object and also a list of scanned services
 		Error is != nil if there was a problem
+		stepSleep is duration for which a single broadcasts scan will run
+		timeout must be longer than stepSleep
 	*/
 
 	log.Debugf("Begin ScanForServices(timeout = %d)", timeout)
@@ -96,6 +98,20 @@ func (scanner *scannerImpl) ScanForServices(timeout int) (map[string]types.Broad
 	log.WithFields(log.Fields{"Timed out": timedOut, "Run": scanner.run, "Found": len(result)}).Debug("Finish ScanForServices()")
 
 	return result, nil
+}
+
+func (scanner *scannerImpl) ScanForService(timeout int, serviceName string) (*types.BroadcastMessage, error) {
+	result, err := scanner.ScanForServices(timeout)
+	if err != nil {
+		return nil, err
+	} else {
+		for _, r := range result {
+			if r.DeviceName == serviceName {
+				return &r, nil
+			}
+		}
+	}
+	return nil, nil
 }
 
 func (scanner *scannerImpl) StopScanner() {

@@ -1,12 +1,12 @@
 package rpc
 
 import (
+	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin"
+	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/rpc/wpthrift/gen-go/wpthrift_types"
+	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/types"
+	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/types/event"
+	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/utils"
 	log "github.com/sirupsen/logrus"
-	"github.com/wptechinnovation/wpw-sdk-go/wpwithin"
-	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/rpc/wpthrift/gen-go/wpthrift_types"
-	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/types"
-	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/types/event"
-	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/utils"
 )
 
 // WPWithinHandler handle RPC requests
@@ -231,6 +231,33 @@ func (wp *WPWithinHandler) DeviceDiscovery(timeoutMillis int32) (r map[*wpthrift
 	}
 
 	log.Debug("End RPC.WPWithinHandler.ServiceDiscovery()")
+
+	return result, nil
+}
+
+// SearchForDevice initiate a discover process to detect deviceName in the network
+func (wp *WPWithinHandler) SearchForDevice(timeoutMillis int32, deviceName string) (r *wpthrift_types.ServiceMessage, err error) {
+
+	log.Debug("Begin RPC.WPWithinHandler.SearchForDevice()")
+
+	gSvcMsg, err := wp.wpwithin.SearchForDevice(int(timeoutMillis), deviceName)
+
+	if err != nil {
+
+		return nil, err
+	}
+
+	result := &wpthrift_types.ServiceMessage{
+		DeviceDescription: gSvcMsg.DeviceDescription,
+		Hostname:          gSvcMsg.Hostname,
+		PortNumber:        int32(gSvcMsg.PortNumber),
+		ServerId:          gSvcMsg.ServerID,
+		UrlPrefix:         gSvcMsg.URLPrefix,
+		Scheme:            gSvcMsg.Scheme,
+		DeviceName:        gSvcMsg.DeviceName,
+	}
+
+	log.Debug("End RPC.WPWithinHandler.SearchForDevice()")
 
 	return result, nil
 }

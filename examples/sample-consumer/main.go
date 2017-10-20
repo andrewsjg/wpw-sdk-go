@@ -5,11 +5,11 @@ import (
 	"os"
 	"time"
 
+	"github.com/WPTechInnovation/wpw-sdk-go/examples/exutils"
+	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin"
+	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/psp"
+	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/psp/onlineworldpay"
 	log "github.com/sirupsen/logrus"
-	"github.com/wptechinnovation/wpw-sdk-go/wpwithin"
-	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/psp"
-	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/psp/onlineworldpay"
-	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/types"
 )
 
 var wpw wpwithin.WPWithin
@@ -17,13 +17,12 @@ var wpw wpwithin.WPWithin
 func convertToMoneyString(amt int, currencyCode string) string {
 	currencyString := ""
 	currencyStringAfter := ""
+
 	if "GBP" == currencyCode {
 		currencyString = "£ "
-	}
-	if "USD" == currencyCode {
+	} else if "USD" == currencyCode {
 		currencyString = "$ "
-	}
-	if "RON" == currencyCode {
+	} else if "RON" == currencyCode {
 		currencyStringAfter = " LEU"
 	}
 
@@ -34,9 +33,16 @@ func main() {
 
 	initLog()
 
-	hceCard := initHCECard()
+	cfgFileName := "sample-consumer.json"
+	cfg, err := exutils.LoadConfiguration(cfgFileName)
+	if err != nil {
+		fmt.Println("error, failed to read config file", cfgFileName, ":", err)
+		os.Exit(1)
+	}
 
-	wpw, err := wpwithin.Initialise("go-client", "A WPWithin client written in Go")
+	hceCard := cfg.HceCard
+
+	wpw, err := wpwithin.Initialise(cfg.DeviceName, "A WPWithin client written in Go")
 
 	errCheckExit(err)
 
@@ -70,8 +76,9 @@ func main() {
 	fmt.Printf("Will select device: [%s] %s\n", sm.ServerID, sm.DeviceDescription)
 
 	pspConfig := make(map[string]string, 0)
-	pspConfig[psp.CfgPSPName] = onlineworldpay.PSPName
-	pspConfig[onlineworldpay.CfgAPIEndpoint] = "https://api.worldpay.com/v1"
+
+	pspConfig[psp.CfgPSPName] = cfg.PspConfig.PspName
+	pspConfig[onlineworldpay.CfgAPIEndpoint] = cfg.PspConfig.ApiEndpoint
 
 	err = wpw.InitConsumer(sm.Scheme, sm.Hostname, sm.PortNumber, sm.URLPrefix, wpw.GetDevice().UID, &hceCard, pspConfig)
 
@@ -215,18 +222,4 @@ func errCheckExit(err error) {
 		fmt.Println(err.Error())
 		os.Exit(1)
 	}
-}
-
-func initHCECard() types.HCECard {
-
-	card := types.HCECard{}
-	card.FirstName = "Joe"
-	card.LastName = "Bloggs"
-	card.CardNumber = "34343434343434"
-	card.Cvc = "123"
-	card.ExpMonth = 12
-	card.ExpYear = 2020
-	card.Type = "Card"
-
-	return card
 }

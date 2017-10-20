@@ -8,14 +8,14 @@ import (
 	"strings"
 	"time"
 
-	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/configuration"
-	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/core"
-	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/hte"
-	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/psp"
-	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/types"
-	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/types/event"
-	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/utils"
-	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/utils/wslog"
+	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/configuration"
+	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/core"
+	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/hte"
+	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/psp"
+	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/types"
+	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/types/event"
+	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/utils"
+	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/utils/wslog"
 
 	log "github.com/sirupsen/logrus"
 )
@@ -33,6 +33,7 @@ type WPWithin interface {
 	StartServiceBroadcast(timeoutMillis int) error
 	StopServiceBroadcast()
 	DeviceDiscovery(timeoutMillis int) ([]types.BroadcastMessage, error)
+	SearchForDevice(timeoutMillis int, deviceName string) (types.BroadcastMessage, error)
 	RequestServices() ([]types.ServiceDetails, error)
 	GetServicePrices(serviceID int) ([]types.Price, error)
 	SelectService(serviceID, numberOfUnits, priceID int) (types.TotalPriceResponse, error)
@@ -119,7 +120,7 @@ func Initialise(name, description string) (WPWithin, error) {
 	log.Debug("After call doWebSocketLogSetup()")
 
 	log.WithFields(log.Fields{"name": name, "description": description}).Debug("Will call Factory.GetDevice()")
-	dev, err2 := Factory.GetDevice(name, description)
+	dev, err2 := Factory.GetDevice(name, description, &core.Configuration)
 
 	if err2 != nil {
 
@@ -143,7 +144,7 @@ func Initialise(name, description string) (WPWithin, error) {
 
 	result.core.OrderManager = om
 
-	log.Debug("Will call Factory.GetSvcBroadcaster()")
+	log.Debugf("Will call Factory.GetSvcBroadcaster() for broadcast %s", result.core.Device.IPv4Address)
 	bc, err := Factory.GetSvcBroadcaster(result.core.Device.IPv4Address)
 
 	if err != nil {
@@ -426,6 +427,19 @@ func (wp *wpWithinImpl) StartServiceBroadcast(timeoutMillis int) error {
 
 	log.Debug("Will construct types.BroadcastMessage now")
 	// Setup message that is broadcast over network
+	serviceTypesMap := make(map[string]bool)
+	serviceTypesList := make([]string, 0)
+	for _, service := range wp.core.Device.Services {
+		if service == nil {
+			log.Warnf("Service %d \"%s\" has no type defined\n", service.ID, service.Name)
+		} else {
+			if _, exists := serviceTypesMap[service.ServiceType]; exists {
+			} else {
+				serviceTypesMap[service.ServiceType] = true
+				serviceTypesList = append(serviceTypesList, service.ServiceType)
+			}
+		}
+	}
 	msg := types.BroadcastMessage{
 
 		DeviceDescription: wp.core.Device.Description,
@@ -435,6 +449,7 @@ func (wp *wpWithinImpl) StartServiceBroadcast(timeoutMillis int) error {
 		PortNumber:        wp.core.HTE.Port(),
 		Scheme:            wp.core.HTE.Scheme(),
 		DeviceName:        wp.core.Device.Name,
+		ServiceTypes:      serviceTypesList,
 	}
 	log.Debug("Did construct types.BroadcastMessage")
 
@@ -533,6 +548,39 @@ func (wp *wpWithinImpl) DeviceDiscovery(timeoutMillis int) ([]types.BroadcastMes
 	log.WithField("Search result", svcResults).Debug("End wpwithin.DeviceDiscovery()")
 
 	return svcResults, nil
+}
+
+func (wp *wpWithinImpl) SearchForDevice(timeoutMillis int, deviceName string) (types.BroadcastMessage, error) {
+
+	log.WithField("timeoutMillis", timeoutMillis).Debug("Begin wpwithin.SearchForDevice()")
+
+	defer func() {
+		if r := recover(); r != nil {
+
+			fmt.Printf("%s", debug.Stack())
+
+			log.WithFields(log.Fields{"panic_message": r, "timeoutMillis": timeoutMillis, "stack": fmt.Sprintf("%s", debug.Stack())}).
+				Errorf("Recover: WPWithin.SearchForDevice()")
+		}
+	}()
+
+	log.Debug("Will call wp.core.SvcScanner.ScanForServices()")
+	scanResult, err := wp.core.SvcScanner.ScanForService(timeoutMillis, deviceName)
+	if err != nil {
+
+		log.WithField("Error", err).Error("Error calling wp.core.SvcScanner.ScanForService()")
+
+		return types.BroadcastMessage{}, err
+	} else if scanResult == nil {
+		log.WithField("Warning", err).Warn("Did not found any devices")
+		return types.BroadcastMessage{}, nil
+	} else {
+		log.Debug("After call wp.core.SvcScanner.ScanForService()")
+
+		log.WithField("Search result", scanResult).Debug("End wpwithin.SearchForDevice()")
+
+		return *scanResult, nil
+	}
 }
 
 func (wp *wpWithinImpl) GetServicePrices(serviceID int) ([]types.Price, error) {
@@ -824,22 +872,28 @@ func doWebSocketLogSetup(cfg configuration.WPWithin) {
 			}
 		}
 
-		log.Debug("Attempt to get external IPv4 address")
-		ip, err := utils.ExternalIPv4()
-		strIP := ""
+		var strIP string
+		switch cfg.WSLogHost {
+		case "ALL":
+			strIP = ""
+		case "":
+			log.Debug("Attempt to get external IPv4 address")
+			ip, err := utils.FirstExternalIPv4()
+			strIP = ""
 
-		if err == nil {
-
-			log.WithField("IPv4", ip.String()).Debug("Did get external IPv4")
-			strIP = ip.String()
-		} else {
-
-			log.WithField("Error", err).Error("Failed to get external IPv4 address")
-			fmt.Printf("Error getting ExternalIPv4: %s\n", err.Error())
+			if err == nil {
+				log.WithField("IPv4", ip.String()).Debug("Did get external IPv4")
+				strIP = ip.String()
+			} else {
+				log.WithField("Error", err).Error("Failed to get external IPv4 address")
+				fmt.Printf("Error getting FirstExternalIPv4: %s\n", err.Error())
+			}
+		default:
+			strIP = cfg.WSLogHost
 		}
 
 		log.WithFields(log.Fields{"ip_add": strIP, "ws_port": cfg.WSLogPort, "log levels": levels}).Debug("will call wslog.Initialise()")
-		err = wslog.Initialise(strIP, cfg.WSLogPort, levels)
+		err := wslog.Initialise(strIP, cfg.WSLogPort, levels)
 
 		if err != nil {
 

@@ -8,8 +8,8 @@ typeset NC='\033[0m'  # No Color
 # variables
 typeset PROJECT_PATH
 typeset CURRENT_PATH=`pwd`
-typeset CONSUMER_PATH=src/github.com/wptechinnovation/wpw-sdk-go/examples/sample-consumer/
-typeset PRODUCER_PATH=src/github.com/wptechinnovation/wpw-sdk-go/examples/sample-producer-callbacks/
+typeset CONSUMER_PATH=src/github.com/WPTechInnovation/wpw-sdk-go/examples/sample-consumer/
+typeset PRODUCER_PATH=src/github.com/WPTechInnovation/wpw-sdk-go/examples/sample-producer-callbacks/
 typeset CONSUMER_NAME="sample-consumer"
 typeset PRODUCER_NAME="sample-producer-callbacks"
 typeset CONSUMER_OUT_NAME="${CONSUMER_NAME}.out"

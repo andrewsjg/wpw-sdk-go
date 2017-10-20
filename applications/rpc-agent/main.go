@@ -5,11 +5,13 @@ import (
 	"fmt"
 	"os"
 	"strings"
+	"time"
 
-	log "github.com/sirupsen/logrus"
+	"github.com/WPTechInnovation/wpw-sdk-go/applications/apputils"
+	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin"
+	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/rpc"
 	"github.com/rifflock/lfshook"
-	"github.com/wptechinnovation/wpw-sdk-go/wpwithin"
-	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/rpc"
+	log "github.com/sirupsen/logrus"
 )
 
 var applicationVersion string
@@ -153,6 +155,11 @@ func startRPC() {
 		os.Exit(exitGeneralErr)
 	}
 
+	// run watchdog to scan parent process
+	log.Debug("Before scanParent()")
+	go scanParent()
+	log.Debug("After scanParent()")
+
 	log.WithField("Configuration: ", fmt.Sprintf("%+v", rpcConfig)).Debug("Before rpc.NewService")
 	rpc, err := rpc.NewService(rpcConfig, sdk)
 	log.Debug("After rpc.NewService")
@@ -175,6 +182,24 @@ func startRPC() {
 	}
 
 	log.Debug("End startRPC()")
+}
+
+func scanParent() {
+	ppid := os.Getppid()
+	log.Debug("My PID:", os.Getpid(), ", Parent PID:", ppid)
+	for {
+		alive, err := apputils.IsProcAlive(ppid)
+		if alive {
+			time.Sleep(time.Second * 3)
+			continue
+		}
+		if err != nil {
+			log.Debug("IsProcAlive error:", err)
+		}
+		break
+	}
+	log.Debug("Parent process is no longer alive, exiting...")
+	os.Exit(0)
 }
 
 func initLogfile(logLevel, logFile string) {

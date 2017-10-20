@@ -1,0 +1,14 @@
+sudo: false
+language: go
+
+before_install:
+    - echo ${TRAVIS_BUILD_DIR}
+    - ls ${TRAVIS_BUILD_DIR}
+    - go get git.apache.org/thrift.git/lib/go/thrift/...
+    - cd ${TRAVIS_BUILD_DIR}/../../../git.apache.org/thrift.git/lib/go/thrift && git checkout 0.10.0
+
+script:
+    - cp ${TRAVIS_BUILD_DIR}/examples/wpwconfig.json ${TRAVIS_BUILD_DIR}/wpwithin/core && cd ${TRAVIS_BUILD_DIR}/wpwithin/core && go test
+    - cp ${TRAVIS_BUILD_DIR}/examples/wpwconfig.json ${TRAVIS_BUILD_DIR}/wpwithin && cd ${TRAVIS_BUILD_DIR}/wpwithin && go test
+    - cp ${TRAVIS_BUILD_DIR}/examples/wpwconfig.json ${TRAVIS_BUILD_DIR}/wpwithin/configuration && cd ${TRAVIS_BUILD_DIR}/wpwithin/configuration && go test
+    - ${TRAVIS_BUILD_DIR}/tests/testE2E.sh

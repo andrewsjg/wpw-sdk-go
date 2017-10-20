@@ -7,9 +7,9 @@ import (
 
 	"git.apache.org/thrift.git/lib/go/thrift"
 	log "github.com/sirupsen/logrus"
-	"github.com/wptechinnovation/wpw-sdk-go/wpwithin"
-	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/rpc/wpthrift/gen-go/wpthrift"
-	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/types/event"
+	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin"
+	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/rpc/wpthrift/gen-go/wpthrift"
+	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/types/event"
 )
 
 // ServiceImpl impementation of RPC service

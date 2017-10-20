@@ -5,10 +5,11 @@ import (
 	"os"
 	"time"
 
-	"github.com/wptechinnovation/wpw-sdk-go/wpwithin"
-	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/psp"
-	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/psp/onlineworldpay"
-	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/types"
+	"github.com/WPTechInnovation/wpw-sdk-go/examples/exutils"
+	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin"
+	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/psp"
+	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/psp/onlineworldpay"
+	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/types"
 )
 
 var wpw wpwithin.WPWithin
@@ -20,11 +21,19 @@ const (
 	yellowDescr string = "Turn on the yellow LED"
 	oneSecond   string = "One second"
 	oneMinute   string = "One minute"
+	serviceType string = "pi-led"
 )
 
 func main() {
 
-	_wpw, err := wpwithin.Initialise("wpw-pi-led-box", "Worldpay Within LED Demo")
+	cfgFileName := "pi-led.json"
+	cfg, err := exutils.LoadConfiguration(cfgFileName)
+	if err != nil {
+		fmt.Println("error, failed to read config file", cfgFileName, ":", err)
+		os.Exit(1)
+	}
+
+	_wpw, err := wpwithin.Initialise(cfg.DeviceName, "Worldpay Within LED Demo")
 	wpw = _wpw
 
 	errCheck(err, "WorldpayWithin Initialise")
@@ -36,12 +45,13 @@ func main() {
 	wpw.SetEventHandler(&wpwHandler)
 
 	pspConfig := make(map[string]string, 0)
-	pspConfig[psp.CfgPSPName] = onlineworldpay.PSPName
-	pspConfig[onlineworldpay.CfgMerchantClientKey] = "T_C_03eaa1d3-4642-4079-b030-b543ee04b5af"
-	pspConfig[onlineworldpay.CfgMerchantServiceKey] = "T_S_f50ecb46-ca82-44a7-9c40-421818af5996"
-	pspConfig[psp.CfgHTEPrivateKey] = "T_S_f50ecb46-ca82-44a7-9c40-421818af5996"
-	pspConfig[psp.CfgHTEPublicKey] = "T_C_03eaa1d3-4642-4079-b030-b543ee04b5af"
-	pspConfig[onlineworldpay.CfgAPIEndpoint] = "https://api.worldpay.com/v1"
+
+	pspConfig[psp.CfgPSPName] = cfg.PspConfig.PspName
+	pspConfig[onlineworldpay.CfgMerchantClientKey] = cfg.PspConfig.MerchantClientKey
+	pspConfig[onlineworldpay.CfgMerchantServiceKey] = cfg.PspConfig.MerchantServiceKey
+	pspConfig[psp.CfgHTEPrivateKey] = cfg.PspConfig.HtePrivateKey
+	pspConfig[psp.CfgHTEPublicKey] = cfg.PspConfig.HtePublicKey
+	pspConfig[onlineworldpay.CfgAPIEndpoint] = cfg.PspConfig.ApiEndpoint
 
 	err = wpw.InitProducer(pspConfig)
 
@@ -66,6 +76,7 @@ func doSetupServices() {
 	svcGreenLed.ID = 1
 	svcGreenLed.Name = "Big LED"
 	svcGreenLed.Description = greenDescr
+	svcGreenLed.ServiceType = serviceType
 
 	priceGreenLedSecond, err := types.NewPrice()
 	errCheck(err, "Create new price")
@@ -108,6 +119,7 @@ func doSetupServices() {
 	svcRedLed.ID = 2
 	svcRedLed.Name = "Red LED"
 	svcRedLed.Description = redDescr
+	svcRedLed.ServiceType = serviceType
 
 	priceRedLedSecond, err := types.NewPrice()
 	errCheck(err, "Create new price")
@@ -150,6 +162,7 @@ func doSetupServices() {
 	svcYellowLed.ID = 3
 	svcYellowLed.Name = "Yellow LED"
 	svcYellowLed.Description = yellowDescr
+	svcYellowLed.ServiceType = serviceType
 
 	priceYellowLedSecond, err := types.NewPrice()
 	errCheck(err, "Create new price")

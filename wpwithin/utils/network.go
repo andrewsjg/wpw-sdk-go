@@ -7,10 +7,10 @@ import (
 	"reflect"
 )
 
-// ExternalIPv4 Return the IPv4 external address of this device.
+// FirstExternalIPv4 Return the IPv4 external address of this device.
 // Note external does not necessarily mean WAN IP. On most networks it will be the LAN IP of device as opposed
 // to internal localhost address (127.0.0.1)
-func ExternalIPv4() (net.IP, error) {
+func FirstExternalIPv4() (net.IP, error) {
 
 	ifaces, err := net.Interfaces()
 	if err != nil {
@@ -22,6 +22,10 @@ func ExternalIPv4() (net.IP, error) {
 		}
 		if iface.Flags&net.FlagLoopback != 0 {
 			continue // loopback interface
+		}
+		if iface.Flags&net.FlagBroadcast == 0 {
+			fmt.Printf("Interface %s does not support broadcast - skipping\n", iface.Name)
+			continue
 		}
 		addrs, err := iface.Addrs()
 		if err != nil {

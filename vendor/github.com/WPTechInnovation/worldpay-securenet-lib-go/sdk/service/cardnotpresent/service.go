@@ -5,7 +5,7 @@ import (
 	"errors"
 
 	"github.com/sirupsen/logrus"
-	"github.com/wptechinnovation/worldpay-securenet-lib-go/sdk/service"
+	"github.com/WPTechInnovation/worldpay-securenet-lib-go/sdk/service"
 )
 
 // Service defines functions related card not present transactions
