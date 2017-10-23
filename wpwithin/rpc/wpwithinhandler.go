@@ -499,6 +499,7 @@ func convertThriftServiceToNative(tSvc *wpthrift_types.Service) *types.Service {
 	nSvc.ID = int(tSvc.ID)
 	nSvc.Name = tSvc.Name
 	nSvc.Description = tSvc.Description
+	nSvc.ServiceType = tSvc.ServiceType
 
 	for _, tPrice := range tSvc.Prices {
 
