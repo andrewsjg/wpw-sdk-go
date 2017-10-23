@@ -434,12 +434,14 @@ func (p *Price) String() string {
 //  - ID
 //  - Name
 //  - Description
+//  - ServiceType
 //  - Prices
 type Service struct {
   ID int32 `thrift:"id,1" db:"id" json:"id"`
   Name string `thrift:"name,2" db:"name" json:"name"`
   Description string `thrift:"description,3" db:"description" json:"description"`
-  Prices map[int32]*Price `thrift:"prices,4" db:"prices" json:"prices,omitempty"`
+  ServiceType string `thrift:"serviceType,4" db:"serviceType" json:"serviceType"`
+  Prices map[int32]*Price `thrift:"prices,5" db:"prices" json:"prices,omitempty"`
 }
 
 func NewService() *Service {
@@ -457,6 +459,10 @@ func (p *Service) GetName() string {
 
 func (p *Service) GetDescription() string {
   return p.Description
+}
+
+func (p *Service) GetServiceType() string {
+  return p.ServiceType
 }
 var Service_Prices_DEFAULT map[int32]*Price
 
@@ -494,6 +500,10 @@ func (p *Service) Read(iprot thrift.TProtocol) error {
       }
     case 4:
       if err := p.ReadField4(iprot); err != nil {
+        return err
+      }
+    case 5:
+      if err := p.ReadField5(iprot); err != nil {
         return err
       }
     default:
@@ -539,6 +549,15 @@ func (p *Service)  ReadField3(iprot thrift.TProtocol) error {
 }
 
 func (p *Service)  ReadField4(iprot thrift.TProtocol) error {
+  if v, err := iprot.ReadString(); err != nil {
+  return thrift.PrependError("error reading field 4: ", err)
+} else {
+  p.ServiceType = v
+}
+  return nil
+}
+
+func (p *Service)  ReadField5(iprot thrift.TProtocol) error {
   _, _, size, err := iprot.ReadMapBegin()
   if err != nil {
     return thrift.PrependError("error reading map begin: ", err)
@@ -572,6 +591,7 @@ func (p *Service) Write(oprot thrift.TProtocol) error {
     if err := p.writeField2(oprot); err != nil { return err }
     if err := p.writeField3(oprot); err != nil { return err }
     if err := p.writeField4(oprot); err != nil { return err }
+    if err := p.writeField5(oprot); err != nil { return err }
   }
   if err := oprot.WriteFieldStop(); err != nil {
     return thrift.PrependError("write field stop error: ", err) }
@@ -611,9 +631,19 @@ func (p *Service) writeField3(oprot thrift.TProtocol) (err error) {
 }
 
 func (p *Service) writeField4(oprot thrift.TProtocol) (err error) {
+  if err := oprot.WriteFieldBegin("serviceType", thrift.STRING, 4); err != nil {
+    return thrift.PrependError(fmt.Sprintf("%T write field begin error 4:serviceType: ", p), err) }
+  if err := oprot.WriteString(string(p.ServiceType)); err != nil {
+  return thrift.PrependError(fmt.Sprintf("%T.serviceType (4) field write error: ", p), err) }
+  if err := oprot.WriteFieldEnd(); err != nil {
+    return thrift.PrependError(fmt.Sprintf("%T write field end error 4:serviceType: ", p), err) }
+  return err
+}
+
+func (p *Service) writeField5(oprot thrift.TProtocol) (err error) {
   if p.IsSetPrices() {
-    if err := oprot.WriteFieldBegin("prices", thrift.MAP, 4); err != nil {
-      return thrift.PrependError(fmt.Sprintf("%T write field begin error 4:prices: ", p), err) }
+    if err := oprot.WriteFieldBegin("prices", thrift.MAP, 5); err != nil {
+      return thrift.PrependError(fmt.Sprintf("%T write field begin error 5:prices: ", p), err) }
     if err := oprot.WriteMapBegin(thrift.I32, thrift.STRUCT, len(p.Prices)); err != nil {
       return thrift.PrependError("error writing map begin: ", err)
     }
@@ -628,7 +658,7 @@ func (p *Service) writeField4(oprot thrift.TProtocol) (err error) {
       return thrift.PrependError("error writing map end: ", err)
     }
     if err := oprot.WriteFieldEnd(); err != nil {
-      return thrift.PrependError(fmt.Sprintf("%T write field end error 4:prices: ", p), err) }
+      return thrift.PrependError(fmt.Sprintf("%T write field end error 5:prices: ", p), err) }
   }
   return err
 }
@@ -1176,6 +1206,7 @@ func (p *Device) String() string {
 //  - UrlPrefix
 //  - Scheme
 //  - DeviceName
+//  - ServiceTypes
 type ServiceMessage struct {
   DeviceDescription string `thrift:"deviceDescription,1" db:"deviceDescription" json:"deviceDescription"`
   Hostname string `thrift:"hostname,2" db:"hostname" json:"hostname"`
@@ -1184,6 +1215,7 @@ type ServiceMessage struct {
   UrlPrefix string `thrift:"urlPrefix,5" db:"urlPrefix" json:"urlPrefix"`
   Scheme string `thrift:"scheme,6" db:"scheme" json:"scheme"`
   DeviceName string `thrift:"deviceName,7" db:"deviceName" json:"deviceName"`
+  ServiceTypes map[string]struct{} `thrift:"serviceTypes,8" db:"serviceTypes" json:"serviceTypes"`
 }
 
 func NewServiceMessage() *ServiceMessage {
@@ -1217,6 +1249,10 @@ func (p *ServiceMessage) GetScheme() string {
 
 func (p *ServiceMessage) GetDeviceName() string {
   return p.DeviceName
+}
+
+func (p *ServiceMessage) GetServiceTypes() map[string]struct{} {
+  return p.ServiceTypes
 }
 func (p *ServiceMessage) Read(iprot thrift.TProtocol) error {
   if _, err := iprot.ReadStructBegin(); err != nil {
@@ -1257,6 +1293,10 @@ func (p *ServiceMessage) Read(iprot thrift.TProtocol) error {
       }
     case 7:
       if err := p.ReadField7(iprot); err != nil {
+        return err
+      }
+    case 8:
+      if err := p.ReadField8(iprot); err != nil {
         return err
       }
     default:
@@ -1337,6 +1377,28 @@ func (p *ServiceMessage)  ReadField7(iprot thrift.TProtocol) error {
   return nil
 }
 
+func (p *ServiceMessage)  ReadField8(iprot thrift.TProtocol) error {
+  _, size, err := iprot.ReadSetBegin()
+  if err != nil {
+    return thrift.PrependError("error reading set begin: ", err)
+  }
+  tSet := make(map[string]struct{}, size)
+  p.ServiceTypes =  tSet
+  for i := 0; i < size; i ++ {
+var _elem4 string
+    if v, err := iprot.ReadString(); err != nil {
+    return thrift.PrependError("error reading field 0: ", err)
+} else {
+    _elem4 = v
+}
+    p.ServiceTypes[_elem4] = struct{}{}
+  }
+  if err := iprot.ReadSetEnd(); err != nil {
+    return thrift.PrependError("error reading set end: ", err)
+  }
+  return nil
+}
+
 func (p *ServiceMessage) Write(oprot thrift.TProtocol) error {
   if err := oprot.WriteStructBegin("ServiceMessage"); err != nil {
     return thrift.PrependError(fmt.Sprintf("%T write struct begin error: ", p), err) }
@@ -1348,6 +1410,7 @@ func (p *ServiceMessage) Write(oprot thrift.TProtocol) error {
     if err := p.writeField5(oprot); err != nil { return err }
     if err := p.writeField6(oprot); err != nil { return err }
     if err := p.writeField7(oprot); err != nil { return err }
+    if err := p.writeField8(oprot); err != nil { return err }
   }
   if err := oprot.WriteFieldStop(); err != nil {
     return thrift.PrependError("write field stop error: ", err) }
@@ -1423,6 +1486,24 @@ func (p *ServiceMessage) writeField7(oprot thrift.TProtocol) (err error) {
   return thrift.PrependError(fmt.Sprintf("%T.deviceName (7) field write error: ", p), err) }
   if err := oprot.WriteFieldEnd(); err != nil {
     return thrift.PrependError(fmt.Sprintf("%T write field end error 7:deviceName: ", p), err) }
+  return err
+}
+
+func (p *ServiceMessage) writeField8(oprot thrift.TProtocol) (err error) {
+  if err := oprot.WriteFieldBegin("serviceTypes", thrift.SET, 8); err != nil {
+    return thrift.PrependError(fmt.Sprintf("%T write field begin error 8:serviceTypes: ", p), err) }
+  if err := oprot.WriteSetBegin(thrift.STRING, len(p.ServiceTypes)); err != nil {
+    return thrift.PrependError("error writing set begin: ", err)
+  }
+  for v, _ := range p.ServiceTypes {
+    if err := oprot.WriteString(string(v)); err != nil {
+    return thrift.PrependError(fmt.Sprintf("%T. (0) field write error: ", p), err) }
+  }
+  if err := oprot.WriteSetEnd(); err != nil {
+    return thrift.PrependError("error writing set end: ", err)
+  }
+  if err := oprot.WriteFieldEnd(); err != nil {
+    return thrift.PrependError(fmt.Sprintf("%T write field end error 8:serviceTypes: ", p), err) }
   return err
 }
 
