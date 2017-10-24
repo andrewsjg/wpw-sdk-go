@@ -218,8 +218,6 @@ func (wp *WPWithinHandler) DeviceDiscovery(timeoutMillis int32) (r map[*wpthrift
 
 	for _, gSvcMsg := range gSvcMsgs {
 		serviceTypes := make(map[string]struct{})
-		//log.Debugf("gSvcMsg:%+v\n", gSvcMsg)  // {...,ServiceTypes:["wash"]}
-		//log.Debugf("gSvcMsg type: %s\n", reflect.TypeOf(gSvcMsg.ServiceTypes))  // []string
 		for i := 0; i < len(gSvcMsg.ServiceTypes); i +=1 {
 			serviceTypes[gSvcMsg.ServiceTypes[i]] = struct{}{}
 		}
@@ -255,6 +253,11 @@ func (wp *WPWithinHandler) SearchForDevice(timeoutMillis int32, deviceName strin
 		return nil, err
 	}
 
+	serviceTypes := make(map[string]struct{})
+	for i := 0; i < len(gSvcMsg.ServiceTypes); i +=1 {
+		serviceTypes[gSvcMsg.ServiceTypes[i]] = struct{}{}
+	}
+
 	result := &wpthrift_types.ServiceMessage{
 		DeviceDescription: gSvcMsg.DeviceDescription,
 		Hostname:          gSvcMsg.Hostname,
@@ -263,6 +266,7 @@ func (wp *WPWithinHandler) SearchForDevice(timeoutMillis int32, deviceName strin
 		UrlPrefix:         gSvcMsg.URLPrefix,
 		Scheme:            gSvcMsg.Scheme,
 		DeviceName:        gSvcMsg.DeviceName,
+		ServiceTypes:      serviceTypes,
 	}
 
 	log.Debug("End RPC.WPWithinHandler.SearchForDevice()")
