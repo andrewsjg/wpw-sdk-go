@@ -30,7 +30,7 @@ The Go implementation for the Worldpay Within IoT payment SDK. This SDK, or Soft
 
 You can see there are four phases; discover, negotiation, payment and then service delivery, for more information visit our website at http://www.worldpaywithin.com.
 
-[The flows and API can be found here](http://http://wptechinnovation.github.io/worldpay-within-sdk/how-it-works/)
+[The flows and API can be found here](http://wptechinnovation.github.io/worldpay-within-sdk/how-it-works/)
 
 ## Want to contribute:
 
@@ -70,7 +70,7 @@ OrderManager - Manages state of orders and processed payments
 
 The HTE client allows interaction with the HTE service. There is a credential store for the 'terminal' or payments gateway credentials. The Order Manager coordinates during negotiation, payment and delivery flows. There are also some help http request object(s).
 
-* [More detail about the flows and associate diagrams can be found in the detailed documentation here](http://wptechinnovation.github.io/worldpay-within-sdk/architecture.html)
+* [More detail about the flows and associate diagrams can be found in the detailed documentation here](http://wptechinnovation.github.io/worldpay-within-sdk/architecture/)
 
 ### psp
 
