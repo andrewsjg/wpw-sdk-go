@@ -169,6 +169,7 @@ func (wp *WPWithinHandler) GetDevice() (r *wpthrift_types.Device, err error) {
 				ID:          int32(svc.ID),
 				Name:        svc.Name,
 				Description: svc.Description,
+				ServiceType: svc.ServiceType,
 				Prices:      thriftPrices,
 			}
 		}
@@ -216,6 +217,10 @@ func (wp *WPWithinHandler) DeviceDiscovery(timeoutMillis int32) (r map[*wpthrift
 	result := make(map[*wpthrift_types.ServiceMessage]struct{}, 0)
 
 	for _, gSvcMsg := range gSvcMsgs {
+		serviceTypes := make(map[string]struct{})
+		for i := 0; i < len(gSvcMsg.ServiceTypes); i +=1 {
+			serviceTypes[gSvcMsg.ServiceTypes[i]] = struct{}{}
+		}
 
 		tmp := &wpthrift_types.ServiceMessage{
 			DeviceDescription: gSvcMsg.DeviceDescription,
@@ -225,6 +230,7 @@ func (wp *WPWithinHandler) DeviceDiscovery(timeoutMillis int32) (r map[*wpthrift
 			UrlPrefix:         gSvcMsg.URLPrefix,
 			Scheme:            gSvcMsg.Scheme,
 			DeviceName:        gSvcMsg.DeviceName,
+			ServiceTypes:      serviceTypes,
 		}
 
 		result[tmp] = struct{}{}
@@ -247,6 +253,11 @@ func (wp *WPWithinHandler) SearchForDevice(timeoutMillis int32, deviceName strin
 		return nil, err
 	}
 
+	serviceTypes := make(map[string]struct{})
+	for i := 0; i < len(gSvcMsg.ServiceTypes); i +=1 {
+		serviceTypes[gSvcMsg.ServiceTypes[i]] = struct{}{}
+	}
+
 	result := &wpthrift_types.ServiceMessage{
 		DeviceDescription: gSvcMsg.DeviceDescription,
 		Hostname:          gSvcMsg.Hostname,
@@ -255,6 +266,7 @@ func (wp *WPWithinHandler) SearchForDevice(timeoutMillis int32, deviceName strin
 		UrlPrefix:         gSvcMsg.URLPrefix,
 		Scheme:            gSvcMsg.Scheme,
 		DeviceName:        gSvcMsg.DeviceName,
+		ServiceTypes:      serviceTypes,
 	}
 
 	log.Debug("End RPC.WPWithinHandler.SearchForDevice()")
@@ -499,6 +511,7 @@ func convertThriftServiceToNative(tSvc *wpthrift_types.Service) *types.Service {
 	nSvc.ID = int(tSvc.ID)
 	nSvc.Name = tSvc.Name
 	nSvc.Description = tSvc.Description
+	nSvc.ServiceType = tSvc.ServiceType
 
 	for _, tPrice := range tSvc.Prices {
 
