@@ -10,12 +10,12 @@ import (
 	"strings"
 	"time"
 
-	"github.com/gorilla/mux"
-	log "github.com/sirupsen/logrus"
 	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/psp"
 	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/types"
 	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/types/event"
 	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/utils"
+	"github.com/gorilla/mux"
+	log "github.com/sirupsen/logrus"
 )
 
 // ServiceHandler Coordinate requests between RPC interface and internal SDK interface
@@ -402,7 +402,7 @@ func (srv *ServiceHandler) Payment(w http.ResponseWriter, r *http.Request) {
 func (srv *ServiceHandler) ServiceDeliveryBegin(w http.ResponseWriter, r *http.Request) {
 
 	// POST
-
+	var maxCountReached = false
 	log.Debug("begin hte.ServiceHandlerImpl.ServiceDeliveryBegin()")
 
 	defer log.Debug("end hte.ServiceHandlerImpl.ServiceDeliveryBegin()")
@@ -473,28 +473,23 @@ func (srv *ServiceHandler) ServiceDeliveryBegin(w http.ResponseWriter, r *http.R
 
 		returnMessage(w, 500, errorResponse)
 		return
-	} else if !strings.EqualFold(strValidation, "") {
+	}
 
+	switch strValidation.ErrorNo {
+	case 0:
+		break
+	case 5:
+		maxCountReached = true
+		fmt.Println(strValidation.ErrorMsg)
+		break
+	default:
 		errorResponse := types.ErrorResponse{
-			Message: strValidation,
+			Message: strValidation.ErrorMsg,
 		}
 
 		returnMessage(w, 400, errorResponse)
 		return
 	}
-
-	if err != nil {
-
-		log.Errorf("Error retrieving order for delivery token: %s", err.Error())
-
-		errorResponse := types.ErrorResponse{
-			Message: fmt.Sprintf("Error retrieving order using delivery token.."),
-		}
-
-		returnMessage(w, 400, errorResponse)
-		return
-	}
-
 	// Order has been found for delivery token - ensure the service id matches the service id passed in URL.
 	_order, err := srv.orderManager.GetOrder(deliveryRequest.ServiceDeliveryToken.Key)
 
@@ -519,7 +514,12 @@ func (srv *ServiceHandler) ServiceDeliveryBegin(w http.ResponseWriter, r *http.R
 		response.ClientID = deliveryRequest.ClientID
 		response.ServiceDeliveryToken = deliveryRequest.ServiceDeliveryToken
 		response.ServerID = srv.device.UID
-		response.UnitsToSupply = deliveryRequest.UnitsToSupply
+		//		response.UnitsToSupply = deliveryRequest.UnitsToSupply
+		if maxCountReached {
+			response.UnitsToSupply = _order.SelectedNumberOfUnits - _order.ConsumedUnits
+		} else {
+			response.UnitsToSupply = deliveryRequest.UnitsToSupply
+		}
 
 		if srv.eventHandler != nil {
 
@@ -677,45 +677,66 @@ func returnMessage(w http.ResponseWriter, statusCode int, message interface{}) {
 // validateDeliveryToken will validate the various parameters of a ServiceDeliveryToken
 // If the returned string is empty then validation passed, if not then the contents of the string
 // is the reason for validation failure
-func validateDeliveryToken(request types.BeginServiceDeliveryRequest, orderManager OrderManager) (string, error) {
+func validateDeliveryToken(request types.BeginServiceDeliveryRequest, orderManager OrderManager) (types.TokenError, error) {
 
 	sdt := request.ServiceDeliveryToken
 
 	if !orderManager.OrderExists(sdt.Key) {
-
-		return "Order not found for ServiceDeliveryToken", nil
+		te := types.TokenError{
+			ErrorNo:  1,
+			ErrorMsg: "Order not found for ServiceDeliveryToken",
+		}
+		return te, nil
 	}
 
 	_order, err := orderManager.GetOrder(sdt.Key)
-
 	if err != nil {
-
-		return "", err
+		te := types.TokenError{
+			ErrorNo:  0,
+			ErrorMsg: "",
+		}
+		return te, err
 	}
 
 	if strings.EqualFold("", sdt.Key) {
 
-		return "ServiceDeliveryToken key is empty", nil
+		te := types.TokenError{
+			ErrorNo:  2,
+			ErrorMsg: "ServiceDeliveryToken key is empty",
+		}
+		return te, nil
 	}
 
 	if !sdt.Expiry.After(time.Now()) {
-
-		return "ServiceDeliveryToken has expired", nil
+		te := types.TokenError{
+			ErrorNo:  3,
+			ErrorMsg: "ServiceDeliveryToken has expired",
+		}
+		return te, nil
 	}
 
 	log.Debugf("ORDER:: %+v", _order)
 	log.Debugf("REQ SDT Key: %s", sdt.Key)
 
 	if !strings.EqualFold(_order.DeliveryToken.Key, sdt.Key) {
-
-		return "Invalid ServiceDeliveryToken key", nil
+		te := types.TokenError{
+			ErrorNo:  4,
+			ErrorMsg: "Invalid ServiceDeliveryToken key",
+		}
+		return te, nil
 	}
 
 	unitsAvailable := _order.SelectedNumberOfUnits - _order.ConsumedUnits
 	if request.UnitsToSupply > unitsAvailable {
-
-		return fmt.Sprintf("Requested units (%d) not available for selected order. Units available = %d", request.UnitsToSupply, unitsAvailable), nil
+		te := types.TokenError{
+			ErrorNo:  5,
+			ErrorMsg: fmt.Sprintf("Requested units (%d) not available for selected order. Units to be delivered = %d", request.UnitsToSupply, unitsAvailable),
+		}
+		return te, nil
 	}
-
-	return "", nil
+	te := types.TokenError{
+		ErrorNo:  0,
+		ErrorMsg: "",
+	}
+	return te, nil
 }
