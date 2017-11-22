@@ -482,6 +482,7 @@ func (srv *ServiceHandler) ServiceDeliveryBegin(w http.ResponseWriter, r *http.R
 	case errors.TooManyUnitsRequested:
 		maxCountReached = true
 		fmt.Println(strValidation.DetailMsg)
+		log.Debug(strValidation.DetailMsg)
 		break
 	default:
 		errorResponse := types.ErrorResponse{
