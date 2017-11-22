@@ -1,7 +1,8 @@
 package types
 
-// BeginServiceDeliveryResponse represents a requet to begin service delivery
+import "github.com/WPTechInnovation/wpw-sdk-go/wpwithin/types/errors"
+
 type TokenError struct {
-	ErrorNo  int
-	ErrorMsg string
+	ErrorType errors.ErrorType
+	DetailMsg string
 }

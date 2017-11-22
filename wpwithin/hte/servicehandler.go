@@ -12,6 +12,7 @@ import (
 
 	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/psp"
 	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/types"
+	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/types/errors"
 	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/types/event"
 	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/utils"
 	"github.com/gorilla/mux"
@@ -475,16 +476,16 @@ func (srv *ServiceHandler) ServiceDeliveryBegin(w http.ResponseWriter, r *http.R
 		return
 	}
 
-	switch strValidation.ErrorNo {
-	case 0:
+	switch strValidation.ErrorType {
+	case errors.Success:
 		break
-	case 5:
+	case errors.TooManyUnitsRequested:
 		maxCountReached = true
-		fmt.Println(strValidation.ErrorMsg)
+		fmt.Println(strValidation.DetailMsg)
 		break
 	default:
 		errorResponse := types.ErrorResponse{
-			Message: strValidation.ErrorMsg,
+			Message: string(strValidation.ErrorType),
 		}
 
 		returnMessage(w, 400, errorResponse)
@@ -683,8 +684,7 @@ func validateDeliveryToken(request types.BeginServiceDeliveryRequest, orderManag
 
 	if !orderManager.OrderExists(sdt.Key) {
 		te := types.TokenError{
-			ErrorNo:  1,
-			ErrorMsg: "Order not found for ServiceDeliveryToken",
+			ErrorType: errors.NotFound,
 		}
 		return te, nil
 	}
@@ -692,8 +692,7 @@ func validateDeliveryToken(request types.BeginServiceDeliveryRequest, orderManag
 	_order, err := orderManager.GetOrder(sdt.Key)
 	if err != nil {
 		te := types.TokenError{
-			ErrorNo:  0,
-			ErrorMsg: "",
+			ErrorType: errors.OrderError,
 		}
 		return te, err
 	}
@@ -701,16 +700,14 @@ func validateDeliveryToken(request types.BeginServiceDeliveryRequest, orderManag
 	if strings.EqualFold("", sdt.Key) {
 
 		te := types.TokenError{
-			ErrorNo:  2,
-			ErrorMsg: "ServiceDeliveryToken key is empty",
+			ErrorType: errors.EmptyKey,
 		}
 		return te, nil
 	}
 
 	if !sdt.Expiry.After(time.Now()) {
 		te := types.TokenError{
-			ErrorNo:  3,
-			ErrorMsg: "ServiceDeliveryToken has expired",
+			ErrorType: errors.TokenExpired,
 		}
 		return te, nil
 	}
@@ -720,8 +717,7 @@ func validateDeliveryToken(request types.BeginServiceDeliveryRequest, orderManag
 
 	if !strings.EqualFold(_order.DeliveryToken.Key, sdt.Key) {
 		te := types.TokenError{
-			ErrorNo:  4,
-			ErrorMsg: "Invalid ServiceDeliveryToken key",
+			ErrorType: errors.InvalidKey,
 		}
 		return te, nil
 	}
@@ -729,14 +725,13 @@ func validateDeliveryToken(request types.BeginServiceDeliveryRequest, orderManag
 	unitsAvailable := _order.SelectedNumberOfUnits - _order.ConsumedUnits
 	if request.UnitsToSupply > unitsAvailable {
 		te := types.TokenError{
-			ErrorNo:  5,
-			ErrorMsg: fmt.Sprintf("Requested units (%d) not available for selected order. Units to be delivered = %d", request.UnitsToSupply, unitsAvailable),
+			ErrorType: errors.TooManyUnitsRequested,
+			DetailMsg: fmt.Sprintf("Requested units (%d) not available for selected order. Units to be delivered = %d", request.UnitsToSupply, unitsAvailable),
 		}
 		return te, nil
 	}
 	te := types.TokenError{
-		ErrorNo:  0,
-		ErrorMsg: "",
+		ErrorType: errors.Success,
 	}
 	return te, nil
 }
