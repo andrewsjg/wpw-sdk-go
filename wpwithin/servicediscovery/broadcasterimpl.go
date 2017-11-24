@@ -2,7 +2,6 @@ package servicediscovery
 
 import (
 	"encoding/json"
-	"fmt"
 	"time"
 
 	log "github.com/sirupsen/logrus"
