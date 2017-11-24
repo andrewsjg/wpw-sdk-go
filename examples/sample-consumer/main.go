@@ -42,7 +42,7 @@ func main() {
 
 	hceCard := cfg.HceCard
 
-	wpw, err := wpwithin.Initialise(cfg.DeviceName, "A WPWithin client written in Go")
+	wpw, err := wpwithin.Initialise(cfg.DeviceName, "A WPWithin client written in Go", "")
 
 	errCheckExit(err)
 
