@@ -2,6 +2,7 @@ package servicediscovery
 
 import (
 	"encoding/json"
+	"fmt"
 	"time"
 
 	log "github.com/sirupsen/logrus"
@@ -10,11 +11,12 @@ import (
 )
 
 type broadcasterImpl struct {
-	run       bool
-	stepSleep int
-	host      string
-	port      int
-	comm      Communicator
+	run           bool
+	stepSleep     int
+	interfaceAddr string
+	host          string
+	port          int
+	comm          Communicator
 }
 
 func (bcast *broadcasterImpl) StartBroadcast(msg types.BroadcastMessage, timeoutMillis int) error {
@@ -32,9 +34,8 @@ func (bcast *broadcasterImpl) StartBroadcast(msg types.BroadcastMessage, timeout
 
 	for bcast.run && !timedOut {
 
-		log.Debugf("Broadcasting on %s:%d", bcast.host, bcast.port)
-
-		_conn, err := bcast.comm.Connect(bcast.host, int(bcast.port))
+		log.Debugf("Broadcasting to %s:%d, using interface: %s", bcast.host, bcast.port, bcast.interfaceAddr)
+		_conn, err := bcast.comm.Connect(bcast.interfaceAddr, bcast.host, int(bcast.port))
 		conn = _conn
 
 		if err != nil {
