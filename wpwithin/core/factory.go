@@ -93,6 +93,9 @@ func (factory *SDKFactoryImpl) GetDevice(name, description, interfaceAddr string
 
 	var deviceAddress net.IP
 	deviceAddress = net.ParseIP(interfaceAddr)
+	if deviceAddress == nil {
+		deviceAddress, _ = utils.FirstExternalIPv4()
+	}
 	d, e := types.NewDevice(name, description, deviceGUID, deviceAddress.String(), "GBP")
 
 	return d, e

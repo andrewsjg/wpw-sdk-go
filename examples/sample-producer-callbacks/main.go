@@ -60,7 +60,7 @@ func main() {
 		fmt.Println("Start broadcast")
 
 		// A timeout of 0 means run indefinitely
-		wp.StartServiceBroadcast(10000)
+		wp.StartServiceBroadcast(0)
 	}
 
 	//done := make(chan bool)
