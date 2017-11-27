@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/gorilla/mux"
 	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/psp"
 	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/types"
+	"github.com/gorilla/mux"
 )
 
 // ServiceImpl Concrete Implementation of HTE service
@@ -31,7 +31,7 @@ type Route struct {
 }
 
 // NewService crate a new instance of Service
-func NewService(device *types.Device, psp psp.PSP, ip, prefix, scheme string, port int, hteCredential *Credential, orderManager OrderManager, svcHandler *ServiceHandler) (Service, error) {
+func NewService(device *types.Device, psp psp.PSP, ip string, prefix, scheme string, port int, hteCredential *Credential, orderManager OrderManager, svcHandler *ServiceHandler) (Service, error) {
 
 	service := &ServiceImpl{}
 

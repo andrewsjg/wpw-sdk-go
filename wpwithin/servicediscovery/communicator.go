@@ -12,7 +12,7 @@ import (
 // Communicator Abstracted means of communication ..  Should allow for I/O over UDP/TCP/NFC/Bluetooth etc
 type Communicator interface {
 	Listen() (Connection, error)
-	Connect(host string, port int) (Connection, error)
+	Connect(interfaceAddr string, host string, port int) (Connection, error)
 }
 
 // Connection Abstracted connection
@@ -70,9 +70,11 @@ func (pc *UDPComm) Listen() (Connection, error) {
 }
 
 // Connect to a host on a specified port
-func (pc *UDPComm) Connect(host string, port int) (Connection, error) {
+func (pc *UDPComm) Connect(interfaceAddr string, host string, port int) (Connection, error) {
 
-	_udpConn, err := net.DialUDP(pc.protocol, nil, &net.UDPAddr{
+	_udpConn, err := net.DialUDP(pc.protocol, &net.UDPAddr{
+		IP: net.ParseIP(interfaceAddr),
+	}, &net.UDPAddr{
 		IP:   net.ParseIP(host),
 		Port: port,
 	})

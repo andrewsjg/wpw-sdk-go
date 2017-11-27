@@ -4,21 +4,21 @@ import (
 	"testing"
 	//"runtime"
 	wpw "github.com/WPTechInnovation/wpw-sdk-go/wpwithin"
-	types "github.com/WPTechInnovation/wpw-sdk-go/wpwithin/types"
 	psp "github.com/WPTechInnovation/wpw-sdk-go/wpwithin/psp"
-	securenet "github.com/WPTechInnovation/wpw-sdk-go/wpwithin/psp/securenet"
 	onlineworldpay "github.com/WPTechInnovation/wpw-sdk-go/wpwithin/psp/onlineworldpay"
+	securenet "github.com/WPTechInnovation/wpw-sdk-go/wpwithin/psp/securenet"
+	types "github.com/WPTechInnovation/wpw-sdk-go/wpwithin/types"
 )
 
 // TODO
 const CFG_HtePubKey = "TODO: Enter proper key here"
 const CFG_HtePrvKey = "TODO: Enter proper key here"
 
-func TestInitialise(t *testing.T){
+func TestInitialise(t *testing.T) {
 	fmt.Println("==============")
 	var w wpw.WPWithin
 	var e error
-	w,e = wpw.Initialise("Dummy","Dummy")
+	w, e = wpw.Initialise("Dummy", "Dummy", "Dummy")
 	if e != nil {
 		t.Error("Initialise did fail on non-empty device name")
 		t.FailNow()
@@ -27,7 +27,7 @@ func TestInitialise(t *testing.T){
 		t.Error("Initialise did not return valid object")
 		t.FailNow()
 	}
-	w,e = wpw.Initialise("Dummy","Dummy")
+	w, e = wpw.Initialise("Dummy", "Dummy", "Dummy")
 	if e != nil {
 		t.Error("Initialise did fail on non-empty device name")
 		t.FailNow()
@@ -42,7 +42,7 @@ func TestInitialiseToFailOnEmptyName(t *testing.T) {
 	fmt.Println("==============")
 	var w wpw.WPWithin
 	var e error
-	w,e = wpw.Initialise("","Dummy")
+	w, e = wpw.Initialise("", "Dummy", "Dummy")
 	if e == nil {
 		t.Error("Initialise did not fail on empty device name")
 		t.FailNow()
@@ -56,7 +56,7 @@ func TestInitialiseToFailOnEmptyDescription(t *testing.T) {
 	fmt.Println("==============")
 	var w wpw.WPWithin
 	var e error
-	w,e = wpw.Initialise("Dummy","")
+	w, e = wpw.Initialise("Dummy", "", "Dummy")
 	if e == nil {
 		t.Error("Initialise did not fail on empty device description, ", e)
 		t.FailNow()
@@ -69,8 +69,8 @@ func TestInitialiseToFailOnEmptyDescription(t *testing.T) {
 
 func TestAddService(t *testing.T) {
 	fmt.Println("==============")
-	w,e := wpw.Initialise("Dummy", "Dummy")
-	svc,e := types.NewService()
+	w, e := wpw.Initialise("Dummy", "Dummy", "Dummy")
+	svc, e := types.NewService()
 	if e != nil {
 		t.Error("New service definition failed, ", e)
 		t.FailNow()
@@ -88,8 +88,8 @@ func TestAddService(t *testing.T) {
 }
 func TestRemoveService(t *testing.T) {
 	fmt.Println("==============")
-	w,e := wpw.Initialise("Dummy", "Dummy")
-	svc,e := types.NewService()
+	w, e := wpw.Initialise("Dummy", "Dummy", "Dummy")
+	svc, e := types.NewService()
 	if e != nil {
 		t.Error("New service definition failed, ", e)
 		t.FailNow()
@@ -111,10 +111,11 @@ func TestRemoveService(t *testing.T) {
 		t.FailNow()
 	}
 }
+
 //func TestInitConsumer(t *testing.T) {} // TODO
 func TestInitProducerToFailOnNil(t *testing.T) {
 	fmt.Println("==============")
-	w,e := wpw.Initialise("Dummy", "Dummy")
+	w, e := wpw.Initialise("Dummy", "Dummy", "Dummy")
 	var c map[string]string // Payment Service Provider configuration map
 	e = w.InitProducer(c)
 	if e == nil {
@@ -124,7 +125,7 @@ func TestInitProducerToFailOnNil(t *testing.T) {
 }
 func TestInitProducerToFailOnEmptyCfg(t *testing.T) {
 	fmt.Println("==============")
-	w,e := wpw.Initialise("Dummy", "Dummy")
+	w, e := wpw.Initialise("Dummy", "Dummy", "Dummy")
 	c := make(map[string]string, 0)
 	e = w.InitProducer(c)
 	if e == nil {
@@ -134,7 +135,7 @@ func TestInitProducerToFailOnEmptyCfg(t *testing.T) {
 }
 func TestInitProducerToFailOnNoPspSet(t *testing.T) {
 	fmt.Println("==============")
-	w,e := wpw.Initialise("Dummy", "Dummy")
+	w, e := wpw.Initialise("Dummy", "Dummy", "Dummy")
 	c := make(map[string]string, 0)
 	c["dummy"] = "dummy"
 	e = w.InitProducer(c)
@@ -145,7 +146,7 @@ func TestInitProducerToFailOnNoPspSet(t *testing.T) {
 }
 func TestInitProducer(t *testing.T) {
 	fmt.Println("==============")
-	w,e := wpw.Initialise("Dummy", "Dummy")
+	w, e := wpw.Initialise("Dummy", "Dummy", "Dummy")
 	c := make(map[string]string, 0)
 
 	fmt.Println("-------------- wrong (empty) psp cfg")
@@ -195,15 +196,15 @@ func TestInitProducer(t *testing.T) {
 	//t.Log("Skipping invalid keys scenario as it is failing at the moment")
 	fmt.Println("!!! Skipping invalid keys scenario as it is failing at the moment")
 	/*
-	fmt.Println("-------------- online.worldpay.com with invalid keys")
-	c[psp.CfgPSPName] = onlineworldpay.PSPName
-	c[psp.CfgHTEPublicKey] = "dummy"
-	c[psp.CfgHTEPrivateKey] = "dummy"
-	e = w.InitProducer(c)
-	if e == nil {
-		t.Error(".InitProducer did not fail on invalid keys")
-		t.FailNow()
-	}
+		fmt.Println("-------------- online.worldpay.com with invalid keys")
+		c[psp.CfgPSPName] = onlineworldpay.PSPName
+		c[psp.CfgHTEPublicKey] = "dummy"
+		c[psp.CfgHTEPrivateKey] = "dummy"
+		e = w.InitProducer(c)
+		if e == nil {
+			t.Error(".InitProducer did not fail on invalid keys")
+			t.FailNow()
+		}
 	*/
 
 	// FIXME This fails if another producer is already runnign on the machine
@@ -212,7 +213,7 @@ func TestInitProducer(t *testing.T) {
 	c[psp.CfgHTEPublicKey] = CFG_HtePubKey
 	c[psp.CfgHTEPrivateKey] = CFG_HtePrvKey
 	e = w.InitProducer(c)
-	fmt.Println("e=",e)
+	fmt.Println("e=", e)
 	if e != nil {
 		t.Error("FAIL .InitProducer failed on valid configuration")
 		t.FailNow()
@@ -220,11 +221,11 @@ func TestInitProducer(t *testing.T) {
 
 }
 
-func TestGetDevice(t *testing.T){
+func TestGetDevice(t *testing.T) {
 	fmt.Println("==============")
-	w,_ := wpw.Initialise("Dummy", "Dummy")
+	w, _ := wpw.Initialise("Dummy", "Dummy", "Dummy")
 	d := w.GetDevice()
-	fmt.Printf("d=%s\n",d)
+	fmt.Printf("d=%s\n", d)
 	if d == nil {
 		t.Error(".GetDevice returned nil, expected *types.Device")
 		t.FailNow()
@@ -232,6 +233,7 @@ func TestGetDevice(t *testing.T){
 }
 
 type EventHandler struct{}
+
 func (handler *EventHandler) BeginServiceDelivery(serviceID int, servicePriceID int, serviceDeliveryToken types.ServiceDeliveryToken, unitsToSupply int) {
 	return
 }
@@ -258,9 +260,9 @@ func (handler *EventHandler) ErrorEvent(msg string) {
 	return
 }
 
-func TestStartStopServiceBroadcast(t *testing.T){
+func TestStartStopServiceBroadcast(t *testing.T) {
 	fmt.Println("==============")
-	w,_ := wpw.Initialise("Dummy", "Dummy")
+	w, _ := wpw.Initialise("Dummy", "Dummy", "Dummy")
 
 	// Test price
 	p, e := types.NewPrice()
@@ -271,7 +273,7 @@ func TestStartStopServiceBroadcast(t *testing.T){
 	p.ID = 1
 	p.UnitDescription = "dummy"
 	p.UnitID = 1
-	p.PricePerUnit = &types.PricePerUnit{Amount:1, CurrencyCode:"RON"}
+	p.PricePerUnit = &types.PricePerUnit{Amount: 1, CurrencyCode: "RON"}
 
 	// Test service
 	svc, e := types.NewService()
@@ -290,14 +292,13 @@ func TestStartStopServiceBroadcast(t *testing.T){
 	w.SetEventHandler(&h)
 
 	// Payment-service-provider configuration
-	c := make(map[string]string,0)
+	c := make(map[string]string, 0)
 	c[psp.CfgPSPName] = onlineworldpay.PSPName
-	c[onlineworldpay.CfgMerchantClientKey]  = "T_C_03eaa1d3-4642-4079-b030-b543ee04b5af"
+	c[onlineworldpay.CfgMerchantClientKey] = "T_C_03eaa1d3-4642-4079-b030-b543ee04b5af"
 	c[onlineworldpay.CfgMerchantServiceKey] = "T_S_f50ecb46-ca82-44a7-9c40-421818af5996"
-	c[psp.CfgHTEPrivateKey]                 = "T_S_f50ecb46-ca82-44a7-9c40-421818af5996"
-	c[psp.CfgHTEPublicKey]                  = "T_C_03eaa1d3-4642-4079-b030-b543ee04b5af"
+	c[psp.CfgHTEPrivateKey] = "T_S_f50ecb46-ca82-44a7-9c40-421818af5996"
+	c[psp.CfgHTEPublicKey] = "T_C_03eaa1d3-4642-4079-b030-b543ee04b5af"
 	c[onlineworldpay.CfgAPIEndpoint] = "https://api.worldpay.com/v1"
-
 
 	// Producer initialization
 	e = w.InitProducer(c)
@@ -319,14 +320,13 @@ func TestStartStopServiceBroadcast(t *testing.T){
 	// Cleanup
 	w.StopServiceBroadcast()
 }
+
 /*
 func TestInitProducer(t *testing.T) {
-	w,e := wpw.Initialise("Dummy", "Dummy")
+	w,e := wpw.Initialise("Dummy", "Dummy", "Dummy")
 	var c map[string]string // Payment Service Provider configuration map
 	e = w.InitProducer(c)
 }
 */
-
-
 
 //func Test(t *testing.T) {}

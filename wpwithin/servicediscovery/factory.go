@@ -28,10 +28,11 @@ func NewBroadcaster(bcastaddr string, port int, stepSleep int) (Broadcaster, err
 
 	result := &broadcasterImpl{
 
-		stepSleep: stepSleep,
-		run:       false,
-		host:      net.IPv4bcast.To4().String(),
-		port:      port,
+		stepSleep:     stepSleep,
+		run:           false,
+		interfaceAddr: bcastaddr,
+		host:          net.IPv4bcast.To4().String(),
+		port:          port,
 	}
 
 	comm, err := NewUDPComm(port, "udp4")
