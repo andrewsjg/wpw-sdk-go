@@ -10,7 +10,7 @@ type Device struct {
 }
 
 // NewDevice create a new device
-func NewDevice(name, description, uid string, ipv4Address string, currencyCode string) (*Device, error) {
+func NewDevice(name, description, uid, ipv4Address, currencyCode string) (*Device, error) {
 
 	result := &Device{
 		Name:        name,
