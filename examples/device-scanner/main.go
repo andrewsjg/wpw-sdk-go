@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"os"
 
-	log "github.com/sirupsen/logrus"
 	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin"
+	log "github.com/sirupsen/logrus"
 )
 
 // Flags
@@ -26,7 +26,7 @@ func main() {
 
 	initLog()
 
-	wp, err := wpwithin.Initialise("conorhwp-pi", "Conor Hacketts Raspberry Pi - DEVICE SCANNER")
+	wp, err := wpwithin.Initialise("conorhwp-pi", "Conor Hacketts Raspberry Pi - DEVICE SCANNER", "")
 	wpw = wp
 
 	if err != nil {
