@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"flag"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -23,7 +24,14 @@ var trpmMap map[string]types.TokenResponsePaymentMethod
 var db *scribble.Driver
 var orderInformation OrderInformation
 
+const DB_NAME = "orders"
+
 func main() {
+	var dir string
+
+	flag.StringVar(&dir, "dir", "./static/js/", "the directory to serve files from. Defaults to the current dir")
+	flag.Parse()
+
 	c := make(chan os.Signal, 1)
 	signal.Notify(c, os.Interrupt)
 	go func() {
@@ -39,8 +47,12 @@ func main() {
 	db, _ = scribble.New(".", nil)
 	port := ":8080"
 	router := mux.NewRouter().StrictSlash(true)
+	router.PathPrefix("/js/").Handler(http.StripPrefix("/js/", http.FileServer(http.Dir(dir))))
 	router.HandleFunc("/v1/tokens", Tokens)
 	router.HandleFunc("/v1/orders", Orders)
+	router.HandleFunc("/v1/transactions", Transactions)
+	router.HandleFunc("/", HomePage)
+	http.Handle("/", router)
 	fmt.Println("Serving worldpay web service mock on port " + port)
 	trpmMap = make(map[string]types.TokenResponsePaymentMethod)
 	log.Fatal(http.ListenAndServe(port, router))
@@ -143,14 +155,40 @@ func Orders(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		fmt.Println(err)
 	}
-	if err := db.Write("orders", orderRequest.CustomerOrderCode, orderInformation); err != nil {
+	if err := db.Write(DB_NAME, orderRequest.CustomerOrderCode, orderInformation); err != nil {
 		fmt.Println("Error", err)
 	}
 	json.NewEncoder(w).Encode(t)
 }
 
+func Transactions(w http.ResponseWriter, r *http.Request) {
+	records, err := db.ReadAll(DB_NAME)
+	if err != nil {
+		fmt.Println("ERRRRORRUUU: ", err)
+	}
+	transactions := []OrderInformation{}
+
+	for _, f := range records {
+		transactionFound := OrderInformation{}
+		if err := json.Unmarshal([]byte(f), &transactionFound); err != nil {
+			fmt.Println("Error", err)
+		}
+		transactions = append(transactions, transactionFound)
+	}
+
+	response, err := json.Marshal(transactions)
+	if err != nil {
+		w.Write([]byte(err.Error()))
+	}
+	w.Write(response)
+}
+
+func HomePage(w http.ResponseWriter, r *http.Request) {
+	http.ServeFile(w, r, "./static/index.html")
+}
+
 func closedb() {
-	if err := db.Delete("orders", ""); err != nil {
+	if err := db.Delete(DB_NAME, ""); err != nil {
 		fmt.Println("Error", err)
 	}
 }
