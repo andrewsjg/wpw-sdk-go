@@ -20,7 +20,7 @@ import (
 const (
 
 	// BroadcastStepSleep The amount of time to sleep between sending each broadcast message (Milliseconds)
-	BroadcastStepSleep = 5000
+	BroadcastStepSleep = 500
 	// BroadcastPort The port to broadcast messages on
 	BroadcastPort = 8980
 	// HteSvcURLPrefix HTE REST API Url prefix - can be empty

@@ -15,9 +15,40 @@ function processJSON(jsonPath){
 		data.forEach(function (j) {
 			o2 = document.getElementById(JSON.stringify(j));
 			if(o2 === null || o2 === undefined) {
-				o=document.createElement("div");
-				o.innerText=JSON.stringify(j);
-				o.id=JSON.stringify(j);
+				o = document.createElement("div");
+				o.id = JSON.stringify(j);
+
+				s = document.createElement("span");
+				s.classList.add("card");
+				s.name = "card";
+				s.innerText = j.maskedCard;
+				o.appendChild(s);
+
+				s = document.createElement("span");
+				s.classList.add("amount");
+				s.name = "amount";
+				s.innerText = j.amount;
+				o.appendChild(s);
+
+
+				s = document.createElement("span");
+				s.classList.add("currencyCode");
+				s.name = "currencyCode";
+				s.innerText = j.currencyCode;
+				o.appendChild(s);
+
+				s = document.createElement("span");
+				s.classList.add("orderDescription");
+				s.name = "orderDescription";
+				s.innerText = j.orderDescription;
+				o.appendChild(s);
+
+				s = document.createElement("span");
+				s.classList.add("transactionDateAndTime");
+				s.name = "transactionDateAndTime";
+				s.innerText = j.transactionDateAndTime;
+				o.appendChild(s);
+				//o.innerText=JSON.stringify(j);
 				rodzic.appendChild(o);
 			}
 		});
