@@ -164,7 +164,7 @@ func Orders(w http.ResponseWriter, r *http.Request) {
 func Transactions(w http.ResponseWriter, r *http.Request) {
 	records, err := db.ReadAll(DB_NAME)
 	if err != nil {
-		fmt.Println("ERRRRORRUUU: ", err)
+		fmt.Println("DB readAll error: ", err)
 	}
 	transactions := []OrderInformation{}
 
