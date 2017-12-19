@@ -19,6 +19,12 @@ function processJSON(jsonPath){
 				o.id = JSON.stringify(j);
 
 				s = document.createElement("span");
+				s.classList.add("transactionDateAndTime");
+				s.name = "transactionDateAndTime";
+				s.innerText = j.transactionDateAndTime;
+				o.appendChild(s);
+
+				s = document.createElement("span");
 				s.classList.add("card");
 				s.name = "card";
 				s.innerText = j.maskedCard;
@@ -27,7 +33,7 @@ function processJSON(jsonPath){
 				s = document.createElement("span");
 				s.classList.add("amount");
 				s.name = "amount";
-				s.innerText = j.amount;
+				s.innerText = (j.amount/100).toFixed(2);
 				o.appendChild(s);
 
 
@@ -43,11 +49,6 @@ function processJSON(jsonPath){
 				s.innerText = j.orderDescription;
 				o.appendChild(s);
 
-				s = document.createElement("span");
-				s.classList.add("transactionDateAndTime");
-				s.name = "transactionDateAndTime";
-				s.innerText = j.transactionDateAndTime;
-				o.appendChild(s);
 				//o.innerText=JSON.stringify(j);
 				rodzic.appendChild(o);
 			}
