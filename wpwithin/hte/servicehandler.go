@@ -68,6 +68,7 @@ func (srv *ServiceHandler) ServiceDiscovery(w http.ResponseWriter, r *http.Reque
 			ServiceID:          srv.ID,
 			ServiceDescription: srv.Description,
 			ServiceName:        srv.Name,
+			ServiceType:        srv.ServiceType,
 		})
 	}
 

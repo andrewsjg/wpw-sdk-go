@@ -292,7 +292,9 @@ func (wp *WPWithinHandler) RequestServices() (r map[*wpthrift_types.ServiceDetai
 
 		tmp := &wpthrift_types.ServiceDetails{
 			ServiceId:          int32(gService.ServiceID),
+			ServiceName:        gService.ServiceName,
 			ServiceDescription: gService.ServiceDescription,
+			ServiceType:        gService.ServiceType,
 		}
 
 		result[tmp] = struct{}{}
