@@ -61,7 +61,7 @@ func Tokens(w http.ResponseWriter, r *http.Request) {
 
 	defer r.Body.Close()
 
-	fmt.Println("/v1/tokens request received")
+	fmt.Println("/v1/tokens request received from " + r.RemoteAddr)
 
 	requestBody, err := ioutil.ReadAll(r.Body)
 	if err != nil {
@@ -110,7 +110,7 @@ func Orders(w http.ResponseWriter, r *http.Request) {
 	//	fmt.Println("Amount: ", response.Amount)
 	//	fmt.Println("Order desc: ", response.OrderDescription)
 
-	fmt.Println("/v1/orders request received")
+	fmt.Println("/v1/orders request received from " + r.RemoteAddr)
 	orpr := types.OrderResponsePaymentResponse{
 		Type:                              trpmMap[orderRequest.Token].Type,
 		Name:                              trpmMap[orderRequest.Token].Name,
