@@ -20,7 +20,7 @@ import (
 const (
 
 	// BroadcastStepSleep The amount of time to sleep between sending each broadcast message (Milliseconds)
-	BroadcastStepSleep = 5000
+	BroadcastStepSleep = 500
 	// BroadcastPort The port to broadcast messages on
 	BroadcastPort = 8980
 	// HteSvcURLPrefix HTE REST API Url prefix - can be empty
@@ -37,12 +37,12 @@ const (
 
 // SDKFactory for creating WPWithin instances. // TODO Needs to be reworked so can be partially implemented.
 type SDKFactory interface {
-	GetDevice(name, description string, cfg *configuration.WPWithin) (*types.Device, error)
+	GetDevice(name, description, interfaceAddr string, cfg *configuration.WPWithin) (*types.Device, error)
 	GetPSPMerchant(pspConfig map[string]string) (psp.PSP, error)
 	GetPSPClient(pspConfig map[string]string) (psp.PSP, error)
 	GetSvcBroadcaster(ipv4Address string) (servicediscovery.Broadcaster, error)
 	GetSvcScanner() (servicediscovery.Scanner, error)
-	GetHTE(device *types.Device, psp psp.PSP, ipv4Address, scheme string, hteCredential *hte.Credential, om hte.OrderManager, hteSvcHandler *hte.ServiceHandler) (hte.Service, error)
+	GetHTE(device *types.Device, psp psp.PSP, ipv4Address string, scheme string, hteCredential *hte.Credential, om hte.OrderManager, hteSvcHandler *hte.ServiceHandler) (hte.Service, error)
 	GetOrderManager() (hte.OrderManager, error)
 	GetHTEClient() (hte.Client, error)
 	GetHTEClientHTTP() (hte.ClientHTTP, error)
@@ -59,7 +59,7 @@ func NewSDKFactory() (SDKFactory, error) {
 }
 
 // GetDevice create a device with Name and Description
-func (factory *SDKFactoryImpl) GetDevice(name, description string, cfg *configuration.WPWithin) (*types.Device, error) {
+func (factory *SDKFactoryImpl) GetDevice(name, description, interfaceAddr string, cfg *configuration.WPWithin) (*types.Device, error) {
 
 	var deviceGUID string
 
@@ -92,12 +92,10 @@ func (factory *SDKFactoryImpl) GetDevice(name, description string, cfg *configur
 	}
 
 	var deviceAddress net.IP
-	var err error
-	deviceAddress, err = utils.FirstExternalIPv4()
-	if err != nil {
-		return nil, fmt.Errorf("Unable to get IP address: %q", err.Error())
+	deviceAddress = net.ParseIP(interfaceAddr)
+	if deviceAddress == nil {
+		deviceAddress, _ = utils.FirstExternalIPv4()
 	}
-
 	d, e := types.NewDevice(name, description, deviceGUID, deviceAddress.String(), "GBP")
 
 	return d, e
@@ -170,7 +168,7 @@ func (factory *SDKFactoryImpl) GetSvcScanner() (servicediscovery.Scanner, error)
 }
 
 // GetHTE get an instance of HTE
-func (factory *SDKFactoryImpl) GetHTE(device *types.Device, psp psp.PSP, ipv4Address, scheme string, hteCredential *hte.Credential, om hte.OrderManager, hteSvcHandler *hte.ServiceHandler) (hte.Service, error) {
+func (factory *SDKFactoryImpl) GetHTE(device *types.Device, psp psp.PSP, ipv4Address string, scheme string, hteCredential *hte.Credential, om hte.OrderManager, hteSvcHandler *hte.ServiceHandler) (hte.Service, error) {
 
 	return hte.NewService(device, psp, ipv4Address, HteSvcURLPrefix, scheme, HteSvcPort, hteCredential, om, hteSvcHandler)
 }

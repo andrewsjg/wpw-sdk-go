@@ -46,7 +46,7 @@ type WPWithin interface {
 
 // Initialise Initialise the SDK - Returns an implementation of WPWithin
 // Must provide a device name and description
-func Initialise(name, description string) (WPWithin, error) {
+func Initialise(name, description, interfaceAddr string) (WPWithin, error) {
 
 	log.WithFields(log.Fields{"name": name, "description": description}).Debug("begin wpwithin.Initialise()")
 
@@ -120,7 +120,7 @@ func Initialise(name, description string) (WPWithin, error) {
 	log.Debug("After call doWebSocketLogSetup()")
 
 	log.WithFields(log.Fields{"name": name, "description": description}).Debug("Will call Factory.GetDevice()")
-	dev, err2 := Factory.GetDevice(name, description, &core.Configuration)
+	dev, err2 := Factory.GetDevice(name, description, interfaceAddr, &core.Configuration)
 
 	if err2 != nil {
 

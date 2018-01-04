@@ -31,13 +31,13 @@ func NewWPWithinHandler(wpWithin wpwithin.WPWithin, callback event.Handler) *WPW
 }
 
 // Setup a device with name and description
-func (wp *WPWithinHandler) Setup(name, description string) (err error) {
+func (wp *WPWithinHandler) Setup(name, description, interfaceAddr string) (err error) {
 
 	log.Debug("Begin RPC.WPWithinHandler.Setup()")
 
 	defer log.Debug("End RPC.WPWithinHandler.Setup()")
 
-	wpw, err := wpwithin.Initialise(name, description)
+	wpw, err := wpwithin.Initialise(name, description, interfaceAddr)
 
 	if err != nil {
 
@@ -218,7 +218,7 @@ func (wp *WPWithinHandler) DeviceDiscovery(timeoutMillis int32) (r map[*wpthrift
 
 	for _, gSvcMsg := range gSvcMsgs {
 		serviceTypes := make(map[string]struct{})
-		for i := 0; i < len(gSvcMsg.ServiceTypes); i +=1 {
+		for i := 0; i < len(gSvcMsg.ServiceTypes); i += 1 {
 			serviceTypes[gSvcMsg.ServiceTypes[i]] = struct{}{}
 		}
 
@@ -254,7 +254,7 @@ func (wp *WPWithinHandler) SearchForDevice(timeoutMillis int32, deviceName strin
 	}
 
 	serviceTypes := make(map[string]struct{})
-	for i := 0; i < len(gSvcMsg.ServiceTypes); i +=1 {
+	for i := 0; i < len(gSvcMsg.ServiceTypes); i += 1 {
 		serviceTypes[gSvcMsg.ServiceTypes[i]] = struct{}{}
 	}
 
@@ -292,7 +292,9 @@ func (wp *WPWithinHandler) RequestServices() (r map[*wpthrift_types.ServiceDetai
 
 		tmp := &wpthrift_types.ServiceDetails{
 			ServiceId:          int32(gService.ServiceID),
+			ServiceName:        gService.ServiceName,
 			ServiceDescription: gService.ServiceDescription,
+			ServiceType:        gService.ServiceType,
 		}
 
 		result[tmp] = struct{}{}

@@ -1,0 +1,44 @@
+<!doctype html>
+<html class="no-js" lang="en" dir="ltr">
+<head>
+	<meta charset="utf-8"></meta>
+	<meta http-equiv="x-ua-compatible" content="ie=edge"></meta>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
+	<title>The Smart Parking Demo - transactions</title>
+	<script src="js/jquery-2.1.4.js"></script>
+	<style type="text/css">
+		body {
+			background-color: red;
+		}
+		#tabelka > div {
+			background-color: white;
+			border-radius: 0.33em;
+			box-shadow: 2px 2px 3px black;
+			margin: 4px;
+			margin-bottom: 6px;
+		}
+		#tabelka > div > span:first-child {
+			border-left: none;
+		}
+		#tabelka > div > span {
+			display: inline-block;
+			padding-left: 6px;
+			padding-right: 6px;
+			border-left: 1px dotted gray;
+		}
+		#tabelka > div > span.card {
+			font-family: monospace;
+			width:13em;
+		}
+		#tabelka > div > span.transactionDateAndTime {
+			font-family: monospace;
+		}
+	</style>
+</head>
+
+<body class="mainBgColorRed fullBodyFont">
+	<div class="tb" id="tabelka">
+	</div>
+	<script src="js/transactions.js"></script>
+</body>
+</html>

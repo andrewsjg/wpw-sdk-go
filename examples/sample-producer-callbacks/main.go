@@ -20,7 +20,6 @@ var wpw wpwithin.WPWithin
 func main() {
 
 	initLog()
-
 	cfgFileName := "sample-producer-callbacks.json"
 	cfg, err := exutils.LoadConfiguration(cfgFileName)
 	if err != nil {
@@ -28,7 +27,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	wp, err := wpwithin.Initialise(cfg.DeviceName, "Car service provided by robot...")
+	wp, err := wpwithin.Initialise(cfg.DeviceName, "Car service provided by robot...", cfg.InterfaceAddr)
 	wpw = wp
 
 	if err != nil {
@@ -64,16 +63,16 @@ func main() {
 		wp.StartServiceBroadcast(0)
 	}
 
-	done := make(chan bool)
-	fnForever := func() {
-		for {
-			time.Sleep(time.Second * 10)
-		}
+	//done := make(chan bool)
+	//	fnForever := func() {
+	for {
+		time.Sleep(time.Second * 10)
 	}
+	//	}
 
-	go fnForever()
+	//	go fnForever()
 
-	<-done // Block forever
+	//<-done // Block forever
 }
 
 func addService() {
