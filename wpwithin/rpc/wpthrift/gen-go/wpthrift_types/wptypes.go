@@ -1215,7 +1215,7 @@ type ServiceMessage struct {
   UrlPrefix string `thrift:"urlPrefix,5" db:"urlPrefix" json:"urlPrefix"`
   Scheme string `thrift:"scheme,6" db:"scheme" json:"scheme"`
   DeviceName string `thrift:"deviceName,7" db:"deviceName" json:"deviceName"`
-  ServiceTypes map[string]struct{} `thrift:"serviceTypes,8" db:"serviceTypes" json:"serviceTypes"`
+  ServiceTypes map[string]struct{} `thrift:"serviceTypes,8" db:"serviceTypes" json:"serviceTypes,omitempty"`
 }
 
 func NewServiceMessage() *ServiceMessage {
@@ -1250,10 +1250,15 @@ func (p *ServiceMessage) GetScheme() string {
 func (p *ServiceMessage) GetDeviceName() string {
   return p.DeviceName
 }
+var ServiceMessage_ServiceTypes_DEFAULT map[string]struct{}
 
 func (p *ServiceMessage) GetServiceTypes() map[string]struct{} {
   return p.ServiceTypes
 }
+func (p *ServiceMessage) IsSetServiceTypes() bool {
+  return p.ServiceTypes != nil
+}
+
 func (p *ServiceMessage) Read(iprot thrift.TProtocol) error {
   if _, err := iprot.ReadStructBegin(); err != nil {
     return thrift.PrependError(fmt.Sprintf("%T read error: ", p), err)
@@ -1490,20 +1495,22 @@ func (p *ServiceMessage) writeField7(oprot thrift.TProtocol) (err error) {
 }
 
 func (p *ServiceMessage) writeField8(oprot thrift.TProtocol) (err error) {
-  if err := oprot.WriteFieldBegin("serviceTypes", thrift.SET, 8); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T write field begin error 8:serviceTypes: ", p), err) }
-  if err := oprot.WriteSetBegin(thrift.STRING, len(p.ServiceTypes)); err != nil {
-    return thrift.PrependError("error writing set begin: ", err)
+  if p.IsSetServiceTypes() {
+    if err := oprot.WriteFieldBegin("serviceTypes", thrift.SET, 8); err != nil {
+      return thrift.PrependError(fmt.Sprintf("%T write field begin error 8:serviceTypes: ", p), err) }
+    if err := oprot.WriteSetBegin(thrift.STRING, len(p.ServiceTypes)); err != nil {
+      return thrift.PrependError("error writing set begin: ", err)
+    }
+    for v, _ := range p.ServiceTypes {
+      if err := oprot.WriteString(string(v)); err != nil {
+      return thrift.PrependError(fmt.Sprintf("%T. (0) field write error: ", p), err) }
+    }
+    if err := oprot.WriteSetEnd(); err != nil {
+      return thrift.PrependError("error writing set end: ", err)
+    }
+    if err := oprot.WriteFieldEnd(); err != nil {
+      return thrift.PrependError(fmt.Sprintf("%T write field end error 8:serviceTypes: ", p), err) }
   }
-  for v, _ := range p.ServiceTypes {
-    if err := oprot.WriteString(string(v)); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T. (0) field write error: ", p), err) }
-  }
-  if err := oprot.WriteSetEnd(); err != nil {
-    return thrift.PrependError("error writing set end: ", err)
-  }
-  if err := oprot.WriteFieldEnd(); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T write field end error 8:serviceTypes: ", p), err) }
   return err
 }
 
@@ -1518,10 +1525,12 @@ func (p *ServiceMessage) String() string {
 //  - ServiceId
 //  - ServiceDescription
 //  - ServiceName
+//  - ServiceType
 type ServiceDetails struct {
   ServiceId int32 `thrift:"serviceId,1" db:"serviceId" json:"serviceId"`
   ServiceDescription string `thrift:"serviceDescription,2" db:"serviceDescription" json:"serviceDescription"`
   ServiceName string `thrift:"serviceName,3" db:"serviceName" json:"serviceName"`
+  ServiceType string `thrift:"serviceType,4" db:"serviceType" json:"serviceType"`
 }
 
 func NewServiceDetails() *ServiceDetails {
@@ -1539,6 +1548,10 @@ func (p *ServiceDetails) GetServiceDescription() string {
 
 func (p *ServiceDetails) GetServiceName() string {
   return p.ServiceName
+}
+
+func (p *ServiceDetails) GetServiceType() string {
+  return p.ServiceType
 }
 func (p *ServiceDetails) Read(iprot thrift.TProtocol) error {
   if _, err := iprot.ReadStructBegin(); err != nil {
@@ -1563,6 +1576,10 @@ func (p *ServiceDetails) Read(iprot thrift.TProtocol) error {
       }
     case 3:
       if err := p.ReadField3(iprot); err != nil {
+        return err
+      }
+    case 4:
+      if err := p.ReadField4(iprot); err != nil {
         return err
       }
     default:
@@ -1607,6 +1624,15 @@ func (p *ServiceDetails)  ReadField3(iprot thrift.TProtocol) error {
   return nil
 }
 
+func (p *ServiceDetails)  ReadField4(iprot thrift.TProtocol) error {
+  if v, err := iprot.ReadString(); err != nil {
+  return thrift.PrependError("error reading field 4: ", err)
+} else {
+  p.ServiceType = v
+}
+  return nil
+}
+
 func (p *ServiceDetails) Write(oprot thrift.TProtocol) error {
   if err := oprot.WriteStructBegin("ServiceDetails"); err != nil {
     return thrift.PrependError(fmt.Sprintf("%T write struct begin error: ", p), err) }
@@ -1614,6 +1640,7 @@ func (p *ServiceDetails) Write(oprot thrift.TProtocol) error {
     if err := p.writeField1(oprot); err != nil { return err }
     if err := p.writeField2(oprot); err != nil { return err }
     if err := p.writeField3(oprot); err != nil { return err }
+    if err := p.writeField4(oprot); err != nil { return err }
   }
   if err := oprot.WriteFieldStop(); err != nil {
     return thrift.PrependError("write field stop error: ", err) }
@@ -1649,6 +1676,16 @@ func (p *ServiceDetails) writeField3(oprot thrift.TProtocol) (err error) {
   return thrift.PrependError(fmt.Sprintf("%T.serviceName (3) field write error: ", p), err) }
   if err := oprot.WriteFieldEnd(); err != nil {
     return thrift.PrependError(fmt.Sprintf("%T write field end error 3:serviceName: ", p), err) }
+  return err
+}
+
+func (p *ServiceDetails) writeField4(oprot thrift.TProtocol) (err error) {
+  if err := oprot.WriteFieldBegin("serviceType", thrift.STRING, 4); err != nil {
+    return thrift.PrependError(fmt.Sprintf("%T write field begin error 4:serviceType: ", p), err) }
+  if err := oprot.WriteString(string(p.ServiceType)); err != nil {
+  return thrift.PrependError(fmt.Sprintf("%T.serviceType (4) field write error: ", p), err) }
+  if err := oprot.WriteFieldEnd(); err != nil {
+    return thrift.PrependError(fmt.Sprintf("%T write field end error 4:serviceType: ", p), err) }
   return err
 }
 
