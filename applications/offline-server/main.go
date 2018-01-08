@@ -7,8 +7,6 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
-	"os"
-	"os/signal"
 	"regexp"
 	"strings"
 	"time"
@@ -19,7 +17,6 @@ import (
 	"github.com/nu7hatch/gouuid"
 )
 
-//var trpm types.TokenResponsePaymentMethod
 var trpmMap map[string]types.TokenResponsePaymentMethod
 var db *scribble.Driver
 var orderInformation OrderInformation
@@ -32,19 +29,8 @@ func main() {
 	flag.StringVar(&dir, "dir", "./static/js/", "the directory to serve files from. Defaults to the current dir")
 	flag.Parse()
 
-	c := make(chan os.Signal, 1)
-	signal.Notify(c, os.Interrupt)
-	go func() {
-		sigchan := make(chan os.Signal, 10)
-		signal.Notify(sigchan, os.Interrupt)
-		<-sigchan
-		log.Println("Program killed !")
-
-		closedb()
-
-		os.Exit(0)
-	}()
 	db, _ = scribble.New(".", nil)
+	cleandb()
 	port := ":8080"
 	router := mux.NewRouter().StrictSlash(true)
 	router.PathPrefix("/js/").Handler(http.StripPrefix("/js/", http.FileServer(http.Dir(dir))))
@@ -70,8 +56,6 @@ func Tokens(w http.ResponseWriter, r *http.Request) {
 
 	tokenRequest := types.TokenRequest{}
 	json.Unmarshal(requestBody, &tokenRequest)
-	//	fmt.Println("type: ", trpm.TokenResponsePaymentMethod.Type)
-	//	fmt.Println("Name: ", trpm.TokenResponsePaymentMethod.Name)
 	unmaskedCardPart := regexp.MustCompile("[0-9]{4}$")
 	trpm := types.TokenResponsePaymentMethod{
 		Type:                              tokenRequest.PaymentMethod.Type,
@@ -107,8 +91,6 @@ func Orders(w http.ResponseWriter, r *http.Request) {
 	fmt.Println(string(respBody))
 	orderRequest := types.OrderRequest{}
 	json.Unmarshal(respBody, &orderRequest)
-	//	fmt.Println("Amount: ", response.Amount)
-	//	fmt.Println("Order desc: ", response.OrderDescription)
 
 	fmt.Println("/v1/orders request received from " + r.RemoteAddr)
 	orpr := types.OrderResponsePaymentResponse{
@@ -189,8 +171,6 @@ func HomePage(w http.ResponseWriter, r *http.Request) {
 	http.ServeFile(w, r, "./static/index.html")
 }
 
-func closedb() {
-	if err := db.Delete(DB_NAME, ""); err != nil {
-		fmt.Println("Error", err)
-	}
+func cleandb() {
+	db.Delete(DB_NAME, "")
 }
