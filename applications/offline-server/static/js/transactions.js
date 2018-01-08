@@ -8,15 +8,26 @@ function refreshChargerStatus() {
 function processJSON(jsonPath){
 	$.getJSON(jsonPath, function(data, textStatus, jqXHR){
 		var items = [];
-		console.log(data);
+		//console.log(data);
 		//o = document.createElement("div")
 		rodzic = document.getElementById("tabelka");
 		//o.innerText = json_array[i];
 		//i.id = json_array[i].toString();
+		if(data.length == 0){
+			var a = rodzic.getElementsByClassName("paymentRecord");
+			if(a.length > 0){
+				console.log("Empty list received and page holds records - clearing the list");
+				for(i=0; i<a.length; i++){
+					rodzic.removeChild(a[i]);
+				}
+			}
+			return;
+		}
 		data.forEach(function (j) {
 			o2 = document.getElementById(JSON.stringify(j));
 			if(o2 === null || o2 === undefined) {
 				o = document.createElement("div");
+				o.classList.add("paymentRecord");
 				o.id = JSON.stringify(j);
 
 				s = document.createElement("span");
