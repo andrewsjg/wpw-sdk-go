@@ -10,10 +10,10 @@ import (
 	"strconv"
 	"strings"
 
-	log "github.com/sirupsen/logrus"
 	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/psp"
 	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/psp/onlineworldpay/types"
 	wpwithin_types "github.com/WPTechInnovation/wpw-sdk-go/wpwithin/types"
+	log "github.com/sirupsen/logrus"
 )
 
 // OnlineWorldpay implementation of PSP

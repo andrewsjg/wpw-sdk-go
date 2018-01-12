@@ -6,9 +6,9 @@ import (
 	"fmt"
 
 	"git.apache.org/thrift.git/lib/go/thrift"
-	log "github.com/sirupsen/logrus"
 	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/rpc/wpthrift/gen-go/wpthrift"
 	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/rpc/wpthrift/gen-go/wpthrift_types"
+	log "github.com/sirupsen/logrus"
 
 	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/types"
 	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/types/event"

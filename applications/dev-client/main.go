@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"os"
 
-	log "github.com/sirupsen/logrus"
 	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/types"
+	log "github.com/sirupsen/logrus"
 )
 
 var hceCard types.HCECard

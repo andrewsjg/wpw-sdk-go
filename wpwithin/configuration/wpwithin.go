@@ -4,10 +4,10 @@ import "fmt"
 
 // WPWithin WorldpayWithin specific configuration
 type WPWithin struct {
-	WSLogEnable    bool
-	WSLogPort      int
-	WSLogLevel     string
-	WSLogHost      string
+	WSLogEnable bool
+	WSLogPort   int
+	WSLogLevel  string
+	WSLogHost   string
 }
 
 // ParseConfig load in a Configuration and read it into WorldpayWithin specific config
