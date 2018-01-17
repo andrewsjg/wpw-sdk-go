@@ -93,13 +93,38 @@ fi
 function prepareGoEnv {
     local CURRENT_PATH=`pwd`
     cd ${WPW_SDK_GO_PATH}/applications/rpc-agent
+    if [[ ${?} != 0 ]]; then
+        echo -e "${RED}error, failed to change directory to ${WPW_SDK_GO_PATH}/applications/rpc-agent${NC}"
+        exit 10
+    fi
+
     echo -e "${GREEN}${repo_name}:${NC} git checkout ${RC_BRANCH_NAME}"
-    git checkout develop
+    git checkout ${RC_BRANCH_NAME}
+    if [[ ${?} != 0 ]]; then
+        echo -e "${RED}error, failed to checkout to branch ${RC_BRANCH_NAME}${NC}"
+        exit 11
+    fi
+
     # go get without building
+    echo -e "${GREEN}${repo_name}:${NC} go get -d"
     go get -d
-    cd ../../../../../git.apache.org/thrift.git/
+    if [[ ${?} != 0 ]]; then
+        echo -e "${RED}error, command \"go get -d\" failed${NC}"
+        exit 12
+    fi
+
     echo -e "${GREEN}${repo_name}:${NC} changing the thrift to version 0.10.0"
+    cd ../../../../../git.apache.org/thrift.git/
+    if [[ ${?} != 0 ]]; then
+        echo -e "${RED}error, failed to change directory to ../../../../../git.apache.org/thrift.git/${NC}"
+        exit 13
+    fi
+
     git checkout 0.10.0
+    if [[ ${?} != 0 ]]; then
+        echo -e "${RED}error, failed to checkout apache thrify to 0.10.0${NC}"
+        exit 14
+    fi
     cd ${CURRENT_PATH}
 }
 
