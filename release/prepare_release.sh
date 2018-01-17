@@ -13,13 +13,18 @@ typeset NC='\033[0m'  # No Color
 # typeset -r REPO_IOT="https://github.com/WPTechInnovation/wpw-sdk-iot-core.git"
 # typeset -r REPO_THRIFT="https://github.com/WPTechInnovation/wpw-sdk-thrift.git"
 
-typeset -r REPO_GO="file:///c/Users/wabe/clones/release_script/copy_of_repos/wpw-sdk-go.git"
-typeset -r REPO_DOTNET="file:///c/Users/wabe/clones/release_script/copy_of_repos/wpw-sdk-dotnet.git"
-typeset -r REPO_NODEJS="file:///c/Users/wabe/clones/release_script/copy_of_repos/wpw-sdk-nodejs.git"
-typeset -r REPO_PYTHON="file:///c/Users/wabe/clones/release_script/copy_of_repos/wpw-sdk-python.git"
-typeset -r REPO_JAVA="file:///c/Users/wabe/clones/release_script/copy_of_repos/wpw-sdk-java.git"
-typeset -r REPO_IOT="file:///c/Users/wabe/clones/release_script/copy_of_repos/wpw-sdk-iot-core.git"
-typeset -r REPO_THRIFT="file:///c/Users/wabe/clones/release_script/copy_of_repos/wpw-sdk-thrift.git"
+#export MIRRORS="https://github.com/WPTechInnovation"
+export MIRRORS="file:///c/Users/wabe/clones/release_script/copy_of_repos"
+#export MIRRORS="file:///home/wabe/clones/mirrors"
+
+typeset -r REPO_GO="${MIRRORS}/wpw-sdk-go.git"
+typeset -r REPO_DOTNET="${MIRRORS}/wpw-sdk-dotnet.git"
+typeset -r REPO_NODEJS="${MIRRORS}/wpw-sdk-nodejs.git"
+typeset -r REPO_PYTHON="${MIRRORS}/wpw-sdk-python.git"
+typeset -r REPO_JAVA="${MIRRORS}/wpw-sdk-java.git"
+typeset -r REPO_IOT="${MIRRORS}/wpw-sdk-iot-core.git"
+typeset -r REPO_THRIFT="${MIRRORS}/wpw-sdk-thrift.git"
+
 
 typeset -r REPO_GO_NAME="wpw-sdk-go"
 typeset -r REPO_DOTNET_NAME="wpw-sdk-dotnet"
@@ -145,29 +150,6 @@ if [[ ${PUSH_ONLY} == false ]]; then
         cleanup
         exit 2
     fi
-
-
-    # echo
-    # echo -e "${GREEN}*** Build rpc agents ***${NC}"
-    # echo
-
-    # # build rpc agents
-    # if [[ -d ${WPW_SDK_GO_PATH}/applications/rpc-agent ]]; then
-    #     START_PATH=`pwd`
-    #     cd ${WPW_SDK_GO_PATH}/applications/rpc-agent
-    #     ./build-all.sh -v ${VERSION}
-    #     RC=$?
-    #     if [[ ${RC} != 0 ]]
-    #     then
-    #         echo -e "${RED}error, failed to build RPC agents${NC}"
-    #         cd ${START_PATH}
-    #         cleanup
-    #         exit 2
-    #     fi
-    #     cd ${START_PATH}
-    #     # copy rpc agents to iot directory
-    #     cp ${WPW_SDK_GO_PATH}/applications/rpc-agent/build/rpc* ${REPO_IOT_NAME}/bin/
-    # fi
 
     echo
     echo -e "${GREEN}*** prepare submodules ***${NC}"

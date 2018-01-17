@@ -5,14 +5,16 @@ typeset RED='\033[0;31m'
 typeset GREEN='\033[0;32m'
 typeset NC='\033[0m'  # No Color
 
-#typeset -r REPO_GO="https://github.com/WPTechInnovation/wpw-sdk-go.git"
-typeset -r REPO_GO="file:///c/Users/wabe/clones/release_script/copy_of_repos/wpw-sdk-go.git"
-typeset -r REPO_DOTNET="https://github.com/WPTechInnovation/wpw-sdk-dotnet.git"
-typeset -r REPO_NODEJS="https://github.com/WPTechInnovation/wpw-sdk-nodejs.git"
-typeset -r REPO_PYTHON="https://github.com/WPTechInnovation/wpw-sdk-python.git"
-typeset -r REPO_JAVA="https://github.com/WPTechInnovation/wpw-sdk-java.git"
-typeset -r REPO_IOT="https://github.com/WPTechInnovation/wpw-sdk-iot-core.git"
-typeset -r REPO_THRIFT="https://github.com/WPTechInnovation/wpw-sdk-thrift.git"
+
+[[ -z "${MIRRORS}" ]] &&        MIRRORS="https://github.com/WPTechInnovation"
+
+[[ -z "${REPO_GO}" ]] &&        REPO_GO="${MIRRORS}/wpw-sdk-go.git"
+[[ -z "${REPO_DOTNET}" ]] &&    REPO_DOTNET="${MIRRORS}/wpw-sdk-dotnet.git"
+[[ -z "${REPO_NODEJS}" ]] &&    REPO_NODEJS="${MIRRORS}/wpw-sdk-nodejs.git"
+[[ -z "${REPO_PYTHON}" ]] &&    REPO_PYTHON="${MIRRORS}/wpw-sdk-python.git"
+[[ -z "${REPO_JAVA}" ]] &&      REPO_JAVA="${MIRRORS}/wpw-sdk-java.git"
+[[ -z "${REPO_IOT}" ]] &&       REPO_IOT="${MIRRORS}/wpw-sdk-iot-core.git"
+[[ -z "${REPO_THRIFT}" ]] &&    REPO_THRIFT="${MIRRORS}/wpw-sdk-thrift.git"
 #typeset ALL_REPOS=( ${REPO_GO} ${REPO_DOTNET} ${REPO_NODEJS} ${REPO_PYTHON} ${REPO_JAVA} ${REPO_IOT} ${REPO_THRIFT} )
 
 typeset -r REPO_GO_NAME="wpw-sdk-go"
