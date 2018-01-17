@@ -148,9 +148,6 @@ do
             # ignore changing branch to develop for wpw-sdk-iot-core
             continue
             ;;
-        ${REPO_THRIFT_NAME} )
-            continue
-            ;;
         ${REPO_GO_NAME} )
             # already done in a loop above
             prepareGoEnv

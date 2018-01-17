@@ -14,6 +14,7 @@ typeset RC_MASTER_BRANCH_NAME=""
 
 typeset WPW_SDK_GO_PATH=${GOPATH}/src/github.com/WPTechInnovation/${REPO_GO_NAME}
 typeset VERSION=""
+typeset ADD_TAG=""
 
 START_DIR=`pwd`
 
@@ -28,6 +29,10 @@ while true; do
     -v | --version )
         VERSION="$2"
         shift
+        shift
+        ;;
+    -t | --add_tag )
+        ADD_TAG="-t"
         shift
         ;;
     -b | --branch )
@@ -147,16 +152,18 @@ then
     exit 2
 fi
 
-# tag_repo 
-echo -e "${GREEN}${repo_name}:${NC} git tag -a ${VERSION} -m \"Version ${VERSION}\""
-git tag -a ${VERSION} -m "Version ${VERSION}"
-RC=$?
-if [[ ${RC} != 0 ]]
-then
-    echo -e "${RED}error, failed to add tag for repo ${repo_name}: git tag -a ${VERSION} -m \"Version ${VERSION}\"${NC}"
-    cd ${START_DIR}
-    cleanup
-    exit 3
+# tag_repo
+if [[ -n "${ADD_TAG}" ]]; then
+    echo -e "${GREEN}${repo_name}:${NC} git tag -a ${VERSION} -m \"Version ${VERSION}\""
+    git tag -a ${VERSION} -m "Version ${VERSION}"
+    RC=$?
+    if [[ ${RC} != 0 ]]
+    then
+        echo -e "${RED}error, failed to add tag for repo ${repo_name}: git tag -a ${VERSION} -m \"Version ${VERSION}\"${NC}"
+        cd ${START_DIR}
+        cleanup
+        exit 3
+    fi
 fi
 
 # push changes
@@ -172,37 +179,38 @@ then
     exit 4
 fi
 
-# push tags
-echo -e "${GREEN}${repo_name}:${NC} git push --tags"
-git push --tags
-RC=$?
-if [[ ${RC} != 0 ]]
-then
-    echo -e "${RED}error, failed to: git push --tags in ${repo_name}${NC}"
-    cd ${START_DIR}
-    cleanup
-    exit 5
+if [[ -n "${ADD_TAG}" ]]; then
+    # push tags
+    echo -e "${GREEN}${repo_name}:${NC} git push --tags"
+    git push --tags
+    RC=$?
+    if [[ ${RC} != 0 ]]
+    then
+        echo -e "${RED}error, failed to: \"git push --tags\" in ${repo_name}${NC}"
+        cd ${START_DIR}
+        cleanup
+        exit 5
+    fi
 fi
 
 cd ${START_DIR}
 
 # commit thrift
 # not finished yet, exit 0 for now
-exit 0
+# Thrift is specific and contain master only officially,
+# continue for master branch only
+if [[ "${RC_MASTER_BRANCH_NAME}" == "master" ]]; then
 
-
-repo_name=${REPO_THRIFT_NAME}
-cd ${repo_name}
-RC=$?
-if [[ ${RC} != 0 ]]
-then
-    echo -e "${RED}error, failed to change directory to ${repo_name}${NC}"
-    cd ${START_PATH}
-    cleanup
-    exit 2
-fi
-
-
+    repo_name=${REPO_THRIFT_NAME}
+    cd ${repo_name}
+    RC=$?
+    if [[ ${RC} != 0 ]]
+    then
+        echo -e "${RED}error, failed to change directory to ${repo_name}${NC}"
+        cd ${START_PATH}
+        cleanup
+        exit 2
+    fi
 
     echo -e "${GREEN}${repo_name}:${NC} git checkout ${RC_MASTER_BRANCH_NAME}"
     git checkout "${RC_MASTER_BRANCH_NAME}"
@@ -239,67 +247,35 @@ fi
         exit 5
     fi
 
+    # push changes
+    echo -e "${GREEN}Push repo ${repo_name}${NC}"
+    echo -e "${GREEN}${repo_name}:${NC} git push origin ${RC_MASTER_BRANCH_NAME}"
+    git push origin ${RC_MASTER_BRANCH_NAME}
+    RC=$?
+    if [[ ${RC} != 0 ]]
+    then
+        echo -e "${RED}error, failed to: git push origin ${RC_MASTER_BRANCH_NAME}${NC}"
+        cd ${START_DIR}
+        cleanup
+        exit 4
+    fi
 
+    # push tags
+    if [[ -n "${ADD_TAG}" ]]; then
+        echo -e "${GREEN}${repo_name}:${NC} git push --tags"
+        git push --tags
+        RC=$?
+        if [[ ${RC} != 0 ]]; then
+            echo -e "${RED}error, failed to: git push --tags in ${repo_name}${NC}"
+            cd ${START_DIR}
+            cleanup
+            exit 5
+        fi
+    fi
 
-
-
-# # vfy if branch name is correct
-# CURRENT_BRANCH_NAME=$(git rev-parse --abbrev-ref HEAD)
-# if [[ ${CURRENT_BRANCH_NAME} != "${RC_MASTER_BRANCH_NAME}" ]]; then
-#     echo -e "${RED}error, current branch name ${CURRENT_BRANCH_NAME} is different than ${RC_MASTER_BRANCH_NAME} for ${repo_name}${NC}"
-#     cd ${START_DIR}
-#     cleanup
-#     exit 1
-# fi
-
-# echo -e "${GREEN}${repo_name}:${NC} git commit -a -m \"new rpc-agents for version ${VERSION}\""
-# git commit -a -m "new rpc-agents for version ${VERSION}"
-# RC=$?
-# if [[ ${RC} != 0 ]]
-# then
-#     echo -e "${RED}error, failed to commit changes for new rpc-agents version ${VERSION}${NC}"
-#     cd ${START_PATH}
-#     cleanup
-#     exit 2
-# fi
-
-# # tag_repo 
-# echo -e "${GREEN}${repo_name}:${NC} git tag -a ${VERSION} -m \"Version ${VERSION}\""
-# git tag -a ${VERSION} -m "Version ${VERSION}"
-# RC=$?
-# if [[ ${RC} != 0 ]]
-# then
-#     echo -e "${RED}error, failed to add tag for repo ${repo_name}: git tag -a ${VERSION} -m \"Version ${VERSION}\"${NC}"
-#     cd ${START_DIR}
-#     cleanup
-#     exit 3
-# fi
-
-# push changes
-echo -e "${GREEN}Push repo ${repo_name}${NC}"
-echo -e "${GREEN}${repo_name}:${NC} git push origin ${RC_MASTER_BRANCH_NAME}"
-git push origin ${RC_MASTER_BRANCH_NAME}
-RC=$?
-if [[ ${RC} != 0 ]]
-then
-    echo -e "${RED}error, failed to: git push origin ${RC_MASTER_BRANCH_NAME}${NC}"
+    # go back to initial directory
     cd ${START_DIR}
-    cleanup
-    exit 4
-fi
 
-# push tags
-echo -e "${GREEN}${repo_name}:${NC} git push --tags"
-git push --tags
-RC=$?
-if [[ ${RC} != 0 ]]
-then
-    echo -e "${RED}error, failed to: git push --tags in ${repo_name}${NC}"
-    cd ${START_DIR}
-    cleanup
-    exit 5
 fi
-
-cd ${START_DIR}
 
 exit 0

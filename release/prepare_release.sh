@@ -35,6 +35,7 @@ typeset IN_REPOS=()
 typeset PUSH=false
 typeset PUSH_ONLY=false
 typeset CLEAN=false
+typeset ADD_TAG=""
 
 # change GOPATH to ./go
 export GOPATH=`pwd`/go
@@ -66,6 +67,7 @@ function join_by {
 while true; do
   case "$1" in
     -v | --version ) VERSION="$2"; shift; shift ;;
+    -t | --add_tag ) ADD_TAG="-t"; shift ;;
     -b | --branch ) RC_BRANCH_NAME="$2"; shift; shift ;;
     -m | --master_branch ) MASTER_BRANCH_NAME="$2"; shift; shift ;;
     -p | --push ) PUSH=true; shift ;;
@@ -132,6 +134,7 @@ typeset ALL_REPOS_STRING=`join_by , "${ALL_REPOS[@]}"`
 
 if [[ ${PUSH_ONLY} == false ]]; then
     # prepare_clones
+    echo
     echo -e "${GREEN}****************************************${NC}"
     echo -e "${GREEN}*** Prepare clones (prepare_env.sh). ***${NC}"
     echo -e "${GREEN}****************************************${NC}"
@@ -145,13 +148,22 @@ if [[ ${PUSH_ONLY} == false ]]; then
         exit 2
     fi
 
+    echo
     echo -e "${GREEN}****************************************${NC}"
     echo -e "${GREEN}*********  prepare submodules  *********${NC}"
     echo -e "${GREEN}****************************************${NC}"
     echo
-    ./prepare_submodules.sh -v "${VERSION}" -b "${RC_BRANCH_NAME}" -m "${MASTER_BRANCH_NAME}" # -r "${ALL_REPOS_NAMES_STRING}"
+    ./prepare_submodules.sh -v "${VERSION}" -b "${RC_BRANCH_NAME}" -m "${MASTER_BRANCH_NAME}" "${ADD_TAG}"
+    RC=$?
+    if [[ ${RC} != 0 ]]
+    then
+        echo -e "${RED}error, failed to prepare submodules${NC}"
+        cleanup
+        exit 3
+    fi
 
     # update submodules
+    echo
     echo -e "${GREEN}************************************************${NC}"
     echo -e "${GREEN}*** Update submodules (update_submodules.sh) ***${NC}"
     echo -e "${GREEN}************************************************${NC}"
@@ -162,10 +174,11 @@ if [[ ${PUSH_ONLY} == false ]]; then
     then
         echo -e "${RED}error, failed to update submodules${NC}"
         cleanup
-        exit 2
+        exit 4
     fi
 
     # merge release candidate to develop/master
+    echo
     echo -e "${GREEN}**********************************************${NC}"
     echo -e "${GREEN}*** Merge release condidate (merge_rc.sh). ***${NC}"
     echo -e "${GREEN}**********************************************${NC}"
@@ -176,26 +189,30 @@ if [[ ${PUSH_ONLY} == false ]]; then
     then
         echo -e "${RED}error, failed to merge branches${NC}"
         cleanup
-        exit 2
+        exit 5
     fi
 
-    # tag changes
-    echo -e "${GREEN}****************************************${NC}"
-    echo -e "${GREEN}*** Tag repositories (tag_repos.sh). ***${NC}"
-    echo -e "${GREEN}****************************************${NC}"
-    echo
-    ./tag_repos.sh -v "${VERSION}" -r "${ALL_REPOS_NAMES_STRING}"
-    RC=$?
-    if [[ ${RC} != 0 ]]
-    then
-        echo -e "${RED}error, failed to tag version${NC}"
-        cleanup
-        exit 2
+    if [[ -n "${ADD_TAG}" ]]; then
+        # tag changes
+        echo
+        echo -e "${GREEN}***************************************${NC}"
+        echo -e "${GREEN}*** Tag repositories (tag_repos.sh) ***${NC}"
+        echo -e "${GREEN}***************************************${NC}"
+        echo
+        ./tag_repos.sh -v "${VERSION}" -r "${ALL_REPOS_NAMES_STRING}"
+        RC=$?
+        if [[ ${RC} != 0 ]]
+        then
+            echo -e "${RED}error, failed to tag version${NC}"
+            cleanup
+            exit 6
+        fi
     fi
 fi
 
 if [[ ${PUSH} == true || ${PUSH_ONLY} == true ]]; then
     # push
+    echo
     echo -e "${GREEN}*****************************************${NC}"
     echo -e "${GREEN}*** Push repositories (push_repos.sh) ***${NC}"
     echo -e "${GREEN}*****************************************${NC}"
@@ -206,7 +223,7 @@ if [[ ${PUSH} == true || ${PUSH_ONLY} == true ]]; then
     then
         echo -e "${RED}error, failed to push changes${NC}"
         cleanup
-        exit 2
+        exit 7
     fi
 fi
 
