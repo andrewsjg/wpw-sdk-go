@@ -18,7 +18,7 @@ typeset -r REPO_THRIFT_NAME="wpw-sdk-thrift"
 typeset RC_MASTER_BRANCH_NAME=""
 
 function cleanup {
-    echo -e "${RED}cleanup${NC}"
+    echo
 }
 
 while true; do

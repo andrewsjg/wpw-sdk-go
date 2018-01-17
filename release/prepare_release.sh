@@ -5,17 +5,9 @@ typeset RED='\033[0;31m'
 typeset GREEN='\033[0;32m'
 typeset NC='\033[0m'  # No Color
 
-# typeset -r REPO_GO="https://github.com/WPTechInnovation/wpw-sdk-go.git"
-# typeset -r REPO_DOTNET="https://github.com/WPTechInnovation/wpw-sdk-dotnet.git"
-# typeset -r REPO_NODEJS="https://github.com/WPTechInnovation/wpw-sdk-nodejs.git"
-# typeset -r REPO_PYTHON="https://github.com/WPTechInnovation/wpw-sdk-python.git"
-# typeset -r REPO_JAVA="https://github.com/WPTechInnovation/wpw-sdk-java.git"
-# typeset -r REPO_IOT="https://github.com/WPTechInnovation/wpw-sdk-iot-core.git"
-# typeset -r REPO_THRIFT="https://github.com/WPTechInnovation/wpw-sdk-thrift.git"
-
-#export MIRRORS="https://github.com/WPTechInnovation"
-export MIRRORS="file:///c/Users/wabe/clones/release_script/copy_of_repos"
-#export MIRRORS="file:///home/wabe/clones/mirrors"
+[[ -z "${MIRRORS}" ]] && export MIRRORS="https://github.com/WPTechInnovation"
+#export MIRRORS="file:///c/Users/wabe/clones/release_script/copy_of_repos"
+export MIRRORS="file://${HOME}/clones/mirrors"
 
 typeset -r REPO_GO="${MIRRORS}/wpw-sdk-go.git"
 typeset -r REPO_DOTNET="${MIRRORS}/wpw-sdk-dotnet.git"
@@ -48,10 +40,13 @@ typeset CLEAN=false
 export GOPATH=`pwd`/go
 export WPW_SDK_GO_PATH=${GOPATH}/src/github.com/WPTechInnovation/${REPO_GO_NAME}
 
-
+# functions
 function cleanup {
     if [[ ${CLEAN} == true ]]; then
-        echo -e "${GREEN}*** Remove directories. ***${NC}"
+        echo -e "${GREEN}****************************************${NC}"
+        echo -e "${GREEN}********** Remove directories **********${NC}"
+        echo -e "${GREEN}****************************************${NC}"
+        echo
         for repo_name in ${ALL_REPOS_NAMES[@]};
         do
             if [ -d "${repo_name}" ]; then
@@ -67,7 +62,7 @@ function join_by {
     local IFS="$1"; shift; echo "$*";
 }
 
-
+# input attributes
 while true; do
   case "$1" in
     -v | --version ) VERSION="$2"; shift; shift ;;
@@ -78,10 +73,6 @@ while true; do
     -c | --clean ) CLEAN=true; shift ;;
     -r | --repos_names )
         IN_REPOS_NAMES=(${2//,/ })
-        # IFS=','
-        # read -ra IN_REPOS_NAMES <<< "$2"
-        # #IN_REPOS_NAMES=($2)
-        # unset IFS
         shift
         shift
         ;;
@@ -101,6 +92,7 @@ while true; do
   esac
 done
 
+# vfy input attributes
 if [[ -z ${VERSION} ]]; then
     echo -e "${RED}error, version name not defined${NC}"
     exit 1
@@ -121,6 +113,7 @@ if [[ ${PUSH} == true && ${PUSH_ONLY} == true ]]; then
     exit 1
 fi
 
+# determine repos to update
 if [[ ${#IN_REPOS_NAMES[@]} -ne 0 ]]; then
     ALL_REPOS_NAMES=("${IN_REPOS_NAMES[@]}")
 else
@@ -139,8 +132,9 @@ typeset ALL_REPOS_STRING=`join_by , "${ALL_REPOS[@]}"`
 
 if [[ ${PUSH_ONLY} == false ]]; then
     # prepare_clones
-    echo
+    echo -e "${GREEN}****************************************${NC}"
     echo -e "${GREEN}*** Prepare clones (prepare_env.sh). ***${NC}"
+    echo -e "${GREEN}****************************************${NC}"
     echo
     ./prepare_clones.sh -b ${RC_BRANCH_NAME} -r ${ALL_REPOS_NAMES_STRING} -e ${ALL_REPOS_STRING}
     RC=$?
@@ -151,14 +145,16 @@ if [[ ${PUSH_ONLY} == false ]]; then
         exit 2
     fi
 
-    echo
-    echo -e "${GREEN}*** prepare submodules ***${NC}"
+    echo -e "${GREEN}****************************************${NC}"
+    echo -e "${GREEN}*********  prepare submodules  *********${NC}"
+    echo -e "${GREEN}****************************************${NC}"
     echo
     ./prepare_submodules.sh -v "${VERSION}" -b "${RC_BRANCH_NAME}" -m "${MASTER_BRANCH_NAME}" # -r "${ALL_REPOS_NAMES_STRING}"
 
     # update submodules
-    echo
-    echo -e "${GREEN}*** Update submodules (update_submodules.sh). ***${NC}"
+    echo -e "${GREEN}************************************************${NC}"
+    echo -e "${GREEN}*** Update submodules (update_submodules.sh) ***${NC}"
+    echo -e "${GREEN}************************************************${NC}"
     echo
     ./update_submodules.sh -b "${RC_BRANCH_NAME}" -r "${ALL_REPOS_NAMES_STRING}"
     RC=$?
@@ -170,8 +166,9 @@ if [[ ${PUSH_ONLY} == false ]]; then
     fi
 
     # merge release candidate to develop/master
-    echo
+    echo -e "${GREEN}**********************************************${NC}"
     echo -e "${GREEN}*** Merge release condidate (merge_rc.sh). ***${NC}"
+    echo -e "${GREEN}**********************************************${NC}"
     echo
     ./merge_rc.sh -b "${RC_BRANCH_NAME}" -m "${MASTER_BRANCH_NAME}" -r "${ALL_REPOS_NAMES_STRING}"
     RC=$?
@@ -183,8 +180,9 @@ if [[ ${PUSH_ONLY} == false ]]; then
     fi
 
     # tag changes
-    echo
+    echo -e "${GREEN}****************************************${NC}"
     echo -e "${GREEN}*** Tag repositories (tag_repos.sh). ***${NC}"
+    echo -e "${GREEN}****************************************${NC}"
     echo
     ./tag_repos.sh -v "${VERSION}" -r "${ALL_REPOS_NAMES_STRING}"
     RC=$?
@@ -198,8 +196,9 @@ fi
 
 if [[ ${PUSH} == true || ${PUSH_ONLY} == true ]]; then
     # push
-    echo
-    echo -e "${GREEN}*** Push repositories (push_repos.sh). ***${NC}"
+    echo -e "${GREEN}*****************************************${NC}"
+    echo -e "${GREEN}*** Push repositories (push_repos.sh) ***${NC}"
+    echo -e "${GREEN}*****************************************${NC}"
     echo
     ./push_repos.sh -m "${MASTER_BRANCH_NAME}" -r "${ALL_REPOS_NAMES_STRING}"
     RC=$?

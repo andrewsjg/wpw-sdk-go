@@ -5,7 +5,7 @@ typeset RED='\033[0;31m'
 typeset GREEN='\033[0;32m'
 typeset NC='\033[0m'  # No Color
 
-
+# setup default values if empty
 [[ -z "${MIRRORS}" ]] &&        MIRRORS="https://github.com/WPTechInnovation"
 
 [[ -z "${REPO_GO}" ]] &&        REPO_GO="${MIRRORS}/wpw-sdk-go.git"
@@ -34,14 +34,6 @@ export WPW_SDK_GO_PATH=${GOPATH}/src/github.com/WPTechInnovation/${REPO_GO_NAME}
 
 function cleanup {
     echo
-    # for repo_name in ${ALL_REPOS_NAMES[@]};
-    # do        
-    #     if [ -d "${repo_name}" ]; then
-    #         echo -e "${RED} Removing directory ${repo_name}${NC}"
-    #         # Control will enter here if $DIRECTORY exists.
-    #         rm -fr "${repo_name}"
-    #     fi
-    # done
 }
 
 while true; do

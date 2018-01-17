@@ -30,7 +30,7 @@ typeset RC_MASTER_BRANCH_NAME=""
 
 
 function cleanup {
-    echo -e "${RED}cleanup${NC}"
+    echo
 }
 
 while true; do

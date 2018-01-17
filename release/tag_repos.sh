@@ -18,15 +18,7 @@ typeset -r REPO_GO_NAME="wpw-sdk-go"
 typeset VERSION=
 
 function cleanup {
-    echo -e "${RED}cleanup${NC}"
-    # for repo_name in ${ALL_REPOS_NAMES};
-    # do
-    #     if [ -d "${repo_name}" ]; then
-    #         echo -e "${RED} Removing directory ${repo_name}${NC}"
-    #         # Control will enter here if $DIRECTORY exists.
-    #         #rm -fr "${repo_name}"
-    #     fi
-    # done
+    echo
 }
 
 while true; do

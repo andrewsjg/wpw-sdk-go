@@ -18,7 +18,7 @@ typeset VERSION=""
 START_DIR=`pwd`
 
 function cleanup {
-    echo -e "${RED}cleanup${NC}"
+    echo
 }
 
 
