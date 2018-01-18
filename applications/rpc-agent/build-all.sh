@@ -34,7 +34,7 @@ echo "Target LINUX, ARM64, GOARM=5"
 env GOOS=linux GOARCH=arm64 GOARM=5 go build -ldflags "-s -w -X main.applicationVersion=$version -X main.applicationBuildDate=`date -u +%d-%m-%Y@%H:%M:%S` -X main.applicationPlatform=LINUX_ARM64" -o build/rpc-agent-linux-arm64 main.go
 echo "Target DARWIN, 32bit"
 env GOOS=darwin GOARCH=386 go build && go build -ldflags "-s -w -X main.applicationVersion=$version -X main.applicationBuildDate=`date -u +%d-%m-%Y@%H:%M:%S` -X main.applicationPlatform=DARWIN_386" -o build/rpc-agent-darwin-386 main.go
-echo "Target DARWIN 64bit"
+echo "Target DARWIN, 64bit"
 env GOOS=darwin GOARCH=amd64 go build -ldflags "-s -w -X main.applicationVersion=$version -X main.applicationBuildDate=`date -u +%d-%m-%Y@%H:%M:%S` -X main.applicationPlatform=DARWIN_AMD64" -o build/rpc-agent-darwin-amd64 main.go
 echo "Target WINDOWS, 32bit "
 env GOOS=windows GOARCH=386 go build -ldflags "-s -w -X main.applicationVersion=$version -X main.applicationBuildDate=`date -u +%d-%m-%Y@%H:%M:%S` -X main.applicationPlatform=WIN_386" -o build/rpc-agent-windows-386.exe main.go
