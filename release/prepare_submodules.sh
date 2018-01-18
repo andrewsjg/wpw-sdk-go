@@ -130,13 +130,7 @@ if [[ ${RC} -ne 0 ]]; then
     die "${RED}error, failed to change directory to ${repo_name}${NC}"
 fi
 
-# vfy if branch name is correct
-CURRENT_BRANCH_NAME=$(git rev-parse --abbrev-ref HEAD)
-if [[ ${CURRENT_BRANCH_NAME} != "${RC_MASTER_BRANCH_NAME}" ]]; then
-    cd "${START_DIR}"
-    die "${RED}error, current branch name ${CURRENT_BRANCH_NAME} is different than ${RC_MASTER_BRANCH_NAME} for ${repo_name}${NC}"
-fi
-
+# commit changes
 echo -e "${GREEN}${repo_name}:${NC} git commit -a -m \"new rpc-agents for version ${VERSION}\""
 git commit -a -m "new rpc-agents for version ${VERSION}" || {
     cd "${START_PATH}"
@@ -152,6 +146,55 @@ if [[ -n "${ADD_TAG}" ]]; then
     }
 fi
 
+# push changes if the destination branch is master only
+if [[ "${RC_MASTER_BRANCH_NAME}" == "master" ]]; then
+    echo -e "${GREEN}Push repo ${repo_name}${NC}"
+    echo -e "${GREEN}${repo_name}:${NC} git push origin ${RC_MASTER_BRANCH_NAME}"
+    git push origin ${RC_MASTER_BRANCH_NAME} || {
+        cd "${START_DIR}"
+        die "${RED}error, failed to: git push origin ${RC_MASTER_BRANCH_NAME}${NC}"
+    }
+
+    if [[ -n "${ADD_TAG}" ]]; then
+        # push tags
+        echo -e "${GREEN}${repo_name}:${NC} git push --tags"
+        git push --tags || {
+            cd "${START_DIR}"
+            die "${RED}error, failed to: \"git push --tags\" in ${repo_name}${NC}"
+        }
+    fi
+fi
+
+cd "${START_DIR}"
+
+repo_name=${REPO_THRIFT_NAME}
+cd "${repo_name}"
+RC=$?
+if [[ ${RC} -ne 0 ]]; then
+    cd "${START_PATH}"
+    die "${RED}error, failed to change directory to ${repo_name}${NC}"
+fi
+
+echo -e "${GREEN}${repo_name}:${NC} git checkout ${RC_MASTER_BRANCH_NAME}"
+git checkout "${RC_MASTER_BRANCH_NAME}" || {
+    cd "${START_PATH}"
+    die "${RED}error, failed to checkout to ${RC_MASTER_BRANCH_NAME} for repo ${repo_name}"
+}
+
+echo -e "${GREEN}${repo_name}:${NC} git pull"
+git pull || {
+    cd "${START_PATH}"
+    die "${RED}error, failed to: git pull${NC}"
+}
+
+# echo -e "${GREEN}${repo_name}:${NC} git merge --no-ff --no-commit ${RC_BRANCH_NAME}"
+# git merge --no-ff --no-commit "${RC_BRANCH_NAME}"
+echo -e "${GREEN}${repo_name}:${NC} git merge --no-ff --no-edit ${RC_BRANCH_NAME}"
+git merge --no-ff --no-edit "${RC_BRANCH_NAME}" || {
+    cd "${START_PATH}"
+    die "${RED}error, failed to merge ${RC_BRANCH_NAME} to ${RC_MASTER_BRANCH_NAME}${NC}"
+}
+
 # push changes
 echo -e "${GREEN}Push repo ${repo_name}${NC}"
 echo -e "${GREEN}${repo_name}:${NC} git push origin ${RC_MASTER_BRANCH_NAME}"
@@ -160,71 +203,16 @@ git push origin ${RC_MASTER_BRANCH_NAME} || {
     die "${RED}error, failed to: git push origin ${RC_MASTER_BRANCH_NAME}${NC}"
 }
 
+# push tags
 if [[ -n "${ADD_TAG}" ]]; then
-    # push tags
     echo -e "${GREEN}${repo_name}:${NC} git push --tags"
     git push --tags || {
         cd "${START_DIR}"
-        die "${RED}error, failed to: \"git push --tags\" in ${repo_name}${NC}"
+        die "${RED}error, failed to: git push --tags in ${repo_name}${NC}"
     }
 fi
 
+# go back to initial directory
 cd "${START_DIR}"
-
-# commit thrift
-# not finished yet, exit 0 for now
-# Thrift is specific and contain master only officially,
-# continue for master branch only
-if [[ "${RC_MASTER_BRANCH_NAME}" == "master" ]]; then
-
-    repo_name=${REPO_THRIFT_NAME}
-    cd "${repo_name}"
-    RC=$?
-    if [[ ${RC} -ne 0 ]]; then
-        cd "${START_PATH}"
-        die "${RED}error, failed to change directory to ${repo_name}${NC}"
-    fi
-
-    echo -e "${GREEN}${repo_name}:${NC} git checkout ${RC_MASTER_BRANCH_NAME}"
-    git checkout "${RC_MASTER_BRANCH_NAME}" || {
-        cd "${START_PATH}"
-        die "${RED}error, failed to checkout to ${RC_MASTER_BRANCH_NAME} for repo ${repo_name}"
-    }
-
-    echo -e "${GREEN}${repo_name}:${NC} git pull"
-    git pull || {
-        cd "${START_PATH}"
-        die "${RED}error, failed to: git pull${NC}"
-    }
-
-    # echo -e "${GREEN}${repo_name}:${NC} git merge --no-ff --no-commit ${RC_BRANCH_NAME}"
-    # git merge --no-ff --no-commit "${RC_BRANCH_NAME}"
-    echo -e "${GREEN}${repo_name}:${NC} git merge --no-ff --no-edit ${RC_BRANCH_NAME}"
-    git merge --no-ff --no-edit "${RC_BRANCH_NAME}" || {
-        cd "${START_PATH}"
-        die "${RED}error, failed to merge ${RC_BRANCH_NAME} to ${RC_MASTER_BRANCH_NAME}${NC}"
-    }
-
-    # push changes
-    echo -e "${GREEN}Push repo ${repo_name}${NC}"
-    echo -e "${GREEN}${repo_name}:${NC} git push origin ${RC_MASTER_BRANCH_NAME}"
-    git push origin ${RC_MASTER_BRANCH_NAME} || {
-        cd "${START_DIR}"
-        die "${RED}error, failed to: git push origin ${RC_MASTER_BRANCH_NAME}${NC}"
-    }
-
-    # push tags
-    if [[ -n "${ADD_TAG}" ]]; then
-        echo -e "${GREEN}${repo_name}:${NC} git push --tags"
-        git push --tags || {
-            cd "${START_DIR}"
-            die "${RED}error, failed to: git push --tags in ${repo_name}${NC}"
-        }
-    fi
-
-    # go back to initial directory
-    cd "${START_DIR}"
-
-fi
 
 exit 0

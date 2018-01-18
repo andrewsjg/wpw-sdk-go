@@ -62,7 +62,7 @@ done
 if [[ ${#IN_REPOS_NAMES[@]} -ne 0 ]]; then
     ALL_REPOS_NAMES=("${IN_REPOS_NAMES[@]}")
 else
-    ALL_REPOS_NAMES=( ${REPO_DOTNET_NAME} ${REPO_NODEJS_NAME} ${REPO_PYTHON_NAME} ${REPO_JAVA_NAME} )
+    ALL_REPOS_NAMES=( ${REPO_DOTNET_NAME} ${REPO_NODEJS_NAME} ${REPO_PYTHON_NAME} ${REPO_JAVA_NAME} ${REPO_GOLANG_NAME} )
 fi
 
 # update submodules in wrapper repos

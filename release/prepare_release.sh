@@ -183,7 +183,7 @@ if [[ ${PUSH_ONLY} == false ]]; then
     echo -e "${GREEN}*********  prepare submodules  *********${NC}"
     echo -e "${GREEN}****************************************${NC}"
     echo
-    ./prepare_submodules.sh -v "${VERSION}" -b "${RC_BRANCH_NAME}" -m "${MASTER_BRANCH_NAME}" "${ADD_TAG}"
+    ./prepare_submodules.sh -v "${VERSION}" -b "${RC_BRANCH_NAME}" -m "${MASTER_BRANCH_NAME}" ${ADD_TAG}
     RC=$?
     if [[ ${RC} -ne 0 ]]; then
         die "${RED}error, failed to prepare submodules${NC}"
