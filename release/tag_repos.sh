@@ -28,7 +28,9 @@ function die {
 }
 
 function usage {
-    echo
+    echo "usage: tag_repos.sh -v|--version <version>"
+    echo "                    [-r|--repos_names <coma separated repos name>]"
+    echo "                    [-n|--no-color]"
 }
 
 while [[ $# -gt 0 ]]; do
@@ -47,6 +49,7 @@ while [[ $# -gt 0 ]]; do
         NC="";
         ;;
     * )
+        echo -e "${RED}Invalid argument ${1}${NC}" >&2
         usage
         exit 1
         ;;

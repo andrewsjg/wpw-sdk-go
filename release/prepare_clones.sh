@@ -43,7 +43,11 @@ function die {
 }
 
 function usage {
-    echo -e "usage"
+    echo "usage: prepare_clones.sh -v|--version <version>"
+    echo "                         -b|--branch <source branch>"
+    echo "                         [-r|--repos_names <coma separated repos name>]"
+    echo "                         [-e|--repos <coma separated repos>]"
+    echo "                         [-n|--no-color]"
 }
 
 while [[ $# -gt 0 ]]; do
@@ -71,6 +75,7 @@ while [[ $# -gt 0 ]]; do
         NC="";
         ;;
     * )
+        echo -e "${RED}Invalid argument ${1}${NC}" >&2
         usage
         exit 1
         ;;

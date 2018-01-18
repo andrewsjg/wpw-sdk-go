@@ -40,7 +40,10 @@ function die {
 }
 
 function usage {
-    echo
+    echo "usage: merge_rc.sh -b|--branch <source branch>"
+    echo "                   -m|--master_branch <destination branch>"
+    echo "                   [-r|--repos_names <coma separated repos name>]"
+    echo "                   [-n|--no-color]"
 }
 
 while [[ $# -gt 0 ]]; do
@@ -63,6 +66,7 @@ while [[ $# -gt 0 ]]; do
         NC="";
         ;;
     * )
+        echo -e "${RED}Invalid argument ${1}${NC}" >&2
         usage
         exit 1
         ;;

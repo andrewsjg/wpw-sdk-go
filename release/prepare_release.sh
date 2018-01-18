@@ -70,7 +70,16 @@ function join_by {
 }
 
 function usage {
-    echo
+    echo "usage: prepare_release.sh -v|--version <version>"
+    echo "                          -b|--branch <source branch>"
+    echo "                          -m|--master_branch <destination branch>"
+    echo "                          [-t|--add_tag]"
+    echo "                          [-p|--push]"
+    echo "                          [-o|--push_only]"
+    echo "                          [-c|--clean]"
+    echo "                          [-r|--repos_names <coma separated repos name>]"
+    echo "                          [-e|--repos <coma separated repos>]"
+    echo "                          [-n|--no-color]"
 }
 
 # input attributes
@@ -114,6 +123,7 @@ while [[ $# -gt 0 ]]; do
         NC="";
         ;;
     * )
+        echo -e "${RED}Invalid argument ${1}${NC}" >&2
         usage
         exit 1
         ;;
