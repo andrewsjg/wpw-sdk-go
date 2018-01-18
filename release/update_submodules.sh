@@ -17,36 +17,40 @@ typeset -r REPO_JAVA_NAME="wpw-sdk-java"
 typeset RC_BRANCH_NAME=""
 
 function cleanup {
-    echo -e "cleanup"
-    # for repo_name in ${ALL_REPOS_NAMES};
-    # do        
-    #     if [ -d "${repo_name}" ]; then
-    #         echo -e "${RED} Removing directory ${repo_name}${NC}"
-    #         # Control will enter here if $DIRECTORY exists.
-    #         rm -fr "${repo_name}"
-    #     fi
-    # done
+    echo
 }
 
-while true; do
+function die {
+    echo -e "${1}" >&2
+    cleanup
+    exit 1
+}
+
+function usage {
+    echo
+}
+
+while [[ $# -gt 0 ]]; do
   case "$1" in
-    -b | --branch ) RC_BRANCH_NAME="$2"; shift; shift ;;
+    -b | --branch )
+        RC_BRANCH_NAME="$2"
+        shift
+        ;;
     -r | --repos_names )
         IN_REPOS_NAMES=(${2//,/ })
-        # IFS=','
-        # read -ra IN_REPOS_NAMES <<< "$2"
-        # #IN_REPOS_NAMES=($2)
-        # unset IFS
-        shift
         shift
         ;;
     -n | --no-color )
         RED="";
         GREEN="";
         NC="";
-        shift ;;
-    * ) break ;;
+        ;;
+    * )
+        usage
+        exit 1
+        ;;
   esac
+  shift
 done
 
 # vfy if branch name is correct
@@ -81,39 +85,27 @@ do
             ;;
     esac
 
-    cd ${WORK_DIR}
+    cd "${WORK_DIR}"
 
     # vfy if branch name is correct
     CURRENT_BRANCH_NAME=$(git rev-parse --abbrev-ref HEAD)
     if [[ ${CURRENT_BRANCH_NAME} != "${RC_BRANCH_NAME}" ]]; then
-        echo -e "${RED}error, current branch name ${CURRENT_BRANCH_NAME} is different than ${RC_BRANCH_NAME} for ${repo_name}${NC}"
-        cd ${START_PATH}
-        cleanup
-        exit 1
+        cd "${START_PATH}"
+        die "${RED}error, current branch name ${CURRENT_BRANCH_NAME} is different than ${RC_BRANCH_NAME} for ${repo_name}${NC}"
     fi
 
     echo -e "${GREEN}${repo_name}:${NC} git submodule update --init --recursive"
-    git submodule update --init --recursive
-    RC=$?
-    if [[ ${RC} != 0 ]]
-    then
-        echo -e "${RED}error, failed to init/update submodule for ${repo_name}${NC}"
-        cd ${START_PATH}
-        cleanup
-        exit 2
-    fi
+    git submodule update --init --recursive || {
+        cd "${START_PATH}"
+        die "${RED}error, failed to init/update submodule for ${repo_name}${NC}"
+    }
     
     echo -e "${GREEN}${repo_name}:${NC} git submodule update --remote"
-    git submodule update --remote
-    RC=$?
-    if [[ ${RC} != 0 ]]
-    then
-        echo -e "${RED}error, failed to update submodule for ${repo_name}${NC}"
-        cd ${START_PATH}
-        cleanup
-        exit 3
-    fi
-    cd ${START_PATH}
+    git submodule update --remote || {
+        cd "${START_PATH}"
+        die "${RED}error, failed to update submodule for ${repo_name}${NC}"
+    }
+    cd "${START_PATH}"
 done
 
 echo -e "${GREEN}Add files and commit.${NC}"
@@ -138,7 +130,7 @@ do
     esac
 
 
-    cd ${repo_name}
+    cd "${repo_name}"
     files_to_add=()
     case "${repo_name}" in
         ${REPO_PYTHON_NAME} )
@@ -149,12 +141,6 @@ do
             files_to_add+=("library/iot-core-component")
             files_to_add+=("wpw-sdk-thrift")
             ;;
-        test_csharp_repo )
-            files_to_add+=("common")
-            ;;
-        test_python_repo )
-            files_to_add+=("common")
-            ;;
         *)
             files_to_add+=("iot-core-component")
             files_to_add+=("wpw-sdk-thrift")
@@ -164,15 +150,10 @@ do
     for file in ${files_to_add[@]};
     do
         echo -e "${GREEN}${repo_name}:${NC} git add ${file}"
-        git add ${file}
-        RC=$?
-        if [[ ${RC} != 0 ]]
-        then
-            echo -e "${RED}error, failed to: git add ${repo_name}${NC}"
+        git add ${file} || {
             cd ..
-            cleanup
-            exit 4
-        fi
+            die "${RED}error, failed to: git add ${repo_name}${NC}"
+        }
     done
 
     # check if there are any changes to commit
@@ -184,15 +165,10 @@ do
     fi
 
     echo -e "${GREEN}${repo_name}:${NC} git commit -m update ${file} in ${repo_name}"
-    git commit -m "update_submodules: update files"
-    RC=$?
-    if [[ ${RC} != 0 ]]
-    then
-        echo -e "${RED}error, failed to: git commit in ${repo_name}${NC}"
+    git commit -m "update_submodules: update files" || {
         cd ..
-        cleanup
-        exit 5
-    fi
+        die "${RED}error, failed to: git commit in ${repo_name}${NC}"
+    }
 
     cd ..
 done

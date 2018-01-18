@@ -36,10 +36,19 @@ function cleanup {
     echo
 }
 
-while true; do
+function die {
+    echo -e "${1}" >&2
+    cleanup
+    exit 1
+}
+
+function usage {
+    echo -e "usage"
+}
+
+while [[ $# -gt 0 ]]; do
   case "$1" in
     -b | --branch ) RC_BRANCH_NAME="$2";
-        shift
         shift
         ;;
     -r | --repos_names )
@@ -49,35 +58,33 @@ while true; do
         # #IN_REPOS_NAMES=($2)
         # unset IFS
         shift
-        shift
         ;;
     -e | --repos )
         IFS=','
         IN_REPOS=($2)
         unset IFS
         shift
-        shift
         ;;
     -n | --no-color )
         RED="";
         GREEN="";
         NC="";
-        shift
         ;;
     * )
-        # echo -e "${RED}warning, unexpected input parameter {$1}${NC}"
-        # exit 1
-        break
+        usage
+        exit 1
         ;;
   esac
+  shift
 done
 
 if [[ -z ${RC_BRANCH_NAME} ]]; then
-    echo -e "${RED}error, branch name not defined${NC}"
-    exit 1
+    die "${RED}error, branch name not defined${NC}"
 fi
 
-# check if 
+# Check if table IN_REPOS_NAMES (collected from input) contains any element.
+# If yes then assign them to ALL_REPOS_NAMES, but in other case assign the
+# default repo names to the ALL_REPOS_NAMES
 if [[ ${#IN_REPOS_NAMES[@]} -ne 0 ]]; then
     ALL_REPOS_NAMES=("${IN_REPOS_NAMES[@]}")
 else
@@ -92,40 +99,37 @@ fi
 
 function prepareGoEnv {
     local CURRENT_PATH=`pwd`
-    cd ${WPW_SDK_GO_PATH}/applications/rpc-agent
-    if [[ ${?} != 0 ]]; then
-        echo -e "${RED}error, failed to change directory to ${WPW_SDK_GO_PATH}/applications/rpc-agent${NC}"
-        exit 10
+    cd "${WPW_SDK_GO_PATH}/applications/rpc-agent"
+    if [[ ${?} -ne 0 ]]; then
+        cd "${CURRENT_PATH}"
+        die "${RED}error, failed to change directory to ${WPW_SDK_GO_PATH}/applications/rpc-agent${NC}"
     fi
 
     echo -e "${GREEN}${repo_name}:${NC} git checkout ${RC_BRANCH_NAME}"
-    git checkout ${RC_BRANCH_NAME}
-    if [[ ${?} != 0 ]]; then
-        echo -e "${RED}error, failed to checkout to branch ${RC_BRANCH_NAME}${NC}"
-        exit 11
-    fi
+    git checkout ${RC_BRANCH_NAME} || {
+        cd "${CURRENT_PATH}"
+        die "${RED}error, failed to checkout to branch ${RC_BRANCH_NAME}${NC}"
+    }
 
     # go get without building
     echo -e "${GREEN}${repo_name}:${NC} go get -d"
-    go get -d
-    if [[ ${?} != 0 ]]; then
-        echo -e "${RED}error, command \"go get -d\" failed${NC}"
-        exit 12
-    fi
+    go get -d || {
+        cd "${CURRENT_PATH}"
+        die "${RED}error, command \"go get -d\" failed${NC}"
+    }
 
     echo -e "${GREEN}${repo_name}:${NC} changing the thrift to version 0.10.0"
     cd ../../../../../git.apache.org/thrift.git/
-    if [[ ${?} != 0 ]]; then
-        echo -e "${RED}error, failed to change directory to ../../../../../git.apache.org/thrift.git/${NC}"
-        exit 13
+    if [[ ${?} -ne 0 ]]; then
+        cd "${CURRENT_PATH}"
+        die "${RED}error, failed to change directory to ../../../../../git.apache.org/thrift.git/${NC}"
     fi
 
-    git checkout 0.10.0
-    if [[ ${?} != 0 ]]; then
-        echo -e "${RED}error, failed to checkout apache thrify to 0.10.0${NC}"
-        exit 14
-    fi
-    cd ${CURRENT_PATH}
+    git checkout 0.10.0 || {
+        cd "${CURRENT_PATH}"
+        die "${RED}error, failed to checkout apache thrify to 0.10.0${NC}"
+    }
+    cd "${CURRENT_PATH}"
 }
 
 echo -e "${GREEN}Cloning all repos.${NC}"
@@ -138,28 +142,18 @@ do
             # go repo is cloned in a different way than others
             mkdir -p ${GOPATH}/src/github.com/WPTechInnovation/
             CURRENT_PATH=`pwd`
-            cd ${GOPATH}/src/github.com/WPTechInnovation/
-            git clone ${repo}
-            RC=$?
-            if [[ ${RC} != 0 ]]
-            then
-                echo -e "${RED}error, failed to clone ${repo}${NC}"
-                cd ${CURRENT_PATH}
-                cleanup
-                exit 2
-            fi
-            cd ${CURRENT_PATH}
+            cd "${GOPATH}/src/github.com/WPTechInnovation/"
+            git clone ${repo} || {
+                cd "${CURRENT_PATH}"
+                die "${RED}error, failed to clone ${repo}${NC}"
+            }
+            cd "${CURRENT_PATH}"
             ;;
         * )
             echo -e "${GREEN}git clone ${repo}${NC}"
-            git clone ${repo}
-            RC=$?
-            if [[ ${RC} != 0 ]]
-            then
-                echo -e "${RED}error, failed to clone ${repo}${NC}"
-                cleanup
-                exit 2
-            fi
+            git clone ${repo} || {
+                die "${RED}error, failed to clone ${repo}${NC}"
+            }
             ;;
     esac
 done
@@ -182,17 +176,12 @@ do
             ;;
     esac
 
-    cd ${repo_name}
+    cd "${repo_name}"
     echo -e "${GREEN}${repo_name}:${NC} git checkout ${RC_BRANCH_NAME}"
-    git checkout "${RC_BRANCH_NAME}"
-    RC=$?
-    if [[ ${RC} != 0 ]]
-    then
-        echo -e "${RED}error, failed to checkout ${repo_name} to ${RC_BRANCH_NAME}${NC}"
+    git checkout "${RC_BRANCH_NAME}" || {
         cd ..
-        cleanup
-        exit 3
-    fi
+        die "${RED}error, failed to checkout ${repo_name} to ${RC_BRANCH_NAME}${NC}"
+    }
     cd ..
 done
 

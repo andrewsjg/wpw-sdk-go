@@ -21,30 +21,41 @@ function cleanup {
     echo
 }
 
-while true; do
+function die {
+    echo -e "${1}" >&2
+    cleanup
+    exit 1
+}
+
+function usage {
+    echo
+}
+
+while [[ $# -gt 0 ]]; do
   case "$1" in
-    -v | --version ) VERSION="$2"; shift; shift ;;
+    -v | --version )
+        VERSION="$2"
+        shift
+        ;;
     -r | --repos_names )
         IN_REPOS_NAMES=(${2//,/ })
-        # IFS=','
-        # read -ra IN_REPOS_NAMES <<< "$2"
-        # #IN_REPOS_NAMES=($2)
-        # unset IFS
-        shift
         shift
         ;;
     -n | --no-color )
         RED="";
         GREEN="";
         NC="";
-        shift ;;
-    * ) break ;;
+        ;;
+    * )
+        usage
+        exit 1
+        ;;
   esac
+  shift
 done
 
 if [[ -z ${VERSION} ]]; then
-    echo -e "${RED}error, version name not defined${NC}"
-    exit 1
+    die "${RED}error, version name not defined${NC}"
 fi
 
 if [[ ${#IN_REPOS_NAMES[@]} -ne 0 ]]; then
@@ -68,32 +79,24 @@ do
             continue
             ;;
         *) 
-            cd ${repo_name}
+            cd "${repo_name}"
             RC=$?
             ;;
     esac
 
-    if [[ ${RC} != 0 ]]
-    then
-        echo -e "${RED}error, failed to change directory to ${repo_name}${NC}"
-        cd ${CURRENT_PATH}
-        cleanup
-        exit 2
+    if [[ ${RC} -ne 0 ]]; then
+        cd "${CURRENT_PATH}"
+        die "${RED}error, failed to change directory to ${repo_name}${NC}"
     fi
 
     # git tag -a v0.12-alpha -m "Version 0.12-alpha"
     echo -e "${GREEN}${repo_name}:${NC} git tag -a ${VERSION} -m \"Version ${VERSION}\""
-    git tag -a ${VERSION} -m "Version ${VERSION}"
-    RC=$?
-    if [[ ${RC} != 0 ]]
-    then
-        echo -e "${RED}error, failed to add tag for repo ${repo_name}: git tag -a ${NC}"
-        cd ${CURRENT_PATH}
-        cleanup
-        exit 3
-    fi
+    git tag -a ${VERSION} -m "Version ${VERSION}" || {
+        cd "${CURRENT_PATH}"
+        die "${RED}error, failed to add tag for repo ${repo_name}: git tag -a ${NC}"
+    }
 
-    cd ${CURRENT_PATH}
+    cd "${CURRENT_PATH}"
 done
 
 exit 0

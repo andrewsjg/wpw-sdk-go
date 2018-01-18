@@ -33,37 +33,49 @@ function cleanup {
     echo
 }
 
-while true; do
+function die {
+    echo -e "${1}" >&2
+    cleanup
+    exit 1
+}
+
+function usage {
+    echo
+}
+
+while [[ $# -gt 0 ]]; do
   case "$1" in
-    -b | --branch ) RC_BRANCH_NAME="$2"; shift; shift ;;
-    -m | --master_branch ) RC_MASTER_BRANCH_NAME="$2"; shift; shift ;;
+    -b | --branch )
+        RC_BRANCH_NAME="$2"
+        shift
+        ;;
+    -m | --master_branch )
+        RC_MASTER_BRANCH_NAME="$2"
+        shift
+        ;;
     -r | --repos_names )
         IN_REPOS_NAMES=(${2//,/ })
-        # IFS=','
-        # read -ra IN_REPOS_NAMES <<< "$2"
-        # #IN_REPOS_NAMES=($2)
-        # unset IFS
-        shift
         shift
         ;;
     -n | --no-color )
         RED="";
         GREEN="";
         NC="";
-        shift ;;
-    #-r | --repos )
-    * ) break ;;
+        ;;
+    * )
+        usage
+        exit 1
+        ;;
   esac
+  shift
 done
 
 if [[ -z ${RC_BRANCH_NAME} ]]; then
-    echo -e "${RED}error, branch name not defined${NC}"
-    exit 1
+    die "${RED}error, branch name not defined${NC}"
 fi
 
 if [[ -z ${RC_MASTER_BRANCH_NAME} ]]; then
-    echo -e "${RED}error, master branch name not defined${NC}"
-    exit 1
+    die "${RED}error, master branch name not defined${NC}"
 fi
 
 if [[ ${#IN_REPOS_NAMES[@]} -ne 0 ]]; then
@@ -79,52 +91,42 @@ do
     CURRENT_PATH=`pwd`
     case "${repo_name}" in
         ${REPO_GO_NAME} )
-            cd ${WPW_SDK_GO_PATH}/applications/rpc-agent
+            cd "${WPW_SDK_GO_PATH}/applications/rpc-agent"
             ;;
         ${REPO_DOTNET_NAME} | ${REPO_NODEJS_NAME} | ${REPO_PYTHON_NAME} | ${REPO_JAVA_NAME} )
-            cd ${repo_name}
+            cd "${repo_name}"
             ;;
         * )
             continue
             ;;
     esac
 
-    #cd ${repo_name}
     RC=$?
-    if [[ ${RC} != 0 ]]
-    then
-        echo -e "${RED}error, failed to change directory to ${repo_name}${NC}"
-        cd ${CURRENT_PATH}
-        cleanup
-        exit 2
+    if [[ ${RC} -ne 0 ]]; then
+        cd "${CURRENT_PATH}"
+        die "${RED}error, failed to change directory to ${repo_name}${NC}"
     fi
 
     # 1. git checkout test_branch (should be already done)
     # 2. git pull (it's not required, just cloned)
     # 3. git checkout master
     # 4. git pull
-    # 5. git merge --no-ff --no-commit test_branch
+    # 5. git merge --no-ff --no-edit test_branch
 
     echo -e "${GREEN}${repo_name}:${NC} git checkout ${RC_MASTER_BRANCH_NAME}"
     git checkout "${RC_MASTER_BRANCH_NAME}"
     RC=$?
-    if [[ ${RC} != 0 ]]
-    then
-        echo -e "${RED}error, failed to checkout to ${RC_MASTER_BRANCH_NAME} for repo ${repo_name}"
-        cd ${CURRENT_PATH}
-        cleanup
-        exit 3
+    if [[ ${RC} -ne 0 ]]; then
+        cd "${CURRENT_PATH}"
+        die "${RED}error, failed to checkout to ${RC_MASTER_BRANCH_NAME} for repo ${repo_name}"
     fi
 
     echo -e "${GREEN}${repo_name}:${NC} git pull"
     git pull
     RC=$?
-    if [[ ${RC} != 0 ]]
-    then
-        echo -e "${RED}error, failed to: git pull${NC}"
-        cd ${CURRENT_PATH}
-        cleanup
-        exit 4
+    if [[ ${RC} -ne 0 ]]; then
+        cd "${CURRENT_PATH}"
+        die "${RED}error, failed to: git pull${NC}"
     fi
 
     # echo -e "${GREEN}${repo_name}:${NC} git merge --no-ff --no-commit ${RC_BRANCH_NAME}"
@@ -132,15 +134,12 @@ do
     echo -e "${GREEN}${repo_name}:${NC} git merge --no-ff --no-edit ${RC_BRANCH_NAME}"
     git merge --no-ff --no-edit "${RC_BRANCH_NAME}"
     RC=$?
-    if [[ ${RC} != 0 ]]
-    then
-        echo -e "${RED}error, failed to merge ${RC_BRANCH_NAME} to ${RC_MASTER_BRANCH_NAME}${NC}"
-        cd ${CURRENT_PATH}
-        cleanup
-        exit 5
+    if [[ ${RC} -ne 0 ]]; then
+        cd "${CURRENT_PATH}"
+        die "${RED}error, failed to merge ${RC_BRANCH_NAME} to ${RC_MASTER_BRANCH_NAME}${NC}"
     fi
 
-    cd ${CURRENT_PATH}
+    cd "${CURRENT_PATH}"
 done
 
 exit 0

@@ -21,30 +21,41 @@ function cleanup {
     echo
 }
 
-while true; do
+function die {
+    echo -e "${1}" >&2
+    cleanup
+    exit 1
+}
+
+function usage {
+    echo
+}
+
+while [[ $# -gt 0 ]]; do
   case "$1" in
-    -m | --master_branch ) RC_MASTER_BRANCH_NAME="$2"; shift; shift ;;
+    -m | --master_branch )
+        RC_MASTER_BRANCH_NAME="$2"
+        shift
+        ;;
     -r | --repos_names )
         IN_REPOS_NAMES=(${2//,/ })
-        # IFS=','
-        # read -ra IN_REPOS_NAMES <<< "$2"
-        # #IN_REPOS_NAMES=($2)
-        # unset IFS
-        shift
         shift
         ;;
     -n | --no-color )
         RED="";
         GREEN="";
         NC="";
-        shift ;;
-    * ) break ;;
+        ;;
+    * )
+        usage
+        exit 1
+        ;;
   esac
+  shift
 done
 
 if [[ -z ${RC_MASTER_BRANCH_NAME} ]]; then
-    echo -e "${RED}error, master branch name not defined${NC}"
-    exit 1
+    die "${RED}error, master branch name not defined${NC}"
 fi
 
 if [[ ${#IN_REPOS_NAMES[@]} -ne 0 ]]; then
@@ -73,46 +84,31 @@ do
             ;;
     esac
 
-    if [[ ${RC} != 0 ]]
-    then
-        echo -e "${RED}error, failed to change directory to ${repo_name}${NC}"
-        cd ${START_DIR}
-        cleanup
-        exit 2
+    if [[ ${RC} -ne 0 ]]; then
+        cd "${START_DIR}"
+        die "${RED}error, failed to change directory to ${repo_name}${NC}"
     fi
 
     # vfy if branch name is correct
     CURRENT_BRANCH_NAME=$(git rev-parse --abbrev-ref HEAD)
     if [[ ${CURRENT_BRANCH_NAME} != "${RC_MASTER_BRANCH_NAME}" ]]; then
-        echo -e "${RED}error, current branch name ${CURRENT_BRANCH_NAME} is different than ${RC_MASTER_BRANCH_NAME} for ${repo_name}${NC}"
-        cd ${START_DIR}
-        cleanup
-        exit 1
+        cd "${START_DIR}"
+        die "${RED}error, current branch name ${CURRENT_BRANCH_NAME} is different than ${RC_MASTER_BRANCH_NAME} for ${repo_name}${NC}"
     fi
 
     echo -e "${GREEN}${repo_name}:${NC} git push origin ${RC_MASTER_BRANCH_NAME}"
-    git push origin ${RC_MASTER_BRANCH_NAME}
-    RC=$?
-    if [[ ${RC} != 0 ]]
-    then
-        echo -e "${RED}error, failed to: git push origin ${RC_MASTER_BRANCH_NAME}${NC}"
-        cd ${START_DIR}
-        cleanup
-        exit 4
-    fi
+    git push origin ${RC_MASTER_BRANCH_NAME} || {
+        cd "${START_DIR}"
+        die "${RED}error, failed to: git push origin ${RC_MASTER_BRANCH_NAME}${NC}"
+    }
 
     echo -e "${GREEN}${repo_name}:${NC} git push --tags"
-    git push --tags
-    RC=$?
-    if [[ ${RC} != 0 ]]
-    then
-        echo -e "${RED}error, failed to: git push --tags in ${repo_name}${NC}"
-        cd ${START_DIR}
-        cleanup
-        exit 4
-    fi
+    git push --tags || {
+        cd "${START_DIR}"
+        die "${RED}error, failed to: git push --tags in ${repo_name}${NC}"
+    }
 
-    cd ${START_DIR}
+    cd "${START_DIR}"
 done
 
 exit 0
