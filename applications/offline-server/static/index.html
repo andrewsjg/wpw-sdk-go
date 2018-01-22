@@ -8,8 +8,34 @@
 	<script src="js/jquery-2.1.4.js"></script>
 	<style type="text/css">
 		body {
-			background-color: red;
+			background-color: rgba(255,255,255,0);
 		}
+		#labelTransactionData {
+			border: 1px solid #ff0000;
+			border-radius: 8px;
+			font-size: 24px;
+			font-family: "Calibri";
+			padding: 10px 40px 10px 40px;
+			margin: 10px;
+			display: inline-block;
+		}
+		#tabelka {
+			background: linear-gradient(135deg, #ffe5e5 0%,#ffa3a2 100%);
+			border-spacing: 0px;
+			border-collapse: collapse;
+		}
+		#tabelka > * > tr > td {
+			border: 1px solid #be4b48;
+			padding: 5px;
+			font-family: "Calibri"
+		}
+		#tabelka > * > tr > td.transactionGarbledDeformattedEdta {
+		}
+		#tabelka > * > tr > td.x {
+		}
+
+
+
 		#tabelka > div {
 			background-color: white;
 			border-radius: 0.33em;
@@ -37,8 +63,23 @@
 </head>
 
 <body class="mainBgColorRed fullBodyFont">
-	<div class="tb" id="tabelka">
-	</div>
+	<center>
+		<span id="labelTransactionData">Transaction data</span>
+		<table class="tb" id="tabelka">
+			<thead>
+				<tr>
+					<td>Date</td>
+					<td>Card</td>
+					<td>Quantity</td>
+					<td>Unit Price</td>
+					<td>Total</td>
+					<td>Amount<br/>Paid</td>
+				</tr>
+			<thead>
+			<tbody id="tabelkaTBody">
+			</tbody>
+		</table>
+	</center>
 	<script src="js/transactions.js"></script>
 </body>
 </html>
