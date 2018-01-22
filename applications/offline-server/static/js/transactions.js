@@ -10,7 +10,7 @@ function processJSON(jsonPath){
 		var items = [];
 		//console.log(data);
 		//o = document.createElement("div")
-		rodzic = document.getElementById("tabelka");
+		rodzic = document.getElementById("tabelkaTBody");
 		//o.innerText = json_array[i];
 		//i.id = json_array[i].toString();
 		if(data.length == 0){
@@ -26,40 +26,67 @@ function processJSON(jsonPath){
 		data.forEach(function (j) {
 			o2 = document.getElementById(JSON.stringify(j));
 			if(o2 === null || o2 === undefined) {
-				o = document.createElement("div");
+				o = document.createElement("tr");
 				o.classList.add("paymentRecord");
 				o.id = JSON.stringify(j);
 
-				s = document.createElement("span");
-				s.classList.add("transactionDateAndTime");
-				s.name = "transactionDateAndTime";
-				s.innerText = j.transactionDateAndTime;
+				s = document.createElement("td");
+				//s.classList.add("transactionDateAndTime");
+				s.classList.add("transactionGarbledDeformattedEdta");
+				//s.name = "transactionDateAndTime";
+				s.name = "transactionGarbledDeformattedEdta";
+				//s.innerText = j.transactionDateAndTime;
+				var m = j.transactionDateAndTime.match(/(2[0-9]{3})-([01][0-9])-([0-3][0-9])T([0-2][0-9]):([0-5][0-9]):([0-5][0-9])([+-][0-9:]+)?/);
+				s.innerText = m[3] + '.' + m[2] + '.' + m[1];
 				o.appendChild(s);
 
-				s = document.createElement("span");
+				s = document.createElement("td");
 				s.classList.add("card");
 				s.name = "card";
-				s.innerText = j.maskedCard;
+				m = j.maskedCard.match(/^(...).*(....)$/);
+				if(m) {
+					s.innerText = m[1] + ' ... ' + m[2];
+				}else{
+					s.innerText = "n/a";
+				}
 				o.appendChild(s);
 
-				s = document.createElement("span");
-				s.classList.add("amount");
-				s.name = "amount";
-				s.innerText = (j.amount/100).toFixed(2);
+				s = document.createElement("td");
+				s.classList.add("quantity");
+				s.name = "quantity";
+				s.innerText = "not implemented\nwould be\n999KW\n[digits][units]";
 				o.appendChild(s);
 
-
-				s = document.createElement("span");
-				s.classList.add("currencyCode");
-				s.name = "currencyCode";
-				s.innerText = j.currencyCode;
+				s = document.createElement("td");
+				s.classList.add("unitPrice");
+				s.name = "unitPrice";
+				s.innerText = "not implemented\nwould be\n[prefix][digits][suffix]";
 				o.appendChild(s);
 
-				s = document.createElement("span");
-				s.classList.add("orderDescription");
-				s.name = "orderDescription";
-				s.innerText = j.orderDescription;
+				//s = document.createElement("td");
+				//s.classList.add("currencyCode");
+				//s.name = "currencyCode";
+				//s.innerText = j.currencyCode;
+				//o.appendChild(s);
+
+				//s = document.createElement("td");
+				//s.classList.add("orderDescription");
+				//s.name = "orderDescription";
+				//s.innerText = j.orderDescription;
+				//o.appendChild(s);
+
+				s = document.createElement("td");
+				s.classList.add("total");
+				s.name = "total";
+				s.innerText = "xx " + (j.amount/100).toFixed(2) + " xx";
 				o.appendChild(s);
+
+				s = document.createElement("td");
+				s.classList.add("amountPaid");
+				s.name = "amountPaid";
+				s.innerText = "not implemented\nwould be\n[prefix][digits][suffix]";
+				o.appendChild(s);
+
 
 				//o.innerText=JSON.stringify(j);
 				rodzic.appendChild(o);
