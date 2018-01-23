@@ -43,25 +43,25 @@ function processJSON(jsonPath){
 				s = document.createElement("td");
 				s.classList.add("card");
 				s.name = "card";
-				m = j.maskedCard.match(/^(...).*(....)$/);
+				m = j.maskedCard.match(/^(...).*(.[0-9][0-9][0-9])$/);
 				if(m) {
-					s.innerText = m[1] + ' ... ' + m[2];
+					s.innerHTML = 'xxx&nbsp;...&nbsp;' + m[2];
 				}else{
-					s.innerText = "n/a";
+					s.innerHTML = "n/a";
 				}
 				o.appendChild(s);
 
 				s = document.createElement("td");
 				s.classList.add("quantity");
 				s.name = "quantity";
-				s.innerText = "not implemented\nwould be\n999KW\n[digits][units]";
+				s.innerText = "n/a";
 				o.appendChild(s);
 
-				s = document.createElement("td");
-				s.classList.add("unitPrice");
-				s.name = "unitPrice";
-				s.innerText = "not implemented\nwould be\n[prefix][digits][suffix]";
-				o.appendChild(s);
+				//s = document.createElement("td");
+				//s.classList.add("unitPrice");
+				//s.name = "unitPrice";
+				//s.innerText = "not implemented\nwould be\n[prefix][digits][suffix]";
+				//o.appendChild(s);
 
 				//s = document.createElement("td");
 				//s.classList.add("currencyCode");
@@ -69,23 +69,32 @@ function processJSON(jsonPath){
 				//s.innerText = j.currencyCode;
 				//o.appendChild(s);
 
-				//s = document.createElement("td");
-				//s.classList.add("orderDescription");
-				//s.name = "orderDescription";
-				//s.innerText = j.orderDescription;
-				//o.appendChild(s);
+				s = document.createElement("td");
+				s.classList.add("orderDescription");
+				s.name = "orderDescription";
+				s.innerText = j.orderDescription;
+				o.appendChild(s);
 
 				s = document.createElement("td");
 				s.classList.add("total");
 				s.name = "total";
-				s.innerText = "xx " + (j.amount/100).toFixed(2) + " xx";
+				switch(j.currencyCode) {
+					case "GBP":
+						s.innerHTML = "&pound;" + (j.amount/100).toFixed(2);
+						break;
+					case "USD":
+						s.innerText = "$" + (j.amount/100).toFixed(2);
+						break;
+					default:
+						s.innerText = (j.amount/100).toFixed(2) + j.currencyCode;
+				}
 				o.appendChild(s);
 
-				s = document.createElement("td");
-				s.classList.add("amountPaid");
-				s.name = "amountPaid";
-				s.innerText = "not implemented\nwould be\n[prefix][digits][suffix]";
-				o.appendChild(s);
+				//s = document.createElement("td");
+				//s.classList.add("amountPaid");
+				//s.name = "amountPaid";
+				//s.innerText = "not implemented\nwould be\n[prefix][digits][suffix]";
+				//o.appendChild(s);
 
 
 				//o.innerText=JSON.stringify(j);
