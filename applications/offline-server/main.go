@@ -37,17 +37,41 @@ func main() {
 	router.HandleFunc("/v1/tokens", Tokens)
 	router.HandleFunc("/v1/orders", Orders)
 	router.HandleFunc("/v1/transactions", Transactions)
+	router.HandleFunc("/api/", WTRoot)
+	router.HandleFunc("/api/PreVault/Card", WTPrevaultCard)
 	router.HandleFunc("/", HomePage)
 	http.Handle("/", router)
 	fmt.Println("Serving worldpay web service mock on port " + port)
 	trpmMap = make(map[string]types.TokenResponsePaymentMethod)
 	log.Fatal(http.ListenAndServe(port, router))
 }
-func Tokens(w http.ResponseWriter, r *http.Request) {
-
+func WTRoot(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("/api/ request received from " + r.RemoteAddr)
 	defer r.Body.Close()
 
-	fmt.Println("/v1/tokens request received from " + r.RemoteAddr)
+	requestBody, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println(requestBody)
+}
+func WTPrevaultCard(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("/api/PreVault/Card request received from " + r.RemoteAddr)
+	defer r.Body.Close()
+
+	requestBody, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println(requestBody)
+	fmt.Println(r.Body)
+	fmt.Println("%v\n",r)
+}
+
+func Tokens(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("/v1/tokens purchase request received from " + r.RemoteAddr)
+
+	defer r.Body.Close()
 
 	requestBody, err := ioutil.ReadAll(r.Body)
 	if err != nil {
@@ -57,6 +81,14 @@ func Tokens(w http.ResponseWriter, r *http.Request) {
 	tokenRequest := types.TokenRequest{}
 	json.Unmarshal(requestBody, &tokenRequest)
 	unmaskedCardPart := regexp.MustCompile("[0-9]{4}$")
+	//fmt.Println("tokenRequest %v", tokenRequest)
+	//fmt.Println("---")
+	fmt.Println("tokenRequest.PaymentMethod %v", tokenRequest.PaymentMethod)
+	fmt.Println("---")
+	//fmt.Println("r %v", r)
+	//fmt.Println("---")
+	//fmt.Println("requestBody %v", requestBody)
+	//fmt.Println("---")
 	trpm := types.TokenResponsePaymentMethod{
 		Type:                              tokenRequest.PaymentMethod.Type,
 		Name:                              tokenRequest.PaymentMethod.Name,                                                              // TODO
@@ -81,8 +113,10 @@ func Tokens(w http.ResponseWriter, r *http.Request) {
 	}
 	trpmMap[uuid.String()] = trpm
 	json.NewEncoder(w).Encode(tokenResponse)
+	fmt.Println("")
 }
 func Orders(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("/v1/orders request received from " + r.RemoteAddr)
 
 	defer r.Body.Close()
 
@@ -92,7 +126,8 @@ func Orders(w http.ResponseWriter, r *http.Request) {
 	orderRequest := types.OrderRequest{}
 	json.Unmarshal(respBody, &orderRequest)
 
-	fmt.Println("/v1/orders request received from " + r.RemoteAddr)
+	fmt.Println("%v", orderRequest)
+
 	orpr := types.OrderResponsePaymentResponse{
 		Type:                              trpmMap[orderRequest.Token].Type,
 		Name:                              trpmMap[orderRequest.Token].Name,
