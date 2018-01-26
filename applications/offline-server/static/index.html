@@ -7,180 +7,75 @@
 	<title>The Smart Parking Demo - transactions</title>
 	<script src="js/jquery-2.1.4.js"></script>
 	<style type="text/css">
-/*		body {
-			background-color: rgba(255,255,255,0);
-		}
-		#labelTransactionData {
-			border: 1px solid #ff0000;
-			border-radius: 8px;
-			font-size: 30px;
-			font-family: "Calibri";
-			padding: 10px 40px 10px 40px;
-			margin: 10px;
-			display: inline-block;
-		}
-		#tabelka {
-			background: linear-gradient(135deg, #ffe5e5 0%,#ffa3a2 100%);
-			border-spacing: 0px;
-			border-collapse: collapse;
-		}
-		#tabelka > * > tr > td {
-			border: 1px solid #be4b48;
-			padding: 5px;
-			font-size: 18px;
-			font-family: "Calibri"
-		}
-		#tabelka > * > tr > td.transactionGarbledDeformattedEdta {
-		}
-		#tabelka > * > tr > td.x {
-		}
-
-		.mainCenter{
-			overflow:hidden;
-			height:95vh;
-			width:95vw;
-			border:1px solid #ff0000;
-			border-radius: 25vh;
-		}
-#tabelka {
-	width: 93vw;
+th>div{display:none;}
+td,th{border:1px solid black;font-size:24px;}
+.mainCenter{text-align:center;overflow:hidden;border:1px solid red;border-radius:5vh;position:absolute;top:0;left:0;bottom:0;right:0;}
+#labelTransactionData {
+	border: 1px solid #ff0000;
+	border-radius: 8px;
+	font-size: 30px;
+	font-family: "Calibri";
+	padding: 10px 40px 10px 40px;
+	margin: 10px;
+	display: inline-block;
 }
-#tabelka > tbody {
-	overflow-y: scroll;
-	height: 50vh;
+#tab{
+	position:absolute;
+	bottom:0px;
+	height:77wh;
+	left:1vw;
+	right:1vw;
+}
+#tab>.thead>div>span{
+}
+#tab>.tbody>div>span{
+}
+.td,.th {
+	border:1px solid black;
+	padding:0.1em 0.3em 0.1em 0.3em
+
 }
 
+#tab>*>.tr{
+}
+#tab>.thead>.tr>span{
+	background:red;
+}
+#tab>*>.tr>span{
+	display:inline-block;
+	margin:0px;
+	overflow:hidden;
+	padding-top:0.5em;
+	padding-bottom:0.5em;
+	height:1em;
+}
+#tab>.tbody{
+	overflow:scroll;
+	height:66vh;
+}
+#tab>.tbody>.tr{
+	transition:background-color 2s;
+}
+#tab>*>.tr>span:nth-child(1){width:12vw;border-right:none;}
+#tab>*>.tr>span:nth-child(2){width:12vw;border-right:none;}
+#tab>*>.tr>span:nth-child(3){width:12vw;border-right:none;}
+#tab>*>.tr>span:nth-child(4){width:32vw;border-right:none;text-overflow: ellipsis;overflow: hidden;text-overflow-multiline:ellipsis;white-space:nowrap;}
+#tab>*>.tr>span:nth-child(5){width:17vw;}
 
-		#tabelka > div {
-			background-color: white;
-			border-radius: 0.33em;
-			box-shadow: 2px 2px 3px black;
-			margin: 4px;
-			margin-bottom: 6px;
-		}
-		#tabelka > div > span:first-child {
-			border-left: none;
-		}
-		#tabelka > div > span {
-			display: inline-block;
-			padding-left: 6px;
-			padding-right: 6px;
-			border-left: 1px dotted gray;
-		}
-		#tabelka > div > span.card {
-			font-family: monospace;
-			width:13em;
-		}
-		#tabelka > div > span.transactionDateAndTime {
-			font-family: monospace;
-		}
-		*/
 
-		#labelTransactionData {
-			border: 1px solid #ff0000;
-			border-radius: 8px;
-			font-size: 30px;
-			font-family: "Calibri";
-			padding: 10px 40px 10px 40px;
-			margin: 10px;
-			display: inline-block;
-		}
-		.mainCenter{
-			overflow:hidden;
-			height:95vh;
-			/*width:95vw;*/
-			border:1px solid #ff0000;
-			border-radius: 5vh;
-			text-align:center;
-		}
-		html, body{
-		  margin:0;
-		  padding:0;
-		  height:100%;
-		}
-		.data {
-		  position: relative;
-		  border: 1px solid #000;
-		  padding-top: 37px;
-		  background:red;
-		  margin-left:2vw;
-		  margin-right:2vw;
-		  width:92vw;
-		  /*width:77vw;*/
-		}
-		.container {
-		  overflow-y: auto;
-		  height: 63vh;
-		  position:static;
-
-		}
-		table {
-		  border-spacing: 0;
-		  width:100%;
-		  table-layout:fixed;
-		}
-		td + td {
-		  border-left:1px solid #eee;
-		  padding:0.1em 0.5em 0.1em 0.5em ;
-		}
-		td, th {
-		  border-bottom:1px solid #eee;
-		  background: #ddd;
-		  color: #000;
-		  padding: 10px 25px;
-		  padding: 0.2em 1vw 0.2em 1vw;
-		  /*font-size:0.8em;*/
-		}
-		th {
-		  height: 0;
-		  line-height: 0;
-		  padding-top: 0;
-		  padding-bottom: 0;
-		  color: transparent;
-		  border: none;
-		  white-space: nowrap;
-		}
-		th div{
-		  position: absolute;
-		  background: transparent;
-		  color: #fff;
-		  padding: 9px 25px;
-		  padding: 0.2em 1vw 0.2em 1vw;
-		  top: 0;
-		  margin-left: -25px;
-		  margin-left: -1vw;
-		  line-height: normal;
-		  border-left: 1px solid #800;
-		}
-		th:first-child div{
-		  border: none;
-		}
-		.c1 {width:18%;}
-		.c2 {width:18%;}
-		.c3 {width:18%;}
-		.c4 {width:28%;}
-		.c5 {width:18%;}
 	</style>
 </head>
 
 <body class="">
 	<div class="mainCenter">
 		<span id="labelTransactionData">Transaction data</span>
-		<div class="data">
-			<div class="container">
-				<table class="tb" id="tabelka">
-					<thead>
-						<tr class="header">
-							<th class="c1">Date     <div>Date</div></th>
-							<th class="c2">Card     <div>Card</div></th>
-							<th class="c3">Quantity <div>Quantity</div></th>
-							<th class="c4">Order Description<div>Order Description</div></th>
-							<th class="c5">Total    <div>Total</div></th>
-						</tr>
-					<thead>
-					<tbody id="tabelkaTBody">
-					</tbody>
-				</table>
+		<div id="tab">
+			<div class="thead">
+				<div class="tr">
+					<span class="th">Date</span><span class="th">Card</span><span class="th">Quantity</span><span class="th">Order Description</span><span class="th">Total</span>
+				</div>
+			</div>
+			<div class="tbody" id="tableTBody">
 			</div>
 		</div>
 	</div>
