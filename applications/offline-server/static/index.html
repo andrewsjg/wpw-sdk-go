@@ -7,79 +7,78 @@
 	<title>The Smart Parking Demo - transactions</title>
 	<script src="js/jquery-2.1.4.js"></script>
 	<style type="text/css">
-		body {
-			background-color: rgba(255,255,255,0);
-		}
-		#labelTransactionData {
-			border: 1px solid #ff0000;
-			border-radius: 8px;
-			font-size: 30px;
-			font-family: "Calibri";
-			padding: 10px 40px 10px 40px;
-			margin: 10px;
-			display: inline-block;
-		}
-		#tabelka {
-			background: linear-gradient(135deg, #ffe5e5 0%,#ffa3a2 100%);
-			border-spacing: 0px;
-			border-collapse: collapse;
-		}
-		#tabelka > * > tr > td {
-			border: 1px solid #be4b48;
-			padding: 5px;
-			font-size: 18px;
-			font-family: "Calibri"
-		}
-		#tabelka > * > tr > td.transactionGarbledDeformattedEdta {
-		}
-		#tabelka > * > tr > td.x {
-		}
+th>div{display:none;}
+td,th{border:1px solid black;font-size:24px;}
+.mainCenter{text-align:center;overflow:hidden;border:1px solid red;border-radius:5vh;position:absolute;top:0;left:0;bottom:0;right:0;}
+#labelTransactionData {
+	border: 1px solid #ff0000;
+	border-radius: 8px;
+	font-size: 30px;
+	font-family: "Calibri";
+	padding: 10px 40px 10px 40px;
+	margin: 10px;
+	display: inline-block;
+}
+#tab{
+	position:absolute;
+	bottom:0px;
+	height:77wh;
+	left:1vw;
+	right:1vw;
+}
+#tab>.thead>div>span{
+}
+#tab>.tbody>div>span{
+}
+.td,.th {
+	border:1px solid black;
+	padding:0.1em 0.3em 0.1em 0.3em
+
+}
+
+#tab>*>.tr{
+}
+#tab>.thead>.tr>span{
+	background:red;
+}
+#tab>*>.tr>span{
+	display:inline-block;
+	margin:0px;
+	overflow:hidden;
+	padding-top:0.5em;
+	padding-bottom:0.5em;
+	height:1em;
+}
+#tab>.tbody{
+	overflow:scroll;
+	height:66vh;
+}
+#tab>.tbody>.tr{
+	transition:background-color 2s;
+}
+#tab>*>.tr>span:nth-child(1){width:12vw;border-right:none;}
+#tab>*>.tr>span:nth-child(2){width:12vw;border-right:none;}
+#tab>*>.tr>span:nth-child(3){width:12vw;border-right:none;}
+#tab>*>.tr>span:nth-child(4){width:32vw;border-right:none;text-overflow: ellipsis;overflow: hidden;text-overflow-multiline:ellipsis;white-space:nowrap;}
+#tab>*>.tr>span:nth-child(5){width:17vw;}
 
 
-
-		#tabelka > div {
-			background-color: white;
-			border-radius: 0.33em;
-			box-shadow: 2px 2px 3px black;
-			margin: 4px;
-			margin-bottom: 6px;
-		}
-		#tabelka > div > span:first-child {
-			border-left: none;
-		}
-		#tabelka > div > span {
-			display: inline-block;
-			padding-left: 6px;
-			padding-right: 6px;
-			border-left: 1px dotted gray;
-		}
-		#tabelka > div > span.card {
-			font-family: monospace;
-			width:13em;
-		}
-		#tabelka > div > span.transactionDateAndTime {
-			font-family: monospace;
-		}
 	</style>
 </head>
 
-<body class="mainBgColorRed fullBodyFont">
-	<center>
+<body class="">
+	<div class="mainCenter">
 		<span id="labelTransactionData">Transaction data</span>
-		<table class="tb" id="tabelka">
-			<thead>
-				<tr>
-					<td>Date</td>
-					<td>Card</td>
-					<td>Quantity</td>
-					<td>Order Description</td>
-					<td>Total</td>
-				</tr>
-			<thead>
-			<tbody id="tabelkaTBody">
-			</tbody>
-		</table>
-	</center>
+		<div id="tab">
+			<div class="thead">
+				<div class="tr">
+					<span class="th">Date</span><span class="th">Card</span><span class="th">Quantity</span><span class="th">Order Description</span><span class="th">Total</span>
+				</div>
+			</div>
+			<div class="tbody" id="tableTBody">
+			</div>
+		</div>
+	</div>
 	<script src="js/transactions.js"></script>
 </body>
 </html>

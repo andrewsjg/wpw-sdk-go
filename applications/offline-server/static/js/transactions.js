@@ -10,7 +10,7 @@ function processJSON(jsonPath){
 		var items = [];
 		//console.log(data);
 		//o = document.createElement("div")
-		rodzic = document.getElementById("tabelkaTBody");
+		rodzic = document.getElementById("tableTBody");
 		//o.innerText = json_array[i];
 		//i.id = json_array[i].toString();
 		if(data.length == 0){
@@ -26,13 +26,18 @@ function processJSON(jsonPath){
 		data.forEach(function (j) {
 			o2 = document.getElementById(JSON.stringify(j));
 			if(o2 === null || o2 === undefined) {
-				o = document.createElement("tr");
+				var trType = "div";
+				var tdType = "span";
+
+				o = document.createElement(trType);
+				o.classList.add("tr");
 				o.classList.add("paymentRecord");
 				o.id = JSON.stringify(j);
 
-				s = document.createElement("td");
+				s = document.createElement(tdType);
 				//s.classList.add("transactionDateAndTime");
 				s.classList.add("transactionGarbledDeformattedEdta");
+				s.classList.add("td");
 				//s.name = "transactionDateAndTime";
 				s.name = "transactionGarbledDeformattedEdta";
 				//s.innerText = j.transactionDateAndTime;
@@ -40,8 +45,9 @@ function processJSON(jsonPath){
 				s.innerText = m[3] + '.' + m[2] + '.' + m[1];
 				o.appendChild(s);
 
-				s = document.createElement("td");
+				s = document.createElement(tdType);
 				s.classList.add("card");
+				s.classList.add("td");
 				s.name = "card";
 				m = j.maskedCard.match(/^(...).*(.[0-9][0-9][0-9])$/);
 				if(m) {
@@ -51,8 +57,9 @@ function processJSON(jsonPath){
 				}
 				o.appendChild(s);
 
-				s = document.createElement("td");
+				s = document.createElement(tdType);
 				s.classList.add("quantity");
+				s.classList.add("td");
 				s.name = "quantity";
 				s.innerText = "n/a";
 				o.appendChild(s);
@@ -69,14 +76,17 @@ function processJSON(jsonPath){
 				//s.innerText = j.currencyCode;
 				//o.appendChild(s);
 
-				s = document.createElement("td");
+				s = document.createElement(tdType);
 				s.classList.add("orderDescription");
+				s.classList.add("td");
 				s.name = "orderDescription";
-				s.innerText = j.orderDescription;
+				m = j.orderDescription.match(/(.*) - (.*)/);
+				s.innerText = m[2] + ' - ' + m[1];
 				o.appendChild(s);
 
-				s = document.createElement("td");
+				s = document.createElement(tdType);
 				s.classList.add("total");
+				s.classList.add("td");
 				s.name = "total";
 				switch(j.currencyCode) {
 					case "GBP":
@@ -98,7 +108,10 @@ function processJSON(jsonPath){
 
 
 				//o.innerText=JSON.stringify(j);
+				o.style.backgroundColor="green";
 				rodzic.appendChild(o);
+				rodzic.scrollTo({left:0,top:rodzic.scrollHeight,behavior:"smooth"});
+				o.style.backgroundColor="white";
 			}
 		});
 	});
