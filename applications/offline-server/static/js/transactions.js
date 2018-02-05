@@ -42,7 +42,7 @@ function processJSON(jsonPath){
 				s.name = "transactionGarbledDeformattedEdta";
 				//s.innerText = j.transactionDateAndTime;
 				var m = j.transactionDateAndTime.match(/(2[0-9]{3})-([01][0-9])-([0-3][0-9])T([0-2][0-9]):([0-5][0-9]):([0-5][0-9])([+-][0-9:]+)?/);
-				s.innerText = m[3] + '.' + m[2] + '.' + m[1];
+				s.innerText = m[4] + ':' + m[5] + ':' + m[6];
 				o.appendChild(s);
 
 				s = document.createElement(tdType);
