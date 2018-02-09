@@ -5,8 +5,8 @@ import (
 	"net/http"
 	"time"
 
-	log "github.com/sirupsen/logrus"
 	"github.com/gorilla/websocket"
+	log "github.com/sirupsen/logrus"
 )
 
 // WSHook A logrus hook to enable outputting logs to web browser via Web Socket

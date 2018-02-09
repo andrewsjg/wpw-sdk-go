@@ -6,13 +6,13 @@ import (
 	"fmt"
 	"io/ioutil"
 
-	log "github.com/sirupsen/logrus"
 	devclienttypes "github.com/WPTechInnovation/wpw-sdk-go/applications/dev-client/types"
 	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin"
 	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/psp"
 	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/psp/onlineworldpay"
 	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/rpc"
 	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/types"
+	log "github.com/sirupsen/logrus"
 )
 
 func mGetDeviceInfo() error {

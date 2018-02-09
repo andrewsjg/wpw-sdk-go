@@ -1,0 +1,26 @@
+
+export MIRRORS_DIR="${HOME}/clones/mirrors"
+export MIRRORS="file://${MIRRORS_DIR}"
+
+if [[ -d "${MIRRORS_DIR}" ]]; then
+    echo "warning, mirrors dir (${MIRRORS_DIR}) already exists"
+else
+    echo "info: creating and cloning mirrors to ${MIRRORS_DIR}"
+    mkdir -p "${MIRRORS_DIR}"
+    cd "${MIRRORS_DIR}"
+
+    git clone --mirror https://github.com/WPTechInnovation/wpw-sdk-go.git
+    git clone --mirror https://github.com/WPTechInnovation/wpw-sdk-java.git
+    git clone --mirror https://github.com/WPTechInnovation/wpw-sdk-python.git
+    git clone --mirror https://github.com/WPTechInnovation/wpw-sdk-nodejs.git
+    git clone --mirror https://github.com/WPTechInnovation/wpw-sdk-dotnet.git
+    git clone --mirror https://github.com/WPTechInnovation/wpw-sdk-thrift.git
+    git clone --mirror https://github.com/WPTechInnovation/wpw-sdk-iot-core.git
+
+    cd -
+fi
+
+echo
+echo "Value MIRRORS_DIR is set to: ${MIRRORS_DIR}"
+echo "Value MIRRORS     is set to: ${MIRRORS}"
+echo

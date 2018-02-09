@@ -7,8 +7,6 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
-	"os"
-	"os/signal"
 	"regexp"
 	"strings"
 	"time"
@@ -19,7 +17,6 @@ import (
 	"github.com/nu7hatch/gouuid"
 )
 
-//var trpm types.TokenResponsePaymentMethod
 var trpmMap map[string]types.TokenResponsePaymentMethod
 var db *scribble.Driver
 var orderInformation OrderInformation
@@ -32,36 +29,49 @@ func main() {
 	flag.StringVar(&dir, "dir", "./static/js/", "the directory to serve files from. Defaults to the current dir")
 	flag.Parse()
 
-	c := make(chan os.Signal, 1)
-	signal.Notify(c, os.Interrupt)
-	go func() {
-		sigchan := make(chan os.Signal, 10)
-		signal.Notify(sigchan, os.Interrupt)
-		<-sigchan
-		log.Println("Program killed !")
-
-		closedb()
-
-		os.Exit(0)
-	}()
 	db, _ = scribble.New(".", nil)
+	cleandb()
 	port := ":8080"
 	router := mux.NewRouter().StrictSlash(true)
 	router.PathPrefix("/js/").Handler(http.StripPrefix("/js/", http.FileServer(http.Dir(dir))))
 	router.HandleFunc("/v1/tokens", Tokens)
 	router.HandleFunc("/v1/orders", Orders)
 	router.HandleFunc("/v1/transactions", Transactions)
+	router.HandleFunc("/api/", WTRoot)
+	router.HandleFunc("/api/PreVault/Card", WTPrevaultCard)
 	router.HandleFunc("/", HomePage)
 	http.Handle("/", router)
 	fmt.Println("Serving worldpay web service mock on port " + port)
 	trpmMap = make(map[string]types.TokenResponsePaymentMethod)
 	log.Fatal(http.ListenAndServe(port, router))
 }
-func Tokens(w http.ResponseWriter, r *http.Request) {
-
+func WTRoot(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("/api/ request received from " + r.RemoteAddr)
 	defer r.Body.Close()
 
-	fmt.Println("/v1/tokens request received from " + r.RemoteAddr)
+	requestBody, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println(requestBody)
+}
+func WTPrevaultCard(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("/api/PreVault/Card request received from " + r.RemoteAddr)
+	defer r.Body.Close()
+
+	requestBody, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println(requestBody)
+	fmt.Println(r.Body)
+	fmt.Println("%v\n",r)
+}
+
+func Tokens(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("/v1/tokens purchase request received from " + r.RemoteAddr)
+
+	defer r.Body.Close()
 
 	requestBody, err := ioutil.ReadAll(r.Body)
 	if err != nil {
@@ -70,9 +80,15 @@ func Tokens(w http.ResponseWriter, r *http.Request) {
 
 	tokenRequest := types.TokenRequest{}
 	json.Unmarshal(requestBody, &tokenRequest)
-	//	fmt.Println("type: ", trpm.TokenResponsePaymentMethod.Type)
-	//	fmt.Println("Name: ", trpm.TokenResponsePaymentMethod.Name)
 	unmaskedCardPart := regexp.MustCompile("[0-9]{4}$")
+	//fmt.Println("tokenRequest %v", tokenRequest)
+	//fmt.Println("---")
+	fmt.Println("tokenRequest.PaymentMethod %v", tokenRequest.PaymentMethod)
+	fmt.Println("---")
+	//fmt.Println("r %v", r)
+	//fmt.Println("---")
+	//fmt.Println("requestBody %v", requestBody)
+	//fmt.Println("---")
 	trpm := types.TokenResponsePaymentMethod{
 		Type:                              tokenRequest.PaymentMethod.Type,
 		Name:                              tokenRequest.PaymentMethod.Name,                                                              // TODO
@@ -97,8 +113,10 @@ func Tokens(w http.ResponseWriter, r *http.Request) {
 	}
 	trpmMap[uuid.String()] = trpm
 	json.NewEncoder(w).Encode(tokenResponse)
+	fmt.Println("")
 }
 func Orders(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("/v1/orders request received from " + r.RemoteAddr)
 
 	defer r.Body.Close()
 
@@ -107,10 +125,9 @@ func Orders(w http.ResponseWriter, r *http.Request) {
 	fmt.Println(string(respBody))
 	orderRequest := types.OrderRequest{}
 	json.Unmarshal(respBody, &orderRequest)
-	//	fmt.Println("Amount: ", response.Amount)
-	//	fmt.Println("Order desc: ", response.OrderDescription)
 
-	fmt.Println("/v1/orders request received from " + r.RemoteAddr)
+	fmt.Println("%v", orderRequest)
+
 	orpr := types.OrderResponsePaymentResponse{
 		Type:                              trpmMap[orderRequest.Token].Type,
 		Name:                              trpmMap[orderRequest.Token].Name,
@@ -189,8 +206,6 @@ func HomePage(w http.ResponseWriter, r *http.Request) {
 	http.ServeFile(w, r, "./static/index.html")
 }
 
-func closedb() {
-	if err := db.Delete(DB_NAME, ""); err != nil {
-		fmt.Println("Error", err)
-	}
+func cleandb() {
+	db.Delete(DB_NAME, "")
 }

@@ -271,5 +271,5 @@ func checkAppInfo() {
 
 func getVersionInfo() string {
 
-	return fmt.Sprintf("\n\n%s v%s (Built on %s) (%s)\n\n", applicationName, applicationVersion, applicationBuildDate, applicationPlatform)
+	return fmt.Sprintf("\n\n%s %s (Built on %s) (%s)\n\n", applicationName, applicationVersion, applicationBuildDate, applicationPlatform)
 }
