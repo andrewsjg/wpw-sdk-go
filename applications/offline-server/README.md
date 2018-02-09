@@ -7,16 +7,16 @@ Installation instruction of the offline-server.
 Administration rights are required to setup the web server.
 
 1. To speedup the setup: Verify (should be already done with god mode configuration) that the local router DHCP is setup to assign the IP address to 192.168.1.111 for the computer on which you are installing the god mode and offline-server.
-1. Download and install GIT: https://git-scm.com/downloads
+2. Download and install GIT: https://git-scm.com/downloads
 - Make sure that environment varaible %PATH% is updated, so git is accessible from cmd window.
-2. Download and install GOLANG: https://golang.org/doc/install
-3. Define the GOPATH environment variable.
+3. Download and install GOLANG: https://golang.org/doc/install
+4. Define the GOPATH environment variable.
 
 ![environment variable](img/env_variables.png)
 
 ![new environment variable](img/new_env_variable.png)
 
-4. Open new cmd window.
+5. Open new cmd window.
 
 # Setup:
 
