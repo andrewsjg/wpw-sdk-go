@@ -57,12 +57,12 @@ function processJSON(jsonPath){
 				}
 				o.appendChild(s);
 
-				s = document.createElement(tdType);
-				s.classList.add("quantity");
-				s.classList.add("td");
-				s.name = "quantity";
-				s.innerText = "n/a";
-				o.appendChild(s);
+				q = document.createElement(tdType);
+				q.classList.add("quantity");
+				q.classList.add("td");
+				q.name = "quantity";
+				//q.innerText = "n/a";
+
 
 				//s = document.createElement("td");
 				//s.classList.add("unitPrice");
@@ -80,8 +80,15 @@ function processJSON(jsonPath){
 				s.classList.add("orderDescription");
 				s.classList.add("td");
 				s.name = "orderDescription";
-				m = j.orderDescription.match(/(.*) - (.*)/);
-				s.innerText = m[2] + ' - ' + m[1];
+				m = j.orderDescription.match(/(.*) - (.*) @ (.*)./);
+				s.innerText = m[3] + ' - ' + m[1];
+				if (m[2] == "1 units") {
+					q.innerText = "1 unit";
+				}
+				else {
+					q.innerText = m[2];
+				}
+				o.appendChild(q);
 				o.appendChild(s);
 
 				s = document.createElement(tdType);
