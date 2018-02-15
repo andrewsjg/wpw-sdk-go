@@ -3,14 +3,14 @@ package errors
 import (
 	"fmt"
 	"strings"
-	"time"
 )
 
 type ErrorId int
 
 const (
-	UNKNOWN = 0 + iota
+	UNKNOWN ErrorId = iota
 	NO_DATA
+	DIVISION_BY_ZERO
 )
 
 type ErrorType int
@@ -20,6 +20,7 @@ const (
 	NET     = "NET"
 	MEMORY  = "MEMEORY"
 	DATA    = "DATA"
+	MATH    = "MATH"
 )
 
 type WpwError struct {
@@ -29,16 +30,14 @@ type WpwError struct {
 }
 
 var errors = [...]WpwError{
-	UNKNOWN: {"UNKNOWN", GENERAL, "unknow error"},
-	// add new error below
-	NO_DATA: {"NO_DATA", DATA, "lack of data"},
+	UNKNOWN:          {"UNKNOWN", GENERAL, "unknow error"},
+	NO_DATA:          {"NO_DATA", DATA, "lack of data"},
+	DIVISION_BY_ZERO: {"DIVISION_BY_ZERO", MATH, "division by zero"},
 }
 
 // Error return formated error for specified error (e).
 func (e WpwError) Error() error {
-	t := time.Now()
-	formatedTime := fmt.Sprintf("%d-%02d-%02d %02d:%02d:%02d-00:00", t.Year(), t.Month(), t.Day(), t.Hour(), t.Minute(), t.Second())
-	return fmt.Errorf("%v: %v, %v, %s", formatedTime, e.ID, e.Type, e.Message)
+	return fmt.Errorf("%v, %v, %v", e.ID, e.Type, e.Message)
 }
 
 // GetError returns error for specified eid with additional data (if any) separated with comma.
