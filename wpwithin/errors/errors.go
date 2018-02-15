@@ -13,8 +13,6 @@ const (
 	DIVISION_BY_ZERO
 )
 
-type ErrorType int
-
 const (
 	GENERAL = "GENERAL"
 	NET     = "NET"
