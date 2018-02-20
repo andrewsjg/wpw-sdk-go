@@ -12,6 +12,7 @@ const (
 	DATA    = "DATA"
 	MATH    = "MATH"
 	JSON    = "JSON"
+	HTTP    = "HTTP"
 	CONFIG  = "CONFIG"
 	IO      = "IO"
 	CORE    = "CORE"
@@ -24,6 +25,8 @@ const (
 	UNKNOWN ErrorID = iota
 	NO_DATA
 	DIVISION_BY_ZERO
+	IO_READ
+	IO_WRITE
 	WRONG_CONFIG_PATH
 	OPEN_FILE
 	DECODE_JSON
@@ -41,6 +44,12 @@ const (
 	EMPTY_CLIENTID
 	HTTP_GET
 	HTTP_POSTJSON
+	HTTP_REQUEST_POST
+	HTTP_REQUEST_DO
+	EMPTYMERCHANTCLIENTKEY
+	EMPTYMERCHANTSERVICEKEY
+	ORDER_EXISTS
+	ORDER_NOTFOUND
 )
 
 type WpwError struct {
@@ -50,26 +59,34 @@ type WpwError struct {
 }
 
 var errors = [...]WpwError{
-	UNKNOWN:            {"UNKNOWN", GENERAL, "unknow error"},
-	NO_DATA:            {"NO_DATA", DATA, "lack of data"},
-	DIVISION_BY_ZERO:   {"DIVISION_BY_ZERO", MATH, "division by zero"},
-	DECODE_JSON:        {"DECODE_JSON", JSON, "failed to decode json"},
-	ENCODE_JSON:        {"ENCODE_JSON", JSON, "failed to encode json"},
-	WRONG_CONFIG_PATH:  {"WRONG_CONFIG_PATH", CONFIG, "wrong path to configuration data"},
-	OPEN_FILE:          {"OPEN_FILE", CONFIG, "failed to open file"},
-	CONVERT_VALUE:      {"CONVERT_VALUE", CONFIG, "failed to convert value"},
-	UUID_FILE_READ:     {"UUID_FILE_READ", CORE, "failed to read uuid file"},
-	UUID_FILE_CREATE:   {"UUID_FILE_CREATE", CORE, "failed to create uuid file"},
-	UUID_FILE_SAVE:     {"UUID_FILE_SAVE", CORE, "failed to save uuid file"},
-	PSP_CONFIG_NOT_SET: {"PSP_CONFIG_NOT_SET", CORE, "PSP Config is not set"},
-	PARSE_DEVELOPER_ID: {"PARSE_DEVELOPER_ID", CORE, "failed to parse developerID"},
-	PSP_UNKNOWN:        {"PSP_UNKNOWN", CORE, "unknown psp"},
-	PSP_COLLECTION:     {"PSP_COLLECTION", CORE, "PSP Config collection is be set"},
-	EMPTY_HOST:         {"EMPTY_HOST", HTE, "empty host"},
-	PORT_RANGE:         {"PORT_RANGE", HTE, "port number out of range"},
-	EMPTY_CLIENTID:     {"EMPTY_CLIENTID", HTE, "empty clientId"},
-	HTTP_GET:           {"HTTP_GET", HTE, "http client get error"},
-	HTTP_POSTJSON:      {"HTTP_POSTJSON", HTE, "http client failed to post JSON"},
+	UNKNOWN:                 {"UNKNOWN", GENERAL, "unknow error"},
+	NO_DATA:                 {"NO_DATA", DATA, "lack of data"},
+	DIVISION_BY_ZERO:        {"DIVISION_BY_ZERO", MATH, "division by zero"},
+	IO_READ:                 {"IO_READ", IO, "io read error"},
+	IO_WRITE:                {"IO_WRITE", IO, "io write error"},
+	DECODE_JSON:             {"DECODE_JSON", JSON, "failed to decode json"},
+	ENCODE_JSON:             {"ENCODE_JSON", JSON, "failed to encode json"},
+	HTTP_GET:                {"HTTP_GET", HTTP, "http get error"},
+	HTTP_POSTJSON:           {"HTTP_POSTJSON", HTTP, "http failed to post JSON"},
+	HTTP_REQUEST_POST:       {"HTTP_REQUEST_POST", HTTP, "http request post error"},
+	HTTP_REQUEST_DO:         {"HTTP_REQUEST_DO", HTTP, "http request do error"},
+	WRONG_CONFIG_PATH:       {"WRONG_CONFIG_PATH", CONFIG, "wrong path to configuration data"},
+	OPEN_FILE:               {"OPEN_FILE", CONFIG, "failed to open file"},
+	CONVERT_VALUE:           {"CONVERT_VALUE", CONFIG, "failed to convert value"},
+	UUID_FILE_READ:          {"UUID_FILE_READ", CORE, "failed to read uuid file"},
+	UUID_FILE_CREATE:        {"UUID_FILE_CREATE", CORE, "failed to create uuid file"},
+	UUID_FILE_SAVE:          {"UUID_FILE_SAVE", CORE, "failed to save uuid file"},
+	PSP_CONFIG_NOT_SET:      {"PSP_CONFIG_NOT_SET", CORE, "PSP Config is not set"},
+	PARSE_DEVELOPER_ID:      {"PARSE_DEVELOPER_ID", CORE, "failed to parse developerID"},
+	PSP_UNKNOWN:             {"PSP_UNKNOWN", CORE, "unknown psp"},
+	PSP_COLLECTION:          {"PSP_COLLECTION", CORE, "PSP Config collection is be set"},
+	EMPTY_HOST:              {"EMPTY_HOST", HTE, "empty host"},
+	PORT_RANGE:              {"PORT_RANGE", HTE, "port number out of range"},
+	EMPTY_CLIENTID:          {"EMPTY_CLIENTID", HTE, "empty clientId"},
+	EMPTYMERCHANTCLIENTKEY:  {"EMPTYMERCHANTCLIENTKEY", HTE, "empty MerchantClientKey"},
+	EMPTYMERCHANTSERVICEKEY: {"EMPTYMERCHANTSERVICEKEY", HTE, "empty MerchantServiceKey"},
+	ORDER_EXISTS:            {"ORDER_EXISTS", HTE, "order already exists"},
+	ORDER_NOTFOUND:          {"ORDER_NOTFOUND", HTE, "order not found"},
 }
 
 // Error return formated error for specified error (e).
