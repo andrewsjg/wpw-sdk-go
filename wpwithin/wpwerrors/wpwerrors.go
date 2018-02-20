@@ -11,9 +11,11 @@ const (
 	MEMORY  = "MEMORY"
 	DATA    = "DATA"
 	MATH    = "MATH"
+	JSON    = "JSON"
 	CONFIG  = "CONFIG"
 	IO      = "IO"
 	CORE    = "CORE"
+	HTE     = "HTE"
 )
 
 type ErrorID int
@@ -25,6 +27,7 @@ const (
 	WRONG_CONFIG_PATH
 	OPEN_FILE
 	DECODE_JSON
+	ENCODE_JSON
 	CONVERT_VALUE
 	UUID_FILE_READ
 	UUID_FILE_CREATE
@@ -33,6 +36,11 @@ const (
 	PARSE_DEVELOPER_ID
 	PSP_UNKNOWN
 	PSP_COLLECTION
+	EMPTY_HOST
+	PORT_RANGE
+	EMPTY_CLIENTID
+	HTTP_GET
+	HTTP_POSTJSON
 )
 
 type WpwError struct {
@@ -45,9 +53,10 @@ var errors = [...]WpwError{
 	UNKNOWN:            {"UNKNOWN", GENERAL, "unknow error"},
 	NO_DATA:            {"NO_DATA", DATA, "lack of data"},
 	DIVISION_BY_ZERO:   {"DIVISION_BY_ZERO", MATH, "division by zero"},
+	DECODE_JSON:        {"DECODE_JSON", JSON, "failed to decode json"},
+	ENCODE_JSON:        {"ENCODE_JSON", JSON, "failed to encode json"},
 	WRONG_CONFIG_PATH:  {"WRONG_CONFIG_PATH", CONFIG, "wrong path to configuration data"},
 	OPEN_FILE:          {"OPEN_FILE", CONFIG, "failed to open file"},
-	DECODE_JSON:        {"DECODE_JSON", CONFIG, "failed to decode json"},
 	CONVERT_VALUE:      {"CONVERT_VALUE", CONFIG, "failed to convert value"},
 	UUID_FILE_READ:     {"UUID_FILE_READ", CORE, "failed to read uuid file"},
 	UUID_FILE_CREATE:   {"UUID_FILE_CREATE", CORE, "failed to create uuid file"},
@@ -56,6 +65,11 @@ var errors = [...]WpwError{
 	PARSE_DEVELOPER_ID: {"PARSE_DEVELOPER_ID", CORE, "failed to parse developerID"},
 	PSP_UNKNOWN:        {"PSP_UNKNOWN", CORE, "unknown psp"},
 	PSP_COLLECTION:     {"PSP_COLLECTION", CORE, "PSP Config collection is be set"},
+	EMPTY_HOST:         {"EMPTY_HOST", HTE, "empty host"},
+	PORT_RANGE:         {"PORT_RANGE", HTE, "port number out of range"},
+	EMPTY_CLIENTID:     {"EMPTY_CLIENTID", HTE, "empty clientId"},
+	HTTP_GET:           {"HTTP_GET", HTE, "http client get error"},
+	HTTP_POSTJSON:      {"HTTP_POSTJSON", HTE, "http client failed to post JSON"},
 }
 
 // Error return formated error for specified error (e).
