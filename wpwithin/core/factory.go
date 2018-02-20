@@ -1,7 +1,6 @@
 package core
 
 import (
-	"errors"
 	"fmt"
 	"net"
 	"strconv"
@@ -15,6 +14,7 @@ import (
 	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/types"
 	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/types/event"
 	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/utils"
+	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/wpwerrors"
 )
 
 const (
@@ -68,8 +68,8 @@ func (factory *SDKFactoryImpl) GetDevice(name, description, interfaceAddr string
 		_deviceGUID, err := utils.ReadLocalUUID(UUIDFilePath)
 
 		if err != nil {
-
-			return nil, fmt.Errorf("Could not read UUID file (%s). Try deleting it. %q", UUIDFilePath, err.Error())
+			return nil, wpwerrors.GetError(wpwerrors.UUID_FILE_READ, fmt.Sprintf("UUIDFilePath = %s", UUIDFilePath),
+				"try deleting it", err.Error())
 		}
 
 		deviceGUID = _deviceGUID
@@ -79,15 +79,13 @@ func (factory *SDKFactoryImpl) GetDevice(name, description, interfaceAddr string
 		_deviceGUID, err := utils.NewUUID()
 
 		if err != nil {
-
-			return nil, fmt.Errorf("Unable to create new UUID: %q", err.Error())
+			return nil, wpwerrors.GetError(wpwerrors.UUID_FILE_CREATE, err.Error())
 		}
 
 		deviceGUID = _deviceGUID
 
 		if err := utils.WriteString(UUIDFilePath, deviceGUID, true); err != nil {
-
-			return nil, fmt.Errorf("Could not save UUID to %s", UUIDFilePath)
+			return nil, wpwerrors.GetError(wpwerrors.UUID_FILE_SAVE, fmt.Sprintf("UUIDFilePath = %s", UUIDFilePath), err.Error())
 		}
 	}
 
@@ -105,8 +103,7 @@ func (factory *SDKFactoryImpl) GetDevice(name, description, interfaceAddr string
 func (factory *SDKFactoryImpl) GetPSPMerchant(pspConfig map[string]string) (psp.PSP, error) {
 
 	if pspConfig == nil {
-
-		return nil, errors.New("PSP Config map must be set")
+		return nil, wpwerrors.GetError(wpwerrors.PSP_CONFIG_NOT_SET)
 	}
 
 	switch pspConfig[psp.CfgPSPName] {
@@ -118,22 +115,20 @@ func (factory *SDKFactoryImpl) GetPSPMerchant(pspConfig map[string]string) (psp.
 		devID, err := strconv.Atoi(pspConfig[securenet.CfgDeveloperID])
 
 		if err != nil {
-
-			return nil, fmt.Errorf("Error parsing developerID as int")
+			return nil, wpwerrors.GetError(wpwerrors.PARSE_DEVELOPER_ID, fmt.Sprintf("DeveloperID = %v",
+				pspConfig[securenet.CfgDeveloperID]), err.Error())
 		}
 
 		return securenet.NewSecureNetMerchant(pspConfig[securenet.CfgSecureNetID], pspConfig[securenet.CfgSecureKey], pspConfig[securenet.CfgPublicKey], pspConfig[securenet.CfgAPIEndpoint], pspConfig[securenet.CfgAppVersion], int32(devID), pspConfig[securenet.CfgHTTPProxy])
 	}
-
-	return nil, fmt.Errorf("Unknown PSP: %s", pspConfig[psp.CfgPSPName])
+	return nil, wpwerrors.GetError(wpwerrors.PSP_UNKNOWN, fmt.Sprintf("PSP: %v", pspConfig[psp.CfgPSPName]))
 }
 
 // GetPSPClient get a new PSP implementation in context of a client i.e. only the endpoint is set
 func (factory *SDKFactoryImpl) GetPSPClient(pspConfig map[string]string) (psp.PSP, error) {
 
 	if pspConfig == nil {
-
-		return nil, errors.New("PSP Config map must be set")
+		return nil, wpwerrors.GetError(wpwerrors.PSP_COLLECTION)
 	}
 
 	switch pspConfig[psp.CfgPSPName] {
@@ -145,14 +140,14 @@ func (factory *SDKFactoryImpl) GetPSPClient(pspConfig map[string]string) (psp.PS
 		devID, err := strconv.Atoi(pspConfig[securenet.CfgDeveloperID])
 
 		if err != nil {
-
-			return nil, fmt.Errorf("Error parsing developerID as int")
+			return nil, wpwerrors.GetError(wpwerrors.PARSE_DEVELOPER_ID, fmt.Sprintf("DeveloperID = %v",
+				pspConfig[securenet.CfgDeveloperID]), err.Error())
 		}
 
 		return securenet.NewSecureNetConsumer(pspConfig[securenet.CfgAPIEndpoint], pspConfig[securenet.CfgAppVersion], int32(devID), pspConfig[securenet.CfgHTTPProxy])
 	}
 
-	return nil, fmt.Errorf("Unknown PSP: %s", pspConfig[psp.CfgPSPName])
+	return nil, wpwerrors.GetError(wpwerrors.PSP_UNKNOWN, fmt.Sprintf("PSP: %v", pspConfig[psp.CfgPSPName]))
 }
 
 // GetSvcBroadcaster get an instance of service broadcaster
