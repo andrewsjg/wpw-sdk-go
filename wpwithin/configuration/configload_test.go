@@ -2,7 +2,10 @@ package configuration
 
 import (
 	"os"
+	"strings"
 	"testing"
+
+	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/wpwerrors"
 )
 
 var testFileName = os.TempDir() + string(os.PathSeparator) + "configload_test.json"
@@ -51,6 +54,10 @@ func testBadFile(t *testing.T) {
 		t.Error("Load should file, the content of the file is not json.")
 		t.FailNow()
 	}
+	if !strings.Contains(err.Error(), wpwerrors.GetError(wpwerrors.DECODE_JSON).Error()) {
+		t.Error("Wrong error. Expected error is DECODE_JSON, got: " + err.Error())
+		t.FailNow()
+	}
 }
 
 func testGoodFile(t *testing.T) Configuration {
@@ -78,6 +85,11 @@ func TestLoad(t *testing.T) {
 	_, err = Load("")
 	if err == nil {
 		t.Error("Expected error for null string.")
+		t.FailNow()
+	}
+
+	if !strings.Contains(err.Error(), wpwerrors.GetError(wpwerrors.WRONG_CONFIG_PATH).Error()) {
+		t.Error("Wrong error. Expected error is WRONG_CONFIG_PATH, got: " + err.Error())
 		t.FailNow()
 	}
 
