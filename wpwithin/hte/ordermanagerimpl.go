@@ -1,10 +1,10 @@
 package hte
 
 import (
-	"errors"
 	"fmt"
 
 	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/types"
+	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/wpwerrors"
 )
 
 // OrderManagerImpl Concrete implementation of order manager.. uses an in memory persistence for orders
@@ -26,7 +26,7 @@ func (om *OrderManagerImpl) AddOrder(order types.Order) error {
 
 	if _, ok := om.orders[order.UUID]; ok {
 
-		return errors.New("Order already exists")
+		return wpwerrors.GetError(wpwerrors.ORDER_EXISTS)
 	}
 
 	om.orders[order.UUID] = order
@@ -42,7 +42,7 @@ func (om *OrderManagerImpl) GetOrder(paymentReference string) (*types.Order, err
 		return &order, nil
 	}
 
-	return nil, errors.New("Order not found")
+	return nil, wpwerrors.GetError(wpwerrors.ORDER_NOTFOUND)
 }
 
 // OrderExists check if an order exists by searching for its payment reference
@@ -67,5 +67,5 @@ func (om *OrderManagerImpl) UpdateOrder(order types.Order) error {
 		return nil
 	}
 
-	return fmt.Errorf("Cannot update order %s as it does not exist", order.UUID)
+	return wpwerrors.GetError(wpwerrors.ORDER_NOTFOUND, fmt.Sprintf("Cannot update order for %s as it does not exist", order.UUID))
 }

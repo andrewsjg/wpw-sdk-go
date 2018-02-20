@@ -1,6 +1,8 @@
 package hte
 
-import "errors"
+import (
+	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/wpwerrors"
+)
 
 // Credential Merchant HTE Credentials
 type Credential struct {
@@ -12,12 +14,10 @@ type Credential struct {
 func NewHTECredential(MerchantClientKey, MerchantServiceKey string) (*Credential, error) {
 
 	if MerchantClientKey == "" {
-
-		return nil, errors.New("MerchantClientKey required, cannot be empty")
-
-	} else if MerchantServiceKey == "" {
-
-		return nil, errors.New("MerchantServiceKey required, cannot be empty")
+		return nil, wpwerrors.GetError(wpwerrors.EMPTYMERCHANTCLIENTKEY)
+	}
+	if MerchantServiceKey == "" {
+		return nil, wpwerrors.GetError(wpwerrors.EMPTYMERCHANTSERVICEKEY)
 	}
 
 	result := &Credential{
