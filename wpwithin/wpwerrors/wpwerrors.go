@@ -57,6 +57,7 @@ const (
 	EMPTY_CUSTOMERORDERCODE
 	PAYMENT_FAILED
 	POST_FAILED
+	SNCLIENT_CREATEFAILED
 )
 
 type WpwError struct {
@@ -100,6 +101,7 @@ var errors = [...]WpwError{
 	EMPTY_CUSTOMERORDERCODE: {"EMPTY_CUSTOMERORDERCODE", PSP, "empty customerOrderCode"},
 	PAYMENT_FAILED:          {"PAYMENT_FAILED", PSP, "payment failed"},
 	POST_FAILED:             {"POST_FAILED", PSP, "post failed"},
+	SNCLIENT_CREATEFAILED:   {"SNCLIENT_CREATEFAILED", PSP, "failed to create new SN client"},
 }
 
 // Error return formated error for specified error (e).
