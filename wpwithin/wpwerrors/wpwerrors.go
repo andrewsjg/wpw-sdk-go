@@ -58,6 +58,9 @@ const (
 	PAYMENT_FAILED
 	POST_FAILED
 	SNCLIENT_CREATEFAILED
+	LISTEN_FAILED
+	NEWUDPCOMMERR
+	SCAN4SERVICESERR
 )
 
 type WpwError struct {
@@ -102,6 +105,9 @@ var errors = [...]WpwError{
 	PAYMENT_FAILED:          {"PAYMENT_FAILED", PSP, "payment failed"},
 	POST_FAILED:             {"POST_FAILED", PSP, "post failed"},
 	SNCLIENT_CREATEFAILED:   {"SNCLIENT_CREATEFAILED", PSP, "failed to create new SN client"},
+	LISTEN_FAILED:           {"LISTEN_FAILED", NET, "failed to listen"},
+	NEWUDPCOMMERR:           {"NEWUDPCOMMERR", NET, "failed to create udp communicator"},
+	SCAN4SERVICESERR:        {"SCAN4SERVICESERR", NET, "ScanForServices failed"},
 }
 
 // Error return formated error for specified error (e).

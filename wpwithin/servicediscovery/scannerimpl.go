@@ -5,6 +5,8 @@ import (
 	"strings"
 	"time"
 
+	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/wpwerrors"
+
 	"encoding/json"
 
 	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/types"
@@ -103,12 +105,12 @@ func (scanner *scannerImpl) ScanForServices(timeout int) (map[string]types.Broad
 func (scanner *scannerImpl) ScanForService(timeout int, serviceName string) (*types.BroadcastMessage, error) {
 	result, err := scanner.ScanForServices(timeout)
 	if err != nil {
-		return nil, err
-	} else {
-		for _, r := range result {
-			if r.DeviceName == serviceName {
-				return &r, nil
-			}
+		return nil, wpwerrors.GetError(wpwerrors.SCAN4SERVICESERR, fmt.Sprintf("timeout=%v", timeout))
+	}
+
+	for _, r := range result {
+		if r.DeviceName == serviceName {
+			return &r, nil
 		}
 	}
 	return nil, nil
