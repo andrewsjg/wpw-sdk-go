@@ -3,7 +3,6 @@ package onlineworldpay
 import (
 	"bytes"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -13,6 +12,7 @@ import (
 	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/psp"
 	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/psp/onlineworldpay/types"
 	wpwithin_types "github.com/WPTechInnovation/wpw-sdk-go/wpwithin/types"
+	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/wpwerrors"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -53,7 +53,7 @@ func (owp *OnlineWorldpay) GetToken(hceCredentials *wpwithin_types.HCECard, clie
 
 	if reusableToken {
 		// TODO: CH - support reusable token by storing the value (along with merchant client key so link to a merchant) within the car so that token can be re-used if present, or created if not
-		return "", errors.New("Reusable token support not implemented")
+		return "", wpwerrors.GetError(wpwerrors.NOT_IMPLEMENTED, "Reusable token support not implemented")
 	}
 
 	paymentMethod := types.TokenRequestPaymentMethod{
@@ -77,8 +77,7 @@ func (owp *OnlineWorldpay) GetToken(hceCredentials *wpwithin_types.HCECard, clie
 	bJSON, err := json.Marshal(tokenRequest)
 
 	if err != nil {
-
-		return "", err
+		return "", wpwerrors.GetError(wpwerrors.ENCODE_JSON, err.Error())
 	}
 
 	log.WithField("Did marshal TokenRequest JSON", string(bJSON)).Debug("POST Request Token.")
@@ -106,16 +105,13 @@ func (owp *OnlineWorldpay) MakePayment(amount int, currencyCode, clientToken, or
 		"OrderDescription": orderDescription, "CustomerOrderCode": customerOrderCode}).Debug("Begin OWP MakePayment")
 
 	if clientToken == "" {
-
-		return "", errors.New("clientToken cannot be empty")
+		return "", wpwerrors.GetError(wpwerrors.EMPTY_CLIENTTOKEN)
 	}
 	if orderDescription == "" {
-
-		return "", errors.New("orderDescription cannot be empty")
+		return "", wpwerrors.GetError(wpwerrors.EMPTY_ORDERDESCRIPTION)
 	}
 	if customerOrderCode == "" {
-
-		return "", errors.New("customerOrderCode cannot be empty")
+		return "", wpwerrors.GetError(wpwerrors.EMPTY_CUSTOMERORDERCODE)
 	}
 
 	orderRequest := types.OrderRequest{
@@ -131,7 +127,7 @@ func (owp *OnlineWorldpay) MakePayment(amount int, currencyCode, clientToken, or
 
 	if err != nil {
 
-		return "", err
+		return "", wpwerrors.GetError(wpwerrors.ENCODE_JSON, err.Error())
 	}
 
 	log.WithField("JSON", string(bJSON)).Debug("JSON form of OrderRequest object.")
@@ -153,7 +149,7 @@ func (owp *OnlineWorldpay) MakePayment(amount int, currencyCode, clientToken, or
 
 	if err != nil {
 
-		return "", err
+		return "", wpwerrors.GetError(wpwerrors.POST_FAILED, err.Error())
 	}
 
 	if strings.EqualFold(orderResponse.PaymentStatus, "SUCCESS") {
@@ -161,22 +157,22 @@ func (owp *OnlineWorldpay) MakePayment(amount int, currencyCode, clientToken, or
 		return orderResponse.OrderCode, nil
 	}
 
-	return "", fmt.Errorf("Payment failed for customer order %s ", orderResponse.CustomerOrderCode)
+	return "", wpwerrors.GetError(wpwerrors.PAYMENT_FAILED,
+		fmt.Sprintf("Payment failed for customer order %s ", orderResponse.CustomerOrderCode))
 }
 
 func post(url string, requestBody []byte, headers map[string]string, v interface{}) error {
 
 	request, err := http.NewRequest("POST", url, bytes.NewBuffer(requestBody))
+	if err != nil {
+		return wpwerrors.GetError(wpwerrors.HTTP_REQUEST_POST, err.Error())
+	}
+
 	request.Header.Set("Content-Type", "application/json")
 
 	for k, v := range headers {
 
 		request.Header.Set(k, v)
-	}
-
-	if err != nil {
-
-		return err
 	}
 
 	// TODO: CH Add a http client as a dependency during construction to aid testing
@@ -186,7 +182,7 @@ func post(url string, requestBody []byte, headers map[string]string, v interface
 
 	if err != nil {
 
-		return err
+		return wpwerrors.GetError(wpwerrors.HTTP_REQUEST_DO, err.Error())
 	}
 
 	defer resp.Body.Close()
@@ -195,7 +191,7 @@ func post(url string, requestBody []byte, headers map[string]string, v interface
 
 	if err != nil {
 
-		return err
+		return wpwerrors.GetError(wpwerrors.IO_READ, err.Error())
 	}
 
 	log.WithField("Code", resp.StatusCode).Debug("Response status code")
@@ -214,7 +210,7 @@ func post(url string, requestBody []byte, headers map[string]string, v interface
 	err = json.Unmarshal(respBody, &wpErr)
 	if err != nil {
 
-		return err
+		return wpwerrors.GetError(wpwerrors.DECODE_JSON, err.Error())
 	}
 
 	log.WithFields(log.Fields{"Message": wpErr.Message, "Description": wpErr.Description, "CustomCode": wpErr.CustomCode, "HTTP Status Code": wpErr.HTTPStatusCode, "HelpUrl": wpErr.ErrorHelpURL}).Debug("** POST Response")

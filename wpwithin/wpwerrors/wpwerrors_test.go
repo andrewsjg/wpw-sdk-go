@@ -16,7 +16,7 @@ func TestError(t *testing.T) {
 
 func TestGetError(t *testing.T) {
 	for idx, val := range errors {
-		err := GetError(ErrorId(idx))
+		err := GetError(ErrorID(idx))
 		if err == nil {
 			t.Error("GetError() returns nil: ", val)
 			t.Fail()

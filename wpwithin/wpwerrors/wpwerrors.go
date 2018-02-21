@@ -17,6 +17,7 @@ const (
 	IO      = "IO"
 	CORE    = "CORE"
 	HTE     = "HTE"
+	PSP     = "PSP"
 )
 
 type ErrorID int
@@ -50,6 +51,12 @@ const (
 	EMPTYMERCHANTSERVICEKEY
 	ORDER_EXISTS
 	ORDER_NOTFOUND
+	NOT_IMPLEMENTED
+	EMPTY_CLIENTTOKEN
+	EMPTY_ORDERDESCRIPTION
+	EMPTY_CUSTOMERORDERCODE
+	PAYMENT_FAILED
+	POST_FAILED
 )
 
 type WpwError struct {
@@ -87,6 +94,12 @@ var errors = [...]WpwError{
 	EMPTYMERCHANTSERVICEKEY: {"EMPTYMERCHANTSERVICEKEY", HTE, "empty MerchantServiceKey"},
 	ORDER_EXISTS:            {"ORDER_EXISTS", HTE, "order already exists"},
 	ORDER_NOTFOUND:          {"ORDER_NOTFOUND", HTE, "order not found"},
+	NOT_IMPLEMENTED:         {"NOT_IMPLEMENTED", PSP, "functionality not implemented"},
+	EMPTY_CLIENTTOKEN:       {"EMPTY_CLIENTTOKEN", PSP, "empty clientToken"},
+	EMPTY_ORDERDESCRIPTION:  {"EMPTY_ORDERDESCRIPTION", PSP, "empty orderDescription"},
+	EMPTY_CUSTOMERORDERCODE: {"EMPTY_CUSTOMERORDERCODE", PSP, "empty customerOrderCode"},
+	PAYMENT_FAILED:          {"PAYMENT_FAILED", PSP, "payment failed"},
+	POST_FAILED:             {"POST_FAILED", PSP, "post failed"},
 }
 
 // Error return formated error for specified error (e).

@@ -11,4 +11,6 @@ script:
     - cp ${TRAVIS_BUILD_DIR}/examples/wpwconfig.json ${TRAVIS_BUILD_DIR}/wpwithin/core && cd ${TRAVIS_BUILD_DIR}/wpwithin/core && go test
     - cp ${TRAVIS_BUILD_DIR}/examples/wpwconfig.json ${TRAVIS_BUILD_DIR}/wpwithin && cd ${TRAVIS_BUILD_DIR}/wpwithin && go test
     - cp ${TRAVIS_BUILD_DIR}/examples/wpwconfig.json ${TRAVIS_BUILD_DIR}/wpwithin/configuration && cd ${TRAVIS_BUILD_DIR}/wpwithin/configuration && go test
+    - cp ${TRAVIS_BUILD_DIR}/examples/wpwconfig.json ${TRAVIS_BUILD_DIR}/wpwithin/rpc && cd ${TRAVIS_BUILD_DIR}/wpwithin/rpc && go test
+    - cd ${TRAVIS_BUILD_DIR}/wpwithin/wpwerrors && go test
     - ${TRAVIS_BUILD_DIR}/tests/testE2E.sh
