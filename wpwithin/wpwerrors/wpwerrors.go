@@ -18,6 +18,7 @@ const (
 	CORE    = "CORE"
 	HTE     = "HTE"
 	PSP     = "PSP"
+	UTILS   = "UTILS"
 )
 
 type ErrorID int
@@ -26,8 +27,10 @@ const (
 	UNKNOWN ErrorID = iota
 	NO_DATA
 	DIVISION_BY_ZERO
+	IO_OPEN
 	IO_READ
 	IO_WRITE
+	IO_SYNC
 	WRONG_CONFIG_PATH
 	OPEN_FILE
 	DECODE_JSON
@@ -61,6 +64,11 @@ const (
 	LISTEN_FAILED
 	NEWUDPCOMMERR
 	SCAN4SERVICESERR
+	LISTOFINTFS
+	LISTOFADDRS
+	DEVICENOTCONN
+	CALCNETMASK
+	UUIDGEN
 )
 
 type WpwError struct {
@@ -73,8 +81,10 @@ var errors = [...]WpwError{
 	UNKNOWN:                 {"UNKNOWN", GENERAL, "unknow error"},
 	NO_DATA:                 {"NO_DATA", DATA, "lack of data"},
 	DIVISION_BY_ZERO:        {"DIVISION_BY_ZERO", MATH, "division by zero"},
+	IO_OPEN:                 {"IO_OPEN", IO, "io open error"},
 	IO_READ:                 {"IO_READ", IO, "io read error"},
 	IO_WRITE:                {"IO_WRITE", IO, "io write error"},
+	IO_SYNC:                 {"IO_SYNC", IO, "io sync error"},
 	DECODE_JSON:             {"DECODE_JSON", JSON, "failed to decode json"},
 	ENCODE_JSON:             {"ENCODE_JSON", JSON, "failed to encode json"},
 	HTTP_GET:                {"HTTP_GET", HTTP, "http get error"},
@@ -108,6 +118,11 @@ var errors = [...]WpwError{
 	LISTEN_FAILED:           {"LISTEN_FAILED", NET, "failed to listen"},
 	NEWUDPCOMMERR:           {"NEWUDPCOMMERR", NET, "failed to create udp communicator"},
 	SCAN4SERVICESERR:        {"SCAN4SERVICESERR", NET, "ScanForServices failed"},
+	LISTOFINTFS:             {"LISTOFINTFS", NET, "failed to get list of interfaces"},
+	LISTOFADDRS:             {"LISTOFADDRS", NET, "failed to get list of addreses"},
+	DEVICENOTCONN:           {"DEVICENOTCONN", NET, "device does not appear to be network connected"},
+	CALCNETMASK:             {"CALCNETMASK", NET, "unable to calculate netmask"},
+	UUIDGEN:                 {"UUIDGEN", UTILS, "failed to generate random UUID"},
 }
 
 // Error return formated error for specified error (e).
