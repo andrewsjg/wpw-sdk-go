@@ -8,6 +8,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/wpwerrors"
 	"github.com/nu7hatch/gouuid"
 )
 
@@ -19,7 +20,7 @@ func NewUUID() (string, error) {
 
 	if err != nil {
 
-		return "", err
+		return "", wpwerrors.GetError(wpwerrors.UUIDGEN, err.Error())
 	}
 
 	return uuid.String(), nil
@@ -33,7 +34,7 @@ func ReadLocalUUID(path string) (string, error) {
 
 	if err != nil {
 
-		return "", err
+		return "", wpwerrors.GetError(wpwerrors.UUID_FILE_READ, fmt.Sprintf("path=%s", path), err.Error())
 	}
 
 	defer f.Close()
@@ -44,7 +45,7 @@ func ReadLocalUUID(path string) (string, error) {
 
 	if err != nil {
 
-		return "", err
+		return "", wpwerrors.GetError(wpwerrors.UUID_FILE_READ, err.Error())
 	}
 
 	return string(line), nil
@@ -75,7 +76,7 @@ func WriteString(path, input string, truncate bool) error {
 
 	file, err := os.OpenFile(path, flags, 0666)
 	if err != nil {
-		return err
+		return wpwerrors.GetError(wpwerrors.IO_OPEN, fmt.Sprintf("path=%s", path), err.Error())
 	}
 	defer file.Close()
 
@@ -83,14 +84,14 @@ func WriteString(path, input string, truncate bool) error {
 
 	if err != nil {
 
-		return err
+		return wpwerrors.GetError(wpwerrors.IO_WRITE, err.Error())
 	}
 
 	err = file.Sync()
 
 	if err != nil {
 
-		return err
+		return wpwerrors.GetError(wpwerrors.IO_SYNC, err.Error())
 	}
 
 	return nil
