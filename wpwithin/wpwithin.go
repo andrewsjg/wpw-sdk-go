@@ -1,7 +1,6 @@
 package wpwithin
 
 import (
-	"errors"
 	"fmt"
 	"os"
 	"runtime/debug"
@@ -16,6 +15,7 @@ import (
 	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/types/event"
 	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/utils"
 	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/utils/wslog"
+	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/wpwerrors"
 
 	log "github.com/sirupsen/logrus"
 )
@@ -64,13 +64,14 @@ func Initialise(name, description, interfaceAddr string) (WPWithin, error) {
 
 		log.Error("wpwithin.Initialiase() Name parameter is empty")
 
-		return nil, errors.New("name should not be empty")
+		return nil, wpwerrors.GetError(wpwerrors.EMPTYNAME)
 
-	} else if description == "" {
+	}
+	if description == "" {
 
 		log.Error("wpwithin.Initialiase() Description parameter is empty")
 
-		return nil, errors.New("description should not be empty")
+		return nil, wpwerrors.GetError(wpwerrors.EMPTYDESCRIPTION)
 	}
 	log.Debug("Parameter validation passed")
 
@@ -84,7 +85,7 @@ func Initialise(name, description, interfaceAddr string) (WPWithin, error) {
 
 		if err != nil {
 			log.WithField("Error", err).Error("Unable to create new core.SDKFactory")
-			return nil, fmt.Errorf("Unable to create SDK Factory: %q", err.Error())
+			return nil, wpwerrors.GetError(wpwerrors.SDKFACTORYCREATE, err)
 		}
 		log.Debug("Did create new core.SDKFactory")
 	}
@@ -98,7 +99,7 @@ func Initialise(name, description, interfaceAddr string) (WPWithin, error) {
 
 		log.WithField("Error", err).Error("Error creating new core.Core")
 
-		return result, err
+		return result, wpwerrors.GetError(wpwerrors.CORECREATION, err)
 	}
 	log.Debug("Did create new core.Core")
 
@@ -126,7 +127,7 @@ func Initialise(name, description, interfaceAddr string) (WPWithin, error) {
 
 		log.WithField("Error", err2).Error("Error calling Factory.GetDevice()")
 
-		return result, err2
+		return result, wpwerrors.GetError(wpwerrors.FACTORYGETDEVICE, err2)
 	}
 
 	result.core.Device = dev
@@ -138,7 +139,7 @@ func Initialise(name, description, interfaceAddr string) (WPWithin, error) {
 
 		log.WithField("Error", err).Error("Error calling Factory.GetOrderManager()")
 
-		return result, err
+		return result, wpwerrors.GetError(wpwerrors.FACTORYGETORDERMANAGER, err)
 	}
 	log.Debug("After call Factory.GetOrderManager()")
 
@@ -151,7 +152,7 @@ func Initialise(name, description, interfaceAddr string) (WPWithin, error) {
 
 		log.WithField("Error", err).Error("Error calling Factory.GetSvcBroadcaster()")
 
-		return result, err
+		return result, wpwerrors.GetError(wpwerrors.FACTORYGETSVCBROADCAST, err)
 	}
 	log.Debug("After call Factory.GetSvcBroadcaster()")
 
@@ -164,7 +165,7 @@ func Initialise(name, description, interfaceAddr string) (WPWithin, error) {
 
 		log.WithField("Error", err).Error("Error calling Factory.GetSvcScanner()")
 
-		return result, err
+		return result, wpwerrors.GetError(wpwerrors.FACTORYGETSVCSCANNER, err)
 	}
 	log.Debug("After call Factory.GetSvcScanner()")
 
@@ -204,7 +205,7 @@ func (wp *wpWithinImpl) AddService(service *types.Service) error {
 	if exists {
 
 		log.Error("Service with id already exists, returning error.")
-		return errors.New("Service with that id already exists")
+		return wpwerrors.GetError(wpwerrors.SERVICEEXISTS, fmt.Sprintf("service.ID=%v", service.ID))
 	}
 
 	log.Debug("Adding service to wp.core.Device.Services as it doesn't appear to exist.")
@@ -257,7 +258,7 @@ func (wp *wpWithinImpl) InitConsumer(scheme, hostname string, portNumber int, ur
 
 		log.Error("PSPConfig map is nil, returning.")
 
-		return errors.New("PSPConfig map must be set")
+		return wpwerrors.GetError(wpwerrors.PSP_CONFIG_NOT_SET)
 	}
 
 	// Setup PSP as client
@@ -267,7 +268,7 @@ func (wp *wpWithinImpl) InitConsumer(scheme, hostname string, portNumber int, ur
 	if err != nil {
 
 		log.WithField("Error", err).Error("Error calling Factory.GetPSPClient()")
-		return err
+		return wpwerrors.GetError(wpwerrors.FACTORYGETPSPCLIENT, err)
 	}
 	log.Debug("After call Factory.GetPSPClient()")
 
@@ -284,7 +285,7 @@ func (wp *wpWithinImpl) InitConsumer(scheme, hostname string, portNumber int, ur
 	if err != nil {
 
 		log.WithField("Error", err).Error("Error calling Factory.GetHTEClientHTTP()")
-		return err
+		return wpwerrors.GetError(wpwerrors.FACTORYGETHTECLIENTHTTP, err)
 	}
 	log.Debug("After call to Factory.GetHTEClientHTTP()")
 
@@ -294,7 +295,7 @@ func (wp *wpWithinImpl) InitConsumer(scheme, hostname string, portNumber int, ur
 	if err != nil {
 
 		log.WithField("Error", err).Error("Error calling hte.NewClient()")
-		return err
+		return wpwerrors.GetError(wpwerrors.HTENEWCLIENT, err)
 	}
 	log.Debug("After call hte.NewClient()")
 
@@ -321,7 +322,7 @@ func (wp *wpWithinImpl) InitProducer(pspConfig map[string]string) error {
 	if pspConfig == nil {
 
 		log.Error("PSPConfig parameter is nil, returning.")
-		return errors.New("PSP Config map must me set")
+		return wpwerrors.GetError(wpwerrors.PSP_CONFIG_NOT_SET)
 	}
 
 	// Start HTE initialisation tasks
@@ -331,7 +332,7 @@ func (wp *wpWithinImpl) InitProducer(pspConfig map[string]string) error {
 	if err != nil {
 
 		log.WithField("Error", err).Error("Error calling Factory.GetPSPMerchant()")
-		return fmt.Errorf("Unable to create psp: %q", err.Error())
+		return wpwerrors.GetError(wpwerrors.PSPMERCHANTCREATE, err)
 	}
 	log.Debug("Did call Factory.GetPSPMerchant()")
 
@@ -343,7 +344,7 @@ func (wp *wpWithinImpl) InitProducer(pspConfig map[string]string) error {
 	if err != nil {
 
 		log.WithField("Error", err).Debug("Error calling hte.NewHTECredential()")
-		return err
+		return wpwerrors.GetError(wpwerrors.HTENEWCREDENTIAL, err)
 	}
 	log.Debug("Did call hte.NewHTECredential()")
 
@@ -357,7 +358,7 @@ func (wp *wpWithinImpl) InitProducer(pspConfig map[string]string) error {
 	if err != nil {
 
 		log.WithField("Error", err).Error("Error calling Factory.GetHTE()")
-		return err
+		return wpwerrors.GetError(wpwerrors.FACTORYGETHTE, err)
 	}
 	log.Debug("Did call Factory.GetHTE()")
 
@@ -530,7 +531,7 @@ func (wp *wpWithinImpl) DeviceDiscovery(timeoutMillis int) ([]types.BroadcastMes
 
 		log.WithField("Error", err).Error("Error calling wp.core.SvcScanner.ScanForServices()")
 
-		return nil, err
+		return nil, wpwerrors.GetError(wpwerrors.SCANFORSERVICES, fmt.Sprintf("timeoutMillis=%v", timeoutMillis), err)
 
 	} else if len(scanResult) > 0 {
 
@@ -570,7 +571,8 @@ func (wp *wpWithinImpl) SearchForDevice(timeoutMillis int, deviceName string) (t
 
 		log.WithField("Error", err).Error("Error calling wp.core.SvcScanner.ScanForService()")
 
-		return types.BroadcastMessage{}, err
+		return types.BroadcastMessage{}, wpwerrors.GetError(wpwerrors.SCANFORSERVICE,
+			fmt.Sprintf("timeoutMillis=%v, deviceName=%v", timeoutMillis, deviceName), err)
 	} else if scanResult == nil {
 		log.WithField("Warning", err).Warn("Did not found any devices")
 		return types.BroadcastMessage{}, nil
@@ -605,7 +607,7 @@ func (wp *wpWithinImpl) GetServicePrices(serviceID int) ([]types.Price, error) {
 	if err != nil {
 
 		log.WithField("Error", err).Error("Error calling wp.core.HTEClient.GetPrices()")
-		return nil, err
+		return nil, wpwerrors.GetError(wpwerrors.HTECLIENTGETPRICES, fmt.Sprintf("serviceID=%v", serviceID), err)
 	}
 	log.Debug("Did call wp.core.HTEClient.GetPrices()")
 
@@ -613,7 +615,7 @@ func (wp *wpWithinImpl) GetServicePrices(serviceID int) ([]types.Price, error) {
 
 		log.Debug("Seemed to be successful call to wp.core.HTEClient.GetPrices() but response.Prices is nil")
 
-		return nil, errors.New("priceResponse.Prices is nil")
+		return nil, wpwerrors.GetError(wpwerrors.PRICESNIL)
 	}
 
 	log.Infof("Did find %d prices for service id %d", len(priceResponse.Prices), serviceID)
@@ -676,7 +678,7 @@ func (wp *wpWithinImpl) MakePayment(request types.TotalPriceResponse) (types.Pay
 
 		log.WithField("Error", err).Error("Error calling wp.core.Psp.GetToken()")
 
-		return types.PaymentResponse{}, err
+		return types.PaymentResponse{}, wpwerrors.GetError(wpwerrors.PSPGETTOKEN, err)
 	}
 	log.WithField("Token", token).Debug("Did call wp.core.Psp.GetToken() without error.")
 
@@ -718,14 +720,14 @@ func (wp *wpWithinImpl) RequestServices() ([]types.ServiceDetails, error) {
 	if err != nil {
 
 		log.WithField("Error", err).Error("Error calling wp.core.HTEClient.DiscoverService()")
-		return nil, err
+		return nil, wpwerrors.GetError(wpwerrors.DISCOVERSERVICES, err)
 	}
 	log.Debug("Did call wp.core.HTEClient.DiscoverService()")
 
 	if &serviceResponse == nil {
 
 		log.Error("Call to wp.core.HTEClient.DiscoverServices() seems successful but serviceResponse is nil")
-		return nil, errors.New("Call to wp.core.HTEClient.DiscoverServices() seems successful but serviceResponse is nil")
+		return nil, wpwerrors.GetError(wpwerrors.NILSERVISERESPONSE)
 	}
 
 	log.Infof("Did find %d services.", len(serviceResponse.Services))
@@ -779,7 +781,7 @@ func (wp *wpWithinImpl) BeginServiceDelivery(serviceID int, serviceDeliveryToken
 	if err != nil {
 
 		log.Errorf("Error calling beginServiceDelivery. Error: %s", err.Error())
-		return types.ServiceDeliveryToken{}, err
+		return types.ServiceDeliveryToken{}, wpwerrors.GetError(wpwerrors.STARTDELIVERYFAILED, err)
 	}
 	log.WithField("delivery response", deliveryResponse).Debug("Did call wp.core.HTEClient.StartDelivery()")
 
@@ -810,7 +812,7 @@ func (wp *wpWithinImpl) EndServiceDelivery(serviceID int, serviceDeliveryToken t
 
 		log.WithField("Error", err).Error("Error calling wp.core.HTEClient.EndServiceDelivery()")
 
-		return types.ServiceDeliveryToken{}, err
+		return types.ServiceDeliveryToken{}, wpwerrors.GetError(wpwerrors.ENDDELIVERYFAILED, err)
 	}
 	log.WithField("DeliveryResponse", deliveryResponse).Debug("Did call wp.core.HTEClient.EndDelivery()")
 
