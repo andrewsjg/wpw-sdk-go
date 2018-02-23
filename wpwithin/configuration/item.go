@@ -21,7 +21,7 @@ func (item Item) ReadInt() (int, error) {
 
 	if err != nil {
 
-		return 0, wpwerrors.GetError(wpwerrors.CONVERT_VALUE, fmt.Sprintf("item.Value = \"%s\"", item.Value), err.Error())
+		return 0, wpwerrors.GetError(wpwerrors.CONVERT_VALUE, fmt.Sprintf("item.Value = \"%s\"", item.Value), err)
 	}
 	return i, nil
 }

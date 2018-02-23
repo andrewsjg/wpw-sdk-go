@@ -23,7 +23,7 @@ func Load(configPath string) (Configuration, error) {
 	file, err := os.Open(configPath)
 
 	if err != nil {
-		return Configuration{}, wpwerrors.GetError(wpwerrors.OPEN_FILE, configPath, err.Error())
+		return Configuration{}, wpwerrors.GetError(wpwerrors.OPEN_FILE, configPath, err)
 	}
 	defer file.Close()
 
@@ -33,7 +33,7 @@ func Load(configPath string) (Configuration, error) {
 	err = decoder.Decode(&tmpConfig)
 
 	if err != nil {
-		return Configuration{}, wpwerrors.GetError(wpwerrors.DECODE_JSON, err.Error())
+		return Configuration{}, wpwerrors.GetError(wpwerrors.DECODE_JSON, err)
 	}
 	result := Configuration{}
 	result.items = make(map[string]Item, 0)

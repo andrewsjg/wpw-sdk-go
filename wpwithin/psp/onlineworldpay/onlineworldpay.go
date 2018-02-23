@@ -77,7 +77,7 @@ func (owp *OnlineWorldpay) GetToken(hceCredentials *wpwithin_types.HCECard, clie
 	bJSON, err := json.Marshal(tokenRequest)
 
 	if err != nil {
-		return "", wpwerrors.GetError(wpwerrors.ENCODE_JSON, err.Error())
+		return "", wpwerrors.GetError(wpwerrors.ENCODE_JSON, err)
 	}
 
 	log.WithField("Did marshal TokenRequest JSON", string(bJSON)).Debug("POST Request Token.")
@@ -127,7 +127,7 @@ func (owp *OnlineWorldpay) MakePayment(amount int, currencyCode, clientToken, or
 
 	if err != nil {
 
-		return "", wpwerrors.GetError(wpwerrors.ENCODE_JSON, err.Error())
+		return "", wpwerrors.GetError(wpwerrors.ENCODE_JSON, err)
 	}
 
 	log.WithField("JSON", string(bJSON)).Debug("JSON form of OrderRequest object.")
@@ -149,7 +149,7 @@ func (owp *OnlineWorldpay) MakePayment(amount int, currencyCode, clientToken, or
 
 	if err != nil {
 
-		return "", wpwerrors.GetError(wpwerrors.POST_FAILED, err.Error())
+		return "", wpwerrors.GetError(wpwerrors.POST_FAILED, err)
 	}
 
 	if strings.EqualFold(orderResponse.PaymentStatus, "SUCCESS") {
@@ -165,7 +165,7 @@ func post(url string, requestBody []byte, headers map[string]string, v interface
 
 	request, err := http.NewRequest("POST", url, bytes.NewBuffer(requestBody))
 	if err != nil {
-		return wpwerrors.GetError(wpwerrors.HTTP_REQUEST_POST, err.Error())
+		return wpwerrors.GetError(wpwerrors.HTTP_REQUEST_POST, err)
 	}
 
 	request.Header.Set("Content-Type", "application/json")
@@ -182,7 +182,7 @@ func post(url string, requestBody []byte, headers map[string]string, v interface
 
 	if err != nil {
 
-		return wpwerrors.GetError(wpwerrors.HTTP_REQUEST_DO, err.Error())
+		return wpwerrors.GetError(wpwerrors.HTTP_REQUEST_DO, err)
 	}
 
 	defer resp.Body.Close()
@@ -191,7 +191,7 @@ func post(url string, requestBody []byte, headers map[string]string, v interface
 
 	if err != nil {
 
-		return wpwerrors.GetError(wpwerrors.IO_READ, err.Error())
+		return wpwerrors.GetError(wpwerrors.IO_READ, err)
 	}
 
 	log.WithField("Code", resp.StatusCode).Debug("Response status code")
@@ -210,7 +210,7 @@ func post(url string, requestBody []byte, headers map[string]string, v interface
 	err = json.Unmarshal(respBody, &wpErr)
 	if err != nil {
 
-		return wpwerrors.GetError(wpwerrors.DECODE_JSON, err.Error())
+		return wpwerrors.GetError(wpwerrors.DECODE_JSON, err)
 	}
 
 	log.WithFields(log.Fields{"Message": wpErr.Message, "Description": wpErr.Description, "CustomCode": wpErr.CustomCode, "HTTP Status Code": wpErr.HTTPStatusCode, "HelpUrl": wpErr.ErrorHelpURL}).Debug("** POST Response")

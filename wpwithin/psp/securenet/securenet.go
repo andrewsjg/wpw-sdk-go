@@ -34,7 +34,7 @@ func NewSecureNetMerchant(snID, secureKey, publicKey, apiEndpoint, appVersion st
 
 	if err != nil {
 
-		return nil, wpwerrors.GetError(wpwerrors.SNCLIENT_CREATEFAILED, err.Error())
+		return nil, wpwerrors.GetError(wpwerrors.SNCLIENT_CREATEFAILED, err)
 	}
 
 	result.snclient = _snclient
@@ -56,7 +56,7 @@ func NewSecureNetConsumer(apiEndpoint, appVersion string, developerID int32, pro
 
 	if err != nil {
 
-		return nil, wpwerrors.GetError(wpwerrors.SNCLIENT_CREATEFAILED, err.Error())
+		return nil, wpwerrors.GetError(wpwerrors.SNCLIENT_CREATEFAILED, err)
 	}
 
 	result.snclient = _snclient
