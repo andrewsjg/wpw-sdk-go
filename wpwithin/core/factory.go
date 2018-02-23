@@ -69,7 +69,7 @@ func (factory *SDKFactoryImpl) GetDevice(name, description, interfaceAddr string
 
 		if err != nil {
 			return nil, wpwerrors.GetError(wpwerrors.UUID_FILE_READ, fmt.Sprintf("UUIDFilePath = %s", UUIDFilePath),
-				"try deleting it", err.Error())
+				"try deleting it", err)
 		}
 
 		deviceGUID = _deviceGUID
@@ -79,13 +79,13 @@ func (factory *SDKFactoryImpl) GetDevice(name, description, interfaceAddr string
 		_deviceGUID, err := utils.NewUUID()
 
 		if err != nil {
-			return nil, wpwerrors.GetError(wpwerrors.UUID_FILE_CREATE, err.Error())
+			return nil, wpwerrors.GetError(wpwerrors.UUID_FILE_CREATE, err)
 		}
 
 		deviceGUID = _deviceGUID
 
 		if err := utils.WriteString(UUIDFilePath, deviceGUID, true); err != nil {
-			return nil, wpwerrors.GetError(wpwerrors.UUID_FILE_SAVE, fmt.Sprintf("UUIDFilePath = %s", UUIDFilePath), err.Error())
+			return nil, wpwerrors.GetError(wpwerrors.UUID_FILE_SAVE, fmt.Sprintf("UUIDFilePath = %s", UUIDFilePath), err)
 		}
 	}
 
@@ -116,7 +116,7 @@ func (factory *SDKFactoryImpl) GetPSPMerchant(pspConfig map[string]string) (psp.
 
 		if err != nil {
 			return nil, wpwerrors.GetError(wpwerrors.PARSE_DEVELOPER_ID, fmt.Sprintf("DeveloperID = %v",
-				pspConfig[securenet.CfgDeveloperID]), err.Error())
+				pspConfig[securenet.CfgDeveloperID]), err)
 		}
 
 		return securenet.NewSecureNetMerchant(pspConfig[securenet.CfgSecureNetID], pspConfig[securenet.CfgSecureKey], pspConfig[securenet.CfgPublicKey], pspConfig[securenet.CfgAPIEndpoint], pspConfig[securenet.CfgAppVersion], int32(devID), pspConfig[securenet.CfgHTTPProxy])
@@ -141,7 +141,7 @@ func (factory *SDKFactoryImpl) GetPSPClient(pspConfig map[string]string) (psp.PS
 
 		if err != nil {
 			return nil, wpwerrors.GetError(wpwerrors.PARSE_DEVELOPER_ID, fmt.Sprintf("DeveloperID = %v",
-				pspConfig[securenet.CfgDeveloperID]), err.Error())
+				pspConfig[securenet.CfgDeveloperID]), err)
 		}
 
 		return securenet.NewSecureNetConsumer(pspConfig[securenet.CfgAPIEndpoint], pspConfig[securenet.CfgAppVersion], int32(devID), pspConfig[securenet.CfgHTTPProxy])

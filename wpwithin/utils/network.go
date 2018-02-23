@@ -15,7 +15,7 @@ func FirstExternalIPv4() (net.IP, error) {
 
 	ifaces, err := net.Interfaces()
 	if err != nil {
-		return nil, wpwerrors.GetError(wpwerrors.LISTOFINTFS, err.Error())
+		return nil, wpwerrors.GetError(wpwerrors.LISTOFINTFS, err)
 	}
 	for _, iface := range ifaces {
 		if iface.Flags&net.FlagUp == 0 {
@@ -30,7 +30,7 @@ func FirstExternalIPv4() (net.IP, error) {
 		}
 		addrs, err := iface.Addrs()
 		if err != nil {
-			return nil, wpwerrors.GetError(wpwerrors.LISTOFADDRS, err.Error())
+			return nil, wpwerrors.GetError(wpwerrors.LISTOFADDRS, err)
 		}
 		for _, addr := range addrs {
 			var ip net.IP
@@ -59,7 +59,7 @@ func NetMask() (net.IPMask, error) {
 
 	ifaces, err := net.Interfaces()
 	if err != nil {
-		return nil, wpwerrors.GetError(wpwerrors.LISTOFINTFS, err.Error())
+		return nil, wpwerrors.GetError(wpwerrors.LISTOFINTFS, err)
 	}
 	for _, iface := range ifaces {
 
@@ -72,7 +72,7 @@ func NetMask() (net.IPMask, error) {
 
 		addrs, err := iface.Addrs()
 		if err != nil {
-			return nil, wpwerrors.GetError(wpwerrors.LISTOFADDRS, err.Error())
+			return nil, wpwerrors.GetError(wpwerrors.LISTOFADDRS, err)
 		}
 		for _, addr := range addrs {
 

@@ -47,7 +47,7 @@ func (client *ClientHTTPImpl) PostJSON(url string, postBody []byte) ([]byte, int
 	req, err := http.NewRequest("POST", url, bytes.NewBuffer(postBody))
 
 	if err != nil {
-		return nil, 0, wpwerrors.GetError(wpwerrors.HTTP_REQUEST_POST, err.Error())
+		return nil, 0, wpwerrors.GetError(wpwerrors.HTTP_REQUEST_POST, err)
 	}
 
 	req.Header.Add("Content-Type", "application/json")
@@ -57,7 +57,7 @@ func (client *ClientHTTPImpl) PostJSON(url string, postBody []byte) ([]byte, int
 	resp, err := _client.Do(req)
 
 	if err != nil {
-		return nil, 0, wpwerrors.GetError(wpwerrors.HTTP_REQUEST_DO, err.Error())
+		return nil, 0, wpwerrors.GetError(wpwerrors.HTTP_REQUEST_DO, err)
 	}
 
 	defer resp.Body.Close()
@@ -66,7 +66,7 @@ func (client *ClientHTTPImpl) PostJSON(url string, postBody []byte) ([]byte, int
 
 	if err != nil {
 
-		return nil, resp.StatusCode, wpwerrors.GetError(wpwerrors.IO_READ, err.Error())
+		return nil, resp.StatusCode, wpwerrors.GetError(wpwerrors.IO_READ, err)
 	}
 
 	return bodyBytes, resp.StatusCode, nil

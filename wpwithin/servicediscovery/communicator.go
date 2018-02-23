@@ -63,7 +63,7 @@ func (pc *UDPComm) Listen() (Connection, error) {
 	if err != nil {
 
 		return nil, wpwerrors.GetError(wpwerrors.LISTEN_FAILED,
-			fmt.Sprintf("pc.protocol=%v, srvAddr=%+v", pc.protocol, srvAddr), err.Error())
+			fmt.Sprintf("pc.protocol=%v, srvAddr=%+v", pc.protocol, srvAddr), err)
 	}
 
 	pc.udpConn = &UDPConn{
