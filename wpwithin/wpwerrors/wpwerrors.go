@@ -2,7 +2,6 @@ package wpwerrors
 
 import (
 	"fmt"
-	"strings"
 )
 
 const (
@@ -19,6 +18,7 @@ const (
 	HTE     = "HTE"
 	PSP     = "PSP"
 	UTILS   = "UTILS"
+	WPW     = "WPW"
 )
 
 type ErrorID int
@@ -69,6 +69,30 @@ const (
 	DEVICENOTCONN
 	CALCNETMASK
 	UUIDGEN
+	EMPTYNAME
+	EMPTYDESCRIPTION
+	SDKFACTORYCREATE
+	CORECREATION
+	FACTORYGETDEVICE
+	FACTORYGETORDERMANAGER
+	FACTORYGETSVCBROADCAST
+	FACTORYGETSVCSCANNER
+	SERVICEEXISTS
+	FACTORYGETPSPCLIENT
+	FACTORYGETHTECLIENTHTTP
+	HTENEWCLIENT
+	PSPMERCHANTCREATE
+	HTENEWCREDENTIAL
+	FACTORYGETHTE
+	SCANFORSERVICES
+	SCANFORSERVICE
+	HTECLIENTGETPRICES
+	PRICESNIL
+	PSPGETTOKEN
+	DISCOVERSERVICES
+	NILSERVISERESPONSE
+	STARTDELIVERYFAILED
+	ENDDELIVERYFAILED
 )
 
 type WpwError struct {
@@ -123,6 +147,30 @@ var errors = [...]WpwError{
 	DEVICENOTCONN:           {"DEVICENOTCONN", NET, "device does not appear to be network connected"},
 	CALCNETMASK:             {"CALCNETMASK", NET, "unable to calculate netmask"},
 	UUIDGEN:                 {"UUIDGEN", UTILS, "failed to generate random UUID"},
+	EMPTYNAME:               {"EMPTYNAME", WPW, "name is empty"},
+	EMPTYDESCRIPTION:        {"EMPTYDESCRIPTION", WPW, "description is empty"},
+	SDKFACTORYCREATE:        {"SDKFACTORYCREATE", WPW, "unable to create SDK factory"},
+	CORECREATION:            {"CORECREATION", WPW, "error creating new core.Core"},
+	FACTORYGETDEVICE:        {"FACTORYGETDEVICE", WPW, "unable to get device"},
+	FACTORYGETORDERMANAGER:  {"FACTORYGETORDERMANAGER", WPW, "unable to get order manager"},
+	FACTORYGETSVCBROADCAST:  {"FACTORYGETSVCBROADCAST", WPW, "unable to get service broadcaster"},
+	FACTORYGETSVCSCANNER:    {"FACTORYGETSVCSCANNER", WPW, "unable to get service scanner"},
+	SERVICEEXISTS:           {"SERVICEEXISTS", WPW, "service with that id already exists"},
+	FACTORYGETPSPCLIENT:     {"FACTORYGETPSPCLIENT", WPW, "unable to get PSP client"},
+	FACTORYGETHTECLIENTHTTP: {"FACTORYGETHTECLIENTHTTP", WPW, "unable to get HTE client HTTP"},
+	HTENEWCLIENT:            {"HTENEWCLIENT", WPW, "unable to create HTE client"},
+	PSPMERCHANTCREATE:       {"PSPMERCHANTCREATE", WPW, "unable to create psp"},
+	HTENEWCREDENTIAL:        {"HTENEWCREDENTIAL", WPW, "unable to create new HTE credential"},
+	FACTORYGETHTE:           {"FACTORYGETHTE", WPW, "unable to get HTE"},
+	SCANFORSERVICES:         {"SCANFORSERVICES", WPW, "scan for services failed"},
+	SCANFORSERVICE:          {"SCANFORSERVICE", WPW, "scan for service failed"},
+	HTECLIENTGETPRICES:      {"HTECLIENTGETPRICES", WPW, "unable to get HTE client prices"},
+	PRICESNIL:               {"PRICESNIL", WPW, "response with nil prices"},
+	PSPGETTOKEN:             {"PSPGETTOKEN", WPW, "failed to get token"},
+	DISCOVERSERVICES:        {"DISCOVERSERVICES", WPW, "failed to discover services"},
+	NILSERVISERESPONSE:      {"NILSERVISERESPONSE", WPW, "discover services is successful but serviceResponse is nil"},
+	STARTDELIVERYFAILED:     {"STARTDELIVERYFAILED", WPW, "start delivery failed"},
+	ENDDELIVERYFAILED:       {"ENDDELIVERYFAILED", WPW, "end delivery failed"},
 }
 
 // Error return formated error for specified error (e).
@@ -130,10 +178,36 @@ func (e WpwError) Error() error {
 	return fmt.Errorf("%v, %v, %v", e.ID, e.Type, e.Message)
 }
 
-// GetError returns error for specified eid with additional data (if any) separated with comma.
-func GetError(eid ErrorID, additionalData ...string) error {
+const sep = ", "
+
+// GetError returns error for specified eid with additional data (if any).
+func GetError(eid ErrorID, additionalData ...interface{}) error {
 	if len(additionalData) == 0 {
 		return errors[eid].Error()
 	}
-	return fmt.Errorf("%v, %v", errors[eid].Error(), strings.Join(additionalData, ", "))
+
+	var ret string
+	for _, v := range additionalData {
+		switch v := v.(type) {
+		case string:
+			if ret == "" {
+				ret = v
+			} else {
+				ret = ret + sep + v
+			}
+		case error:
+			if ret == "" {
+				ret = "{ " + v.Error() + " }"
+			} else {
+				ret = ret + " { " + v.Error() + " }"
+			}
+		default:
+			if ret == "" {
+				ret = "<unsupported type of passed data>"
+			} else {
+				ret = ret + sep + "<unsupported type of passed data>"
+			}
+		}
+	}
+	return fmt.Errorf("%v, %v", errors[eid].Error(), ret)
 }
