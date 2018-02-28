@@ -43,4 +43,41 @@ func TestGetError(t *testing.T) {
 			t.Fail()
 		}
 	}
+
+	errDummy := fmt.Errorf("dummy in golang format")
+	err = GetError(UNKNOWN, errDummy, err)
+	if err == nil {
+		t.Error("nil not expected from GetError()")
+		t.Fail()
+	}
+	// error should contain brackets, because includes other (errDummy) error
+	if strings.Contains(err.Error(), openBracket) == false {
+		t.Error("err.Error() does not contain open bracket:" + err.Error())
+		t.Fail()
+	}
+	if strings.Contains(err.Error(), closeBracket) == false {
+		t.Error("err.Error() does not contain close bracket: " + err.Error())
+		t.Fail()
+	}
+
+	// not all type of variables are supported yet
+	err = GetError(UNKNOWN, 5)
+	if err == nil {
+		t.Error("nil not expected from GetError()")
+		t.Fail()
+	}
+	if strings.Contains(err.Error(), unsupportedTypeError) == false {
+		t.Error("err.Error() does not contain " + unsupportedTypeError + ": " + err.Error())
+		t.Fail()
+	}
+
+	err = GetError(UNKNOWN, "dummy string", 0.5)
+	if err == nil {
+		t.Error("nil not expected from GetError()")
+		t.Fail()
+	}
+	if strings.Contains(err.Error(), unsupportedTypeError) == false {
+		t.Error("err.Error() does not contain " + unsupportedTypeError + ": " + err.Error())
+		t.Fail()
+	}
 }

@@ -179,6 +179,9 @@ func (e WpwError) Error() error {
 }
 
 const sep = ", "
+const openBracket = " :{"
+const closeBracket = "}"
+const unsupportedTypeError = "<unsupported type of passed data>"
 
 // GetError returns error for specified eid with additional data (if any).
 func GetError(eid ErrorID, additionalData ...interface{}) error {
@@ -197,15 +200,15 @@ func GetError(eid ErrorID, additionalData ...interface{}) error {
 			}
 		case error:
 			if ret == "" {
-				ret = "{ " + v.Error() + " }"
+				ret = openBracket + v.Error() + closeBracket
 			} else {
-				ret = ret + " { " + v.Error() + " }"
+				ret = ret + openBracket + v.Error() + closeBracket
 			}
 		default:
 			if ret == "" {
-				ret = "<unsupported type of passed data>"
+				ret = unsupportedTypeError
 			} else {
-				ret = ret + sep + "<unsupported type of passed data>"
+				ret = ret + sep + unsupportedTypeError
 			}
 		}
 	}
