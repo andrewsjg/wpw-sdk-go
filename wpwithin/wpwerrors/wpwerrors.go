@@ -194,11 +194,13 @@ func GetError(eid ErrorID, additionalData ...interface{}) error {
 		switch v := v.(type) {
 		case string:
 			if ret == "" {
-				ret = v
+				ret = sep + v
 			} else {
 				ret = ret + sep + v
 			}
 		case error:
+			// if the additionalData contains other value of type error
+			// then it will be closed in brackets
 			if ret == "" {
 				ret = openBracket + v.Error() + closeBracket
 			} else {
@@ -212,5 +214,5 @@ func GetError(eid ErrorID, additionalData ...interface{}) error {
 			}
 		}
 	}
-	return fmt.Errorf("%v, %v", errors[eid].Error(), ret)
+	return fmt.Errorf("%v%v", errors[eid].Error(), ret)
 }
