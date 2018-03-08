@@ -2,9 +2,12 @@ package servicediscovery
 
 import (
 	"errors"
+	"fmt"
 	"net"
 	"strings"
 	"time"
+
+	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/wpwerrors"
 )
 
 // TODO CH : This is largely linked to UDP I/O at the moment - should generalise further
@@ -59,7 +62,8 @@ func (pc *UDPComm) Listen() (Connection, error) {
 
 	if err != nil {
 
-		return nil, err
+		return nil, wpwerrors.GetError(wpwerrors.LISTEN_FAILED,
+			fmt.Sprintf("pc.protocol=%v, srvAddr=%+v", pc.protocol, srvAddr), err)
 	}
 
 	pc.udpConn = &UDPConn{

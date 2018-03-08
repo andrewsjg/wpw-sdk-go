@@ -33,7 +33,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	_wpw, err := wpwithin.Initialise(cfg.DeviceName, "Worldpay Within LED Demo")
+	_wpw, err := wpwithin.Initialise(cfg.DeviceName, "Worldpay Within LED Demo", "")
 	wpw = _wpw
 
 	errCheck(err, "WorldpayWithin Initialise")

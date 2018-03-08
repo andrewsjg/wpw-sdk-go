@@ -1,7 +1,10 @@
 package configuration
 
 import (
+	"strings"
 	"testing"
+
+	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/wpwerrors"
 )
 
 func TestReadInt(t *testing.T) {
@@ -19,6 +22,10 @@ func TestReadInt(t *testing.T) {
 	}
 	if value != 0 {
 		t.Error("ReadInt() should return 0 for error case.")
+		t.FailNow()
+	}
+	if !strings.Contains(err.Error(), wpwerrors.GetError(wpwerrors.CONVERT_VALUE).Error()) {
+		t.Error("Wrong error. Expected error is CONVERT_VALUE, got: " + err.Error())
 		t.FailNow()
 	}
 

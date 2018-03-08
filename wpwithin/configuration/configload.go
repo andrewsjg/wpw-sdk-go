@@ -2,8 +2,9 @@ package configuration
 
 import (
 	"encoding/json"
-	"errors"
 	"os"
+
+	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/wpwerrors"
 )
 
 // Configuration a configuration helper. Will parse a configuration JSON file into memory and store in a map[string]Item
@@ -16,15 +17,13 @@ type Configuration struct {
 func Load(configPath string) (Configuration, error) {
 
 	if configPath == "" {
-
-		return Configuration{}, errors.New("configPath is not set")
+		return Configuration{}, wpwerrors.GetError(wpwerrors.WRONG_CONFIG_PATH, "configPath is not set")
 	}
 
 	file, err := os.Open(configPath)
 
 	if err != nil {
-
-		return Configuration{}, err
+		return Configuration{}, wpwerrors.GetError(wpwerrors.OPEN_FILE, configPath, err)
 	}
 	defer file.Close()
 
@@ -34,8 +33,7 @@ func Load(configPath string) (Configuration, error) {
 	err = decoder.Decode(&tmpConfig)
 
 	if err != nil {
-
-		return Configuration{}, err
+		return Configuration{}, wpwerrors.GetError(wpwerrors.DECODE_JSON, err)
 	}
 	result := Configuration{}
 	result.items = make(map[string]Item, 0)

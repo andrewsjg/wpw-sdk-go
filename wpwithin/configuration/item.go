@@ -1,6 +1,11 @@
 package configuration
 
-import "strconv"
+import (
+	"fmt"
+	"strconv"
+
+	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/wpwerrors"
+)
 
 // Item a configuration item has a Key to identify the item by and a value. Value is stored as a string
 // but there are convenience functions to read it as other types
@@ -16,9 +21,8 @@ func (item Item) ReadInt() (int, error) {
 
 	if err != nil {
 
-		return 0, err
+		return 0, wpwerrors.GetError(wpwerrors.CONVERT_VALUE, fmt.Sprintf("item.Value = \"%s\"", item.Value), err)
 	}
-
 	return i, nil
 }
 

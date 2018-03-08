@@ -57,7 +57,7 @@ func mInitNewDevice() error {
 		return err
 	}
 
-	_sdk, err := wpwithin.Initialise(nameOfDevice, description)
+	_sdk, err := wpwithin.Initialise(nameOfDevice, description, "")
 
 	if err != nil {
 
@@ -181,7 +181,7 @@ func setupProducer(producer *devclienttypes.Producer) error {
 }
 
 func initialiseDevice(deviceEntity *devclienttypes.DeviceEntity) error {
-	_sdk, err := wpwithin.Initialise(deviceEntity.Name, deviceEntity.Description)
+	_sdk, err := wpwithin.Initialise(deviceEntity.Name, deviceEntity.Description, "")
 
 	if err != nil {
 		return err

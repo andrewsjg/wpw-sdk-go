@@ -1,6 +1,10 @@
 package servicediscovery
 
-import "net"
+import (
+	"net"
+
+	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/wpwerrors"
+)
 
 // NewScanner creates a new instance Scanner
 func NewScanner(port, stepSleep int) (Scanner, error) {
@@ -14,7 +18,7 @@ func NewScanner(port, stepSleep int) (Scanner, error) {
 
 	if err != nil {
 
-		return nil, err
+		return nil, wpwerrors.GetError(wpwerrors.NEWUDPCOMMERR)
 	}
 
 	result.comm = comm
@@ -39,7 +43,7 @@ func NewBroadcaster(bcastaddr string, port int, stepSleep int) (Broadcaster, err
 
 	if err != nil {
 
-		return nil, err
+		return nil, wpwerrors.GetError(wpwerrors.NEWUDPCOMMERR)
 	}
 
 	result.comm = comm

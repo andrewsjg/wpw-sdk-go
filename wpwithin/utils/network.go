@@ -1,10 +1,11 @@
 package utils
 
 import (
-	"errors"
 	"fmt"
 	"net"
 	"reflect"
+
+	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/wpwerrors"
 )
 
 // FirstExternalIPv4 Return the IPv4 external address of this device.
@@ -14,7 +15,7 @@ func FirstExternalIPv4() (net.IP, error) {
 
 	ifaces, err := net.Interfaces()
 	if err != nil {
-		return nil, err
+		return nil, wpwerrors.GetError(wpwerrors.LISTOFINTFS, err)
 	}
 	for _, iface := range ifaces {
 		if iface.Flags&net.FlagUp == 0 {
@@ -29,7 +30,7 @@ func FirstExternalIPv4() (net.IP, error) {
 		}
 		addrs, err := iface.Addrs()
 		if err != nil {
-			return nil, err
+			return nil, wpwerrors.GetError(wpwerrors.LISTOFADDRS, err)
 		}
 		for _, addr := range addrs {
 			var ip net.IP
@@ -50,7 +51,7 @@ func FirstExternalIPv4() (net.IP, error) {
 			return ip, nil
 		}
 	}
-	return nil, errors.New("Device does not appear to be network connected.")
+	return nil, wpwerrors.GetError(wpwerrors.DEVICENOTCONN)
 }
 
 // NetMask get current netmask
@@ -58,7 +59,7 @@ func NetMask() (net.IPMask, error) {
 
 	ifaces, err := net.Interfaces()
 	if err != nil {
-		return nil, err
+		return nil, wpwerrors.GetError(wpwerrors.LISTOFINTFS, err)
 	}
 	for _, iface := range ifaces {
 
@@ -71,7 +72,7 @@ func NetMask() (net.IPMask, error) {
 
 		addrs, err := iface.Addrs()
 		if err != nil {
-			return nil, err
+			return nil, wpwerrors.GetError(wpwerrors.LISTOFADDRS, err)
 		}
 		for _, addr := range addrs {
 
@@ -114,5 +115,5 @@ func NetMask() (net.IPMask, error) {
 			return ip, nil
 		}
 	}
-	return nil, errors.New("Unable to calculate netmask")
+	return nil, wpwerrors.GetError(wpwerrors.CALCNETMASK)
 }

@@ -11,6 +11,7 @@ import (
 	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/psp"
 	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/types"
 	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/utils"
+	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/wpwerrors"
 )
 
 // SecureNet supports processing of payments using the Secure Net service
@@ -33,7 +34,7 @@ func NewSecureNetMerchant(snID, secureKey, publicKey, apiEndpoint, appVersion st
 
 	if err != nil {
 
-		return nil, err
+		return nil, wpwerrors.GetError(wpwerrors.SNCLIENT_CREATEFAILED, err)
 	}
 
 	result.snclient = _snclient
@@ -55,7 +56,7 @@ func NewSecureNetConsumer(apiEndpoint, appVersion string, developerID int32, pro
 
 	if err != nil {
 
-		return nil, err
+		return nil, wpwerrors.GetError(wpwerrors.SNCLIENT_CREATEFAILED, err)
 	}
 
 	result.snclient = _snclient

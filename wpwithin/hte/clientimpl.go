@@ -2,12 +2,11 @@ package hte
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 	"net/http"
 
 	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/types"
-
+	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/wpwerrors"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -26,20 +25,17 @@ type clientImpl struct {
 func NewClient(scheme, host string, port int, urlPrefix string, clientID string, httpClient ClientHTTP) (Client, error) {
 
 	if host == "" {
-
-		return nil, errors.New("host cannot be empty")
+		return nil, wpwerrors.GetError(wpwerrors.EMPTY_HOST)
 	}
 
 	if port < PortRangeMin || port > PortRangeMax {
-
-		return nil, fmt.Errorf("Port number cannot exceed range [%d - %d]", PortRangeMin, PortRangeMax)
+		return nil, wpwerrors.GetError(wpwerrors.PORT_RANGE,
+			fmt.Sprintf("port = %d", port), fmt.Sprintf("range is [%d, %d]", PortRangeMin, PortRangeMax))
 	}
 
 	// Do not need to validate against empty urlPrefix as it can actually be empty
-
 	if clientID == "" {
-
-		return nil, errors.New("clientId cannot be empty")
+		return nil, wpwerrors.GetError(wpwerrors.EMPTY_CLIENTID)
 	}
 
 	result := &clientImpl{}
@@ -62,8 +58,7 @@ func (client *clientImpl) DiscoverServices() (types.ServiceListResponse, error) 
 	response, err := client.httpClient.Get(url)
 
 	if err != nil {
-
-		return types.ServiceListResponse{}, err
+		return types.ServiceListResponse{}, wpwerrors.GetError(wpwerrors.HTTP_GET, err)
 	}
 
 	svcDetails := types.ServiceListResponse{}
@@ -71,8 +66,7 @@ func (client *clientImpl) DiscoverServices() (types.ServiceListResponse, error) 
 	err = json.Unmarshal(response, &svcDetails)
 
 	if err != nil {
-
-		return types.ServiceListResponse{}, err
+		return types.ServiceListResponse{}, wpwerrors.GetError(wpwerrors.DECODE_JSON, err)
 	}
 
 	return svcDetails, nil
@@ -86,7 +80,7 @@ func (client *clientImpl) GetPrices(serviceID int) (types.ServicePriceResponse, 
 
 	if err != nil {
 
-		return types.ServicePriceResponse{}, err
+		return types.ServicePriceResponse{}, wpwerrors.GetError(wpwerrors.HTTP_GET, err)
 	}
 
 	svcPriceResponse := types.ServicePriceResponse{}
@@ -95,7 +89,7 @@ func (client *clientImpl) GetPrices(serviceID int) (types.ServicePriceResponse, 
 
 	if err != nil {
 
-		return types.ServicePriceResponse{}, err
+		return types.ServicePriceResponse{}, wpwerrors.GetError(wpwerrors.DECODE_JSON, err)
 	}
 
 	return svcPriceResponse, nil
@@ -115,15 +109,15 @@ func (client *clientImpl) NegotiatePrice(serviceID, priceID, numberOfUnits int) 
 
 	if err != nil {
 
-		return types.TotalPriceResponse{}, err
+		return types.TotalPriceResponse{}, wpwerrors.GetError(wpwerrors.ENCODE_JSON, err)
 	}
 
 	bytesResp, httpStatus, err := client.httpClient.PostJSON(url, jsonReq)
 
 	if err != nil {
-
-		return types.TotalPriceResponse{}, err
-	} else if httpStatus != http.StatusOK {
+		return types.TotalPriceResponse{}, wpwerrors.GetError(wpwerrors.HTTP_POSTJSON, err)
+	}
+	if httpStatus != http.StatusOK {
 
 		errorResp := types.ErrorResponse{}
 
@@ -131,7 +125,7 @@ func (client *clientImpl) NegotiatePrice(serviceID, priceID, numberOfUnits int) 
 
 		if err != nil {
 
-			return types.TotalPriceResponse{}, err
+			return types.TotalPriceResponse{}, wpwerrors.GetError(wpwerrors.DECODE_JSON, err)
 		}
 
 		return types.TotalPriceResponse{}, fmt.Errorf("%d - %s (%d)", errorResp.HTTPStatusCode, errorResp.Message, errorResp.ErrorCode)
@@ -144,7 +138,7 @@ func (client *clientImpl) NegotiatePrice(serviceID, priceID, numberOfUnits int) 
 
 		if err != nil {
 
-			return types.TotalPriceResponse{}, err
+			return types.TotalPriceResponse{}, wpwerrors.GetError(wpwerrors.DECODE_JSON, err)
 		}
 
 		return priceResp, nil
@@ -165,14 +159,14 @@ func (client *clientImpl) MakeHtePayment(paymentReferenceID, clientID, clientTok
 
 	if err != nil {
 
-		return types.PaymentResponse{}, err
+		return types.PaymentResponse{}, wpwerrors.GetError(wpwerrors.ENCODE_JSON, err)
 	}
 
 	byteResp, httpStatus, err := client.httpClient.PostJSON(url, jsonBody)
 
 	if err != nil {
 
-		return types.PaymentResponse{}, err
+		return types.PaymentResponse{}, wpwerrors.GetError(wpwerrors.HTTP_POSTJSON, err)
 	} else if httpStatus != http.StatusOK {
 
 		errorResponse := types.ErrorResponse{}
@@ -181,7 +175,7 @@ func (client *clientImpl) MakeHtePayment(paymentReferenceID, clientID, clientTok
 
 		if err != nil {
 
-			return types.PaymentResponse{}, err
+			return types.PaymentResponse{}, wpwerrors.GetError(wpwerrors.DECODE_JSON, err)
 		}
 
 		return types.PaymentResponse{}, fmt.Errorf("%d - %s (%d)", errorResponse.HTTPStatusCode, errorResponse.Message, errorResponse.ErrorCode)
@@ -194,7 +188,7 @@ func (client *clientImpl) MakeHtePayment(paymentReferenceID, clientID, clientTok
 
 		if err != nil {
 
-			return types.PaymentResponse{}, err
+			return types.PaymentResponse{}, wpwerrors.GetError(wpwerrors.DECODE_JSON, err)
 		}
 
 		return paymentResponse, nil
@@ -219,14 +213,14 @@ func (client *clientImpl) StartDelivery(serviceID int, serviceDeliveryToken type
 
 	if err != nil {
 
-		return types.BeginServiceDeliveryResponse{}, err
+		return types.BeginServiceDeliveryResponse{}, wpwerrors.GetError(wpwerrors.ENCODE_JSON, err)
 	}
 
 	byteResp, httpStatus, err := client.httpClient.PostJSON(url, jsonBody)
 
 	if err != nil {
 		log.Errorf("Error posting JSON request. Error = %s", err.Error())
-		return types.BeginServiceDeliveryResponse{}, err
+		return types.BeginServiceDeliveryResponse{}, wpwerrors.GetError(wpwerrors.HTTP_POSTJSON, err)
 	} else if httpStatus != http.StatusOK {
 
 		errorResponse := types.ErrorResponse{}
@@ -235,7 +229,7 @@ func (client *clientImpl) StartDelivery(serviceID int, serviceDeliveryToken type
 
 		if err != nil {
 
-			return types.BeginServiceDeliveryResponse{}, err
+			return types.BeginServiceDeliveryResponse{}, wpwerrors.GetError(wpwerrors.DECODE_JSON, err)
 		}
 
 		return types.BeginServiceDeliveryResponse{}, fmt.Errorf("%d - %s (%d)", errorResponse.HTTPStatusCode, errorResponse.Message, errorResponse.ErrorCode)
@@ -248,7 +242,7 @@ func (client *clientImpl) StartDelivery(serviceID int, serviceDeliveryToken type
 
 		if err != nil {
 
-			return types.BeginServiceDeliveryResponse{}, err
+			return types.BeginServiceDeliveryResponse{}, wpwerrors.GetError(wpwerrors.DECODE_JSON, err)
 		}
 
 		return deliveryResponse, nil
@@ -269,14 +263,14 @@ func (client *clientImpl) EndDelivery(serviceID int, serviceDeliveryToken types.
 
 	if err != nil {
 
-		return types.EndServiceDeliveryResponse{}, err
+		return types.EndServiceDeliveryResponse{}, wpwerrors.GetError(wpwerrors.ENCODE_JSON, err)
 	}
 
 	byteResp, httpStatus, err := client.httpClient.PostJSON(url, jsonBody)
 
 	if err != nil {
 
-		return types.EndServiceDeliveryResponse{}, err
+		return types.EndServiceDeliveryResponse{}, wpwerrors.GetError(wpwerrors.HTTP_POSTJSON, err)
 	} else if httpStatus != http.StatusOK {
 
 		errorResponse := types.ErrorResponse{}
@@ -285,7 +279,7 @@ func (client *clientImpl) EndDelivery(serviceID int, serviceDeliveryToken types.
 
 		if err != nil {
 
-			return types.EndServiceDeliveryResponse{}, err
+			return types.EndServiceDeliveryResponse{}, wpwerrors.GetError(wpwerrors.DECODE_JSON, err)
 		}
 
 		return types.EndServiceDeliveryResponse{}, fmt.Errorf("%d - %s (%d)", errorResponse.HTTPStatusCode, errorResponse.Message, errorResponse.ErrorCode)
@@ -298,7 +292,7 @@ func (client *clientImpl) EndDelivery(serviceID int, serviceDeliveryToken types.
 
 		if err != nil {
 
-			return types.EndServiceDeliveryResponse{}, err
+			return types.EndServiceDeliveryResponse{}, wpwerrors.GetError(wpwerrors.DECODE_JSON, err)
 		}
 
 		return deliveryResponse, nil

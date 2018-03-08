@@ -4,6 +4,8 @@ import (
 	"bytes"
 	"io/ioutil"
 	"net/http"
+
+	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/wpwerrors"
 )
 
 // ClientHTTP an interface for HTTP requests
@@ -27,15 +29,13 @@ func (client *ClientHTTPImpl) Get(url string) ([]byte, error) {
 	response, err := http.Get(url)
 
 	if err != nil {
-
-		return nil, err
+		return nil, wpwerrors.GetError(wpwerrors.HTTP_GET, err.Error())
 	}
 
 	byteResponse, err := ioutil.ReadAll(response.Body)
 
 	if err != nil {
-
-		return nil, err
+		return nil, wpwerrors.GetError(wpwerrors.IO_READ, err.Error())
 	}
 
 	return byteResponse, nil
@@ -47,8 +47,7 @@ func (client *ClientHTTPImpl) PostJSON(url string, postBody []byte) ([]byte, int
 	req, err := http.NewRequest("POST", url, bytes.NewBuffer(postBody))
 
 	if err != nil {
-
-		return nil, 0, err
+		return nil, 0, wpwerrors.GetError(wpwerrors.HTTP_REQUEST_POST, err)
 	}
 
 	req.Header.Add("Content-Type", "application/json")
@@ -58,8 +57,7 @@ func (client *ClientHTTPImpl) PostJSON(url string, postBody []byte) ([]byte, int
 	resp, err := _client.Do(req)
 
 	if err != nil {
-
-		return nil, 0, err
+		return nil, 0, wpwerrors.GetError(wpwerrors.HTTP_REQUEST_DO, err)
 	}
 
 	defer resp.Body.Close()
@@ -68,7 +66,7 @@ func (client *ClientHTTPImpl) PostJSON(url string, postBody []byte) ([]byte, int
 
 	if err != nil {
 
-		return nil, resp.StatusCode, err
+		return nil, resp.StatusCode, wpwerrors.GetError(wpwerrors.IO_READ, err)
 	}
 
 	return bodyBytes, resp.StatusCode, nil
