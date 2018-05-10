@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"os"
 
-	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/wpwerrors"
+	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/wpwerrors"
 )
 
 // Configuration a configuration helper. Will parse a configuration JSON file into memory and store in a map[string]Item

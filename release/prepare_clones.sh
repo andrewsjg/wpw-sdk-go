@@ -6,7 +6,7 @@ typeset GREEN='\033[0;32m'
 typeset NC='\033[0m'  # No Color
 
 # setup default values if empty
-[[ -z "${MIRRORS}" ]] &&        MIRRORS="https://github.com/WPTechInnovation"
+[[ -z "${MIRRORS}" ]] &&        MIRRORS="https://github.com/wptechinnovation"
 
 [[ -z "${REPO_GO}" ]] &&        REPO_GO="${MIRRORS}/wpw-sdk-go.git"
 [[ -z "${REPO_DOTNET}" ]] &&    REPO_DOTNET="${MIRRORS}/wpw-sdk-dotnet.git"
@@ -30,7 +30,7 @@ typeset RC_BRANCH_NAME=""
 
 CURRENT_PATH=`pwd`
 export GOPATH=${CURRENT_PATH}/go
-export WPW_SDK_GO_PATH=${GOPATH}/src/github.com/WPTechInnovation/${REPO_GO_NAME}
+export WPW_SDK_GO_PATH=${GOPATH}/src/github.com/wptechinnovation/${REPO_GO_NAME}
 
 function cleanup {
     echo
@@ -145,9 +145,9 @@ do
     case "${repo}" in
         ${REPO_GO} )
             # go repo is cloned in a different way than others
-            mkdir -p ${GOPATH}/src/github.com/WPTechInnovation/
+            mkdir -p ${GOPATH}/src/github.com/wptechinnovation/
             CURRENT_PATH=`pwd`
-            cd "${GOPATH}/src/github.com/WPTechInnovation/"
+            cd "${GOPATH}/src/github.com/wptechinnovation/"
             git clone ${repo} || {
                 cd "${CURRENT_PATH}"
                 die "${RED}error, failed to clone ${repo}${NC}"

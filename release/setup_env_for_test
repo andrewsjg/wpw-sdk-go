@@ -9,13 +9,13 @@ else
     mkdir -p "${MIRRORS_DIR}"
     cd "${MIRRORS_DIR}"
 
-    git clone --mirror https://github.com/WPTechInnovation/wpw-sdk-go.git
-    git clone --mirror https://github.com/WPTechInnovation/wpw-sdk-java.git
-    git clone --mirror https://github.com/WPTechInnovation/wpw-sdk-python.git
-    git clone --mirror https://github.com/WPTechInnovation/wpw-sdk-nodejs.git
-    git clone --mirror https://github.com/WPTechInnovation/wpw-sdk-dotnet.git
-    git clone --mirror https://github.com/WPTechInnovation/wpw-sdk-thrift.git
-    git clone --mirror https://github.com/WPTechInnovation/wpw-sdk-iot-core.git
+    git clone --mirror https://github.com/wptechinnovation/wpw-sdk-go.git
+    git clone --mirror https://github.com/wptechinnovation/wpw-sdk-java.git
+    git clone --mirror https://github.com/wptechinnovation/wpw-sdk-python.git
+    git clone --mirror https://github.com/wptechinnovation/wpw-sdk-nodejs.git
+    git clone --mirror https://github.com/wptechinnovation/wpw-sdk-dotnet.git
+    git clone --mirror https://github.com/wptechinnovation/wpw-sdk-thrift.git
+    git clone --mirror https://github.com/wptechinnovation/wpw-sdk-iot-core.git
 
     cd -
 fi

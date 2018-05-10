@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin"
+	"github.com/wptechinnovation/wpw-sdk-go/wpwithin"
 	log "github.com/sirupsen/logrus"
 )
 

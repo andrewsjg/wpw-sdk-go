@@ -7,9 +7,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/WPTechInnovation/wpw-sdk-go/applications/apputils"
-	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin"
-	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/rpc"
+	"github.com/wptechinnovation/wpw-sdk-go/applications/apputils"
+	"github.com/wptechinnovation/wpw-sdk-go/wpwithin"
+	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/rpc"
 	"github.com/rifflock/lfshook"
 	log "github.com/sirupsen/logrus"
 )

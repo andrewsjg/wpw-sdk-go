@@ -4,13 +4,13 @@ import (
 	"os"
 	"testing"
 
-	//	"github.com/WPTechInnovation/wpw-sdk-go/examples/exutils"
-	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin"
-	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/psp"
-	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/psp/onlineworldpay"
-	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/rpc"
-	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/rpc/wpthrift/gen-go/wpthrift_types"
-	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/types"
+	//	"github.com/wptechinnovation/wpw-sdk-go/examples/exutils"
+	"github.com/wptechinnovation/wpw-sdk-go/wpwithin"
+	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/psp"
+	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/psp/onlineworldpay"
+	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/rpc"
+	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/rpc/wpthrift/gen-go/wpthrift_types"
+	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/types"
 	//	log "github.com/sirupsen/logrus"
 )
 

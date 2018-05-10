@@ -4,7 +4,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/wpwerrors"
+	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/wpwerrors"
 )
 
 func TestReadInt(t *testing.T) {

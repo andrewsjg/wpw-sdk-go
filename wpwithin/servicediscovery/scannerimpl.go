@@ -5,11 +5,11 @@ import (
 	"strings"
 	"time"
 
-	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/wpwerrors"
+	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/wpwerrors"
 
 	"encoding/json"
 
-	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/types"
+	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/types"
 	log "github.com/sirupsen/logrus"
 )
 

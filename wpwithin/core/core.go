@@ -1,12 +1,12 @@
 package core
 
 import (
-	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/configuration"
-	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/hte"
-	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/psp"
-	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/servicediscovery"
-	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/types"
-	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/types/event"
+	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/configuration"
+	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/hte"
+	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/psp"
+	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/servicediscovery"
+	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/types"
+	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/types/event"
 )
 
 // Core This acts as a container for dependencies of the SDK

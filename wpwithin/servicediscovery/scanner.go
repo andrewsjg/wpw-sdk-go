@@ -1,6 +1,6 @@
 package servicediscovery
 
-import "github.com/WPTechInnovation/wpw-sdk-go/wpwithin/types"
+import "github.com/wptechinnovation/wpw-sdk-go/wpwithin/types"
 
 // Scanner defines function for discovering devices on a network
 type Scanner interface {

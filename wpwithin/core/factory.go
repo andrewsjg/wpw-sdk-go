@@ -5,16 +5,16 @@ import (
 	"net"
 	"strconv"
 
-	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/configuration"
-	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/hte"
-	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/psp"
-	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/psp/onlineworldpay"
-	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/psp/securenet"
-	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/servicediscovery"
-	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/types"
-	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/types/event"
-	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/utils"
-	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/wpwerrors"
+	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/configuration"
+	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/hte"
+	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/psp"
+	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/psp/onlineworldpay"
+	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/psp/securenet"
+	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/servicediscovery"
+	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/types"
+	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/types/event"
+	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/utils"
+	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/wpwerrors"
 )
 
 const (

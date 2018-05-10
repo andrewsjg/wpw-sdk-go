@@ -1,7 +1,7 @@
 package devclienttypes
 
 import (
-	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/types"
+	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/types"
 )
 
 type DeviceProfile struct {
@@ -54,7 +54,7 @@ type ProducerConfig struct {
 	//BroadcastTimeout      int    `json:"broadcastTimeout"`
 	PspMerchantServiceKey string `json:"pspMerchantServiceKey"`
 	PspMerchantClientKey  string `json:"pspMerchantClientKey"`
-	// No way to set these yet, see https://github.com/WPTechInnovation/worldpay-within-sdk/issues/18
+	// No way to set these yet, see https://github.com/wptechinnovation/worldpay-within-sdk/issues/18
 	//HTEPort               int    `json:"htePort"`
 	//HTEURLPrefix          string `json:"hteURLPrefix"`
 	//HTEScheme             string `json:"hteScheme"`

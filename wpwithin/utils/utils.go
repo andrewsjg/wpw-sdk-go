@@ -8,7 +8,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/wpwerrors"
+	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/wpwerrors"
 	"github.com/nu7hatch/gouuid"
 )
 

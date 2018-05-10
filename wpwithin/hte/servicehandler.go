@@ -10,11 +10,11 @@ import (
 	"strings"
 	"time"
 
-	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/psp"
-	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/types"
-	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/types/errors"
-	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/types/event"
-	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/utils"
+	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/psp"
+	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/types"
+	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/types/errors"
+	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/types/event"
+	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/utils"
 	"github.com/gorilla/mux"
 	log "github.com/sirupsen/logrus"
 )

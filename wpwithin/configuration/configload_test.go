@@ -5,7 +5,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/wpwerrors"
+	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/wpwerrors"
 )
 
 var testFileName = os.TempDir() + string(os.PathSeparator) + "configload_test.json"

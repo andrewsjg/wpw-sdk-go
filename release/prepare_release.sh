@@ -5,7 +5,7 @@ typeset RED='\033[0;31m'
 typeset GREEN='\033[0;32m'
 typeset NC='\033[0m'  # No Color
 
-[[ -z "${MIRRORS}" ]] && export MIRRORS="https://github.com/WPTechInnovation"
+[[ -z "${MIRRORS}" ]] && export MIRRORS="https://github.com/wptechinnovation"
 #export MIRRORS="file:///c/Users/wabe/clones/release_script/copy_of_repos"
 export MIRRORS="file://${HOME}/clones/mirrors"
 
@@ -39,7 +39,7 @@ typeset ADD_TAG=""
 
 # change GOPATH to ./go
 export GOPATH=`pwd`/go
-export WPW_SDK_GO_PATH=${GOPATH}/src/github.com/WPTechInnovation/${REPO_GO_NAME}
+export WPW_SDK_GO_PATH=${GOPATH}/src/github.com/wptechinnovation/${REPO_GO_NAME}
 
 # functions
 function cleanup {

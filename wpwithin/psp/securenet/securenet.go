@@ -4,14 +4,14 @@ import (
 	"fmt"
 	"strconv"
 
-	snclient "github.com/WPTechInnovation/worldpay-securenet-lib-go/sdk/client"
-	"github.com/WPTechInnovation/worldpay-securenet-lib-go/sdk/service/cardnotpresent"
-	"github.com/WPTechInnovation/worldpay-securenet-lib-go/sdk/service/tokenization"
-	sntypes "github.com/WPTechInnovation/worldpay-securenet-lib-go/sdk/types"
-	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/psp"
-	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/types"
-	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/utils"
-	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/wpwerrors"
+	snclient "github.com/wptechinnovation/worldpay-securenet-lib-go/sdk/client"
+	"github.com/wptechinnovation/worldpay-securenet-lib-go/sdk/service/cardnotpresent"
+	"github.com/wptechinnovation/worldpay-securenet-lib-go/sdk/service/tokenization"
+	sntypes "github.com/wptechinnovation/worldpay-securenet-lib-go/sdk/types"
+	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/psp"
+	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/types"
+	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/utils"
+	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/wpwerrors"
 )
 
 // SecureNet supports processing of payments using the Secure Net service

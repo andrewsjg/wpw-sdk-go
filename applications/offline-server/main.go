@@ -11,7 +11,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/psp/onlineworldpay/types"
+	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/psp/onlineworldpay/types"
 	"github.com/gorilla/mux"
 	"github.com/nanobox-io/golang-scribble"
 	"github.com/nu7hatch/gouuid"

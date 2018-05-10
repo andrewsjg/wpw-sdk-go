@@ -73,7 +73,7 @@ do
 
     case "${repo_name}" in
         ${REPO_GOLANG_NAME} )
-            WORK_DIR=${GOPATH}/src/github.com/WPTechInnovation/${REPO_GOLANG_NAME}/
+            WORK_DIR=${GOPATH}/src/github.com/wptechinnovation/${REPO_GOLANG_NAME}/
             ;;
         ${REPO_DOTNET_NAME} )
             ;;

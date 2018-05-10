@@ -5,7 +5,7 @@ import (
 	"net"
 	"reflect"
 
-	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/wpwerrors"
+	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/wpwerrors"
 )
 
 // FirstExternalIPv4 Return the IPv4 external address of this device.

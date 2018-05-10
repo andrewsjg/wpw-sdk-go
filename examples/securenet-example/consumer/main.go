@@ -5,10 +5,10 @@ import (
 	"os"
 	"time"
 
-	"github.com/WPTechInnovation/wpw-sdk-go/examples/exutils"
-	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin"
-	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/psp"
-	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/psp/securenet"
+	"github.com/wptechinnovation/wpw-sdk-go/examples/exutils"
+	"github.com/wptechinnovation/wpw-sdk-go/wpwithin"
+	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/psp"
+	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/psp/securenet"
 	log "github.com/sirupsen/logrus"
 )
 

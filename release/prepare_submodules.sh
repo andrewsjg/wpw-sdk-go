@@ -12,7 +12,7 @@ typeset -r REPO_THRIFT_NAME="wpw-sdk-thrift"
 typeset RC_BRANCH_NAME=""
 typeset RC_MASTER_BRANCH_NAME=""
 
-typeset WPW_SDK_GO_PATH=${GOPATH}/src/github.com/WPTechInnovation/${REPO_GO_NAME}
+typeset WPW_SDK_GO_PATH=${GOPATH}/src/github.com/wptechinnovation/${REPO_GO_NAME}
 typeset VERSION=""
 typeset ADD_TAG=""
 

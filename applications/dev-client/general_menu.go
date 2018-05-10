@@ -6,12 +6,12 @@ import (
 	"fmt"
 	"io/ioutil"
 
-	devclienttypes "github.com/WPTechInnovation/wpw-sdk-go/applications/dev-client/types"
-	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin"
-	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/psp"
-	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/psp/onlineworldpay"
-	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/rpc"
-	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/types"
+	devclienttypes "github.com/wptechinnovation/wpw-sdk-go/applications/dev-client/types"
+	"github.com/wptechinnovation/wpw-sdk-go/wpwithin"
+	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/psp"
+	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/psp/onlineworldpay"
+	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/rpc"
+	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/types"
 	log "github.com/sirupsen/logrus"
 )
 

@@ -6,7 +6,7 @@ The Go implementation for the Worldpay Within IoT payment SDK. This SDK, or Soft
 
 ## Get started
 1. Download this repo (into GOPATH)
-* `go get github.com/WPTechInnovation/wpw-sdk-go`
+* `go get github.com/wptechinnovation/wpw-sdk-go`
 2. Run the examples...
 
 ## Run the examples

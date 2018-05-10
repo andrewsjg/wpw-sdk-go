@@ -20,9 +20,9 @@ Administration rights are required to setup the web server.
 
 # Setup:
 
-1. mkdir -p %GOPATH%\src\github.com\WPTechInnovation\
-2. cd %GOPATH%\src\github.com\WPTechInnovation\
-3. git clone https://github.com/WPTechInnovation/wpw-sdk-go.git
+1. mkdir -p %GOPATH%\src\github.com\wptechinnovation\
+2. cd %GOPATH%\src\github.com\wptechinnovation\
+3. git clone https://github.com/wptechinnovation/wpw-sdk-go.git
 4. cd wpw-sdk-go\applications\offline-server
 5. go get
 6. go build
@@ -30,6 +30,6 @@ Administration rights are required to setup the web server.
 Additional Info:
 - To run this server type: 
 ```
-cd %GOPATH%\src\github.com\WPTechInnovation\wpw-sdk-go\applications\offline-server
+cd %GOPATH%\src\github.com\wptechinnovation\wpw-sdk-go\applications\offline-server
 offline-server.exe
 ```

@@ -3,7 +3,7 @@ package servicediscovery
 import (
 	"net"
 
-	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/wpwerrors"
+	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/wpwerrors"
 )
 
 // NewScanner creates a new instance Scanner

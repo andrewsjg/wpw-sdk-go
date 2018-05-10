@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/WPTechInnovation/wpw-sdk-go/wpwithin/types"
+	"github.com/wptechinnovation/wpw-sdk-go/wpwithin/types"
 )
 
 type Config struct {
